@@ -7,7 +7,7 @@ This project contains the code for team 1902's 2026 FRC robot. The code for our 
 ## About the Team
 
 FRC Team 1902, Exploding Bacon, is a high school robotics team based in Orlando, Florida. We are a community-driven team that focuses on STEM education and outreach. Our team is dedicated to creating a positive impact in our community through the power of robotics. We run a variety of programs, outreaches, and more, so feel free to visit us on our website:
-[explodingbacon.com](explodingbacon.com)
+[explodingbacon.com](https://www.explodingbacon.com)
 
 ## Contributing
 
