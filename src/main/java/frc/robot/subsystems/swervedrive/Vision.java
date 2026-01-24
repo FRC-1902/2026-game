@@ -130,8 +130,8 @@ public class Vision {
         var pose = poseOpt.get().estimatedPose;
         double x = pose.getX();
         double y = pose.getY();
-        double fieldLengthMeters = 651.22 * 0.0254;
-        double fieldWidthMeters = 317.69 * 0.0254;
+        double fieldLengthMeters = Vision.fieldLayout.getFieldLength();
+        double fieldWidthMeters = Vision.fieldLayout.getFieldWidth();
         boolean inField = x >= 0 && x <= fieldLengthMeters && y >= 0 && y <= fieldWidthMeters;
         if (!inField) {
           continue;

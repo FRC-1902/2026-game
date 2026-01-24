@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Telemetry {
-  private String turnOrder = "";
+  private Alliance turnOrder = null;
   private SwerveSubsystem drivebase;
   private boolean turnOrderLogged = false;
 
@@ -24,9 +24,9 @@ public class Telemetry {
 
   private double teleopStartTime = -1;
 
-  public void setTurnOrder(String order) {
+  public void setTurnOrder(Alliance order) {
     this.turnOrder = order;
-    SmartDashboard.putString("Turn Order", order);
+    SmartDashboard.putString("Turn Order", order != null ? order.toString() : "No Data");
   }
 
   public boolean isTurnOrderLogged() {
@@ -42,7 +42,7 @@ public class Telemetry {
   }
 
   public void update() {
-    SmartDashboard.putString("Turn Order", turnOrder);
+    SmartDashboard.putString("Turn Order", turnOrder != null ? turnOrder.toString() : "No Data");
     SmartDashboard.putBoolean("Turn Order Logged", turnOrderLogged);
 
     if (drivebase != null) {
@@ -53,10 +53,7 @@ public class Telemetry {
     }
 
     // Update period timing metrics if teleop has started and we have turn order
-    if (teleopStartTime > 0
-        && turnOrderLogged
-        && !turnOrder.equals("No Data")
-        && !turnOrder.equals("Corrupt")) {
+    if (teleopStartTime > 0 && turnOrderLogged && turnOrder != null) {
       updatePeriodMetrics();
     }
   }
@@ -121,7 +118,7 @@ public class Telemetry {
       return false;
     }
 
-    String ourAlliance = alliance.get() == Alliance.Red ? "Red" : "Blue";
+    Alliance ourAlliance = alliance.get();
 
     // Transition and Endgame are free
     if (elapsedTime < TRANSITION_END || elapsedTime >= SHIFT_4_END) {
@@ -131,13 +128,13 @@ public class Telemetry {
     boolean isInactivePeriod;
 
     if (elapsedTime < SHIFT_1_END) {
-      isInactivePeriod = ourAlliance.equals(turnOrder);
+      isInactivePeriod = ourAlliance != turnOrder;
     } else if (elapsedTime < SHIFT_2_END) {
-      isInactivePeriod = !ourAlliance.equals(turnOrder);
+      isInactivePeriod = ourAlliance == turnOrder;
     } else if (elapsedTime < SHIFT_3_END) {
-      isInactivePeriod = ourAlliance.equals(turnOrder);
+      isInactivePeriod = ourAlliance != turnOrder;
     } else {
-      isInactivePeriod = !ourAlliance.equals(turnOrder);
+      isInactivePeriod = ourAlliance == turnOrder;
     }
 
     return isInactivePeriod;
@@ -149,18 +146,18 @@ public class Telemetry {
     if (gameData.length() > 0) {
       switch (gameData.charAt(0)) {
         case 'B':
-          setTurnOrder("Blue");
+          setTurnOrder(Alliance.Blue);
           break;
         case 'R':
-          setTurnOrder("Red");
+          setTurnOrder(Alliance.Red);
           break;
         default:
-          setTurnOrder("Corrupt");
+          setTurnOrder(null);
           break;
       }
       turnOrderLogged = true;
     } else {
-      setTurnOrder("No Data");
+      setTurnOrder(null);
     }
   }
 }
