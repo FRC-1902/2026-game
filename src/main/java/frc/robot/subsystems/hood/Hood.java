@@ -60,8 +60,8 @@ public class Hood extends SubsystemBase {
   }
 
   // Get the current hood angle from the motor encoder.
-    public double getAngle() {
-      return hoodMotor.getEncoder().getPosition() * (360.0 / HoodConstants.MOTOR_TO_HOOD_RATIO);
+  public double getAngle() {
+    return hoodMotor.getEncoder().getPosition() * (360.0 / HoodConstants.MOTOR_TO_HOOD_RATIO);
   }
 
   public double getTargetAngle() {
