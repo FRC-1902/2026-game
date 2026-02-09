@@ -31,7 +31,6 @@ public class Hood extends SubsystemBase {
 
     hoodMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-
     absoluteEncoder = new DutyCycleEncoder(HoodConstants.HOOD_ENCODER_DIO_PORT);
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
   }
@@ -39,8 +38,9 @@ public class Hood extends SubsystemBase {
   public Rotation2d getAbsoluteAngle() {
     // Multiply by 360 to get encoder degrees, then divide by gear ratio to get hood degrees
     double encoderRotations = absoluteEncoder.get();
-    double angle = (encoderRotations * 360.0 / HoodConstants.ENCODER_TO_HOOD_RATIO)
-        - HoodConstants.ENCODER_OFFSET;
+    double angle =
+        (encoderRotations * 360.0 / HoodConstants.ENCODER_TO_HOOD_RATIO)
+            - HoodConstants.ENCODER_OFFSET;
 
     // Wrap to 0-360 range
     angle = ((angle % 360.0) + 360.0) % 360.0;
