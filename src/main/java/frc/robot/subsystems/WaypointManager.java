@@ -26,6 +26,7 @@ public class WaypointManager {
   /**
    * Get a waypoint by name
    *
+   * 
    * @param name Waypoint name
    * @return Waypoint pose, or null if not found
    */

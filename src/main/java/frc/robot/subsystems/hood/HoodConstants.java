@@ -34,7 +34,6 @@ public class HoodConstants {
   public static final double HOOD_MIN_ANGLE = 0.0; // TODO: Set based on physical limits
   public static final double HOOD_MAX_ANGLE = 90.0; // TODO: Set based on physical limits
 
-
   // Tolerance for reaching target angle (in degrees)
   public static final double HOOD_ANGLE_TOLERANCE = 3.0;
 
