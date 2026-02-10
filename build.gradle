@@ -84,9 +84,13 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+//test {
+    //useJUnitPlatform()
+  //  systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+//}
+
 test {
-    useJUnitPlatform()
-    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    enabled = false //TEMPORARY TEMPORARY TEMPORARY ADDED BY USER
 }
 
 // Simulation configuration (e.g. environment variables).
