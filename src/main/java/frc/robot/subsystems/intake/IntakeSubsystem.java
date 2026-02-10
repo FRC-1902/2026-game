@@ -34,7 +34,7 @@ public class IntakeSubsystem extends SubsystemBase {
         config.closedLoop.iZone(0);
         config.closedLoop.outputRange(-1.0, 1.0);
         pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+        // Setup PID feedback loop
     }
 
     private double targetAngle = 0.0;
@@ -47,6 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public double getAngle() {
         return pivotEncoder.getPosition() * 360.0 / IntakeConstants.MOTOR_TO_INTAKE_RATIO;
+        // Get the angle of the encoder in degrees.
     }
 
     public void setAngle(double angle) {
@@ -55,17 +56,6 @@ public class IntakeSubsystem extends SubsystemBase {
             .getClosedLoopController()
             .setSetpoint(angle * (IntakeConstants.MOTOR_TO_INTAKE_RATIO / 360.0), ControlType.kPosition, ClosedLoopSlot.kSlot0, ffVolts);
     }
-
-    public double getAbsoluteAngle() {
-        // Get position as fraction of rotation (0.0 to 1.0)
-        double absolutePosition = pivotEncoder.getPosition();
-        // Convert to degrees (0 to 360)
-        double rawAngle = absolutePosition * 360.0;
-        // Account for encoder gearing
-        double hoodAngle = rawAngle / IntakeConstants.INTAKE_TO_ENCODER_RATIO;
-        return hoodAngle - IntakeConstants.ENCODER_OFFSET;
-    }
-
 
 
     public void intakeDown() {
@@ -85,10 +75,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void periodic() {
 
-        double measurement = getAbsoluteAngle() * 360.0;
+        double measurement = getAngle() * 360.0;
         double setpoint = targetAngle * 360.0;
         double pidoutput = pid.calculate(measurement, setpoint);
-        double ff = calculateGravityFeedforward(getAbsoluteAngle());
+        double ff = calculateGravityFeedforward(getAngle());
         double output = pidoutput + ff;
         output = Math.max(-1.0, Math.min(1.0, output));
         pivotMotor.set(output);
