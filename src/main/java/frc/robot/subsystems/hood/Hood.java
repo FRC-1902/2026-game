@@ -83,8 +83,7 @@ public class Hood extends SubsystemBase {
   }
 
   public boolean atTargetAngle() {
-    return Math.abs(getAbsoluteAngle().getDegrees() - targetAngle.getDegrees())
-        < HoodConstants.HOOD_ANGLE_TOLERANCE;
+    return pid.atSetpoint();
   }
 
   public void stop() {
