@@ -27,15 +27,18 @@ public class HoodConstants {
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
-  // Gravity feedforward constant (volts)
-  public static final double HOOD_KG = 0.0; // TODO: Tune this value
+  // Gravity feedforward constant (percent output at full gravity)
+  public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
 
   // Soft limits (in degrees)
   public static final double HOOD_MIN_ANGLE = 0.0; // TODO: Set based on physical limits
   public static final double HOOD_MAX_ANGLE = 90.0; // TODO: Set based on physical limits
 
+
   // Tolerance for reaching target angle (in degrees)
   public static final double HOOD_ANGLE_TOLERANCE = 3.0;
+
+  public static final double HOOD_IZONE = 3.0; // TODO: Tune IZONE vlue
 
   // Distance to angle interpolation table
   // Distances in meters, angles in degrees

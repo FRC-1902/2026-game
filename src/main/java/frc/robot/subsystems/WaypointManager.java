@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.subsystems.swervedrive.Vision;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class WaypointManager {
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
       // Flip X coordinate for red alliance
-      double fieldLength = 16.54;
+      double fieldLength = Vision.fieldLayout.getFieldLength();
       return new Pose2d(
           fieldLength - waypoint.getX(),
           waypoint.getY(),

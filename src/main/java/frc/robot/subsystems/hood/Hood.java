@@ -33,6 +33,12 @@ public class Hood extends SubsystemBase {
 
     absoluteEncoder = new DutyCycleEncoder(HoodConstants.HOOD_ENCODER_DIO_PORT);
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
+
+    pid.enableContinuousInput(0.0, 360.0);
+
+    pid.setIZone(HoodConstants.HOOD_IZONE);
+
+    pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE);
   }
 
   public Rotation2d getAbsoluteAngle() {
@@ -48,16 +54,14 @@ public class Hood extends SubsystemBase {
   }
 
   // Get the current hood angle from the external encoder.
-  public Rotation2d getAngle() {
-    return getAbsoluteAngle();
-  }
+
 
   public Rotation2d getTargetAngle() {
     return targetAngle;
   }
 
   private double calculateGravityFeedforward(Rotation2d angle) {
-    return HoodConstants.HOOD_KG * Math.cos(angle.getRadians());
+  return HoodConstants.HOOD_KCOS * Math.cos(angle.getRadians());
   }
 
   public void setAngle(Rotation2d angle) {
@@ -80,7 +84,7 @@ public class Hood extends SubsystemBase {
   }
 
   public boolean atTargetAngle() {
-    return Math.abs(getAngle().getDegrees() - targetAngle.getDegrees())
+  return Math.abs(getAbsoluteAngle().getDegrees() - targetAngle.getDegrees())
         < HoodConstants.HOOD_ANGLE_TOLERANCE;
   }
 
@@ -91,10 +95,10 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // External PID control loop
-    double measurement = getAngle().getDegrees();
+  double measurement = getAbsoluteAngle().getDegrees();
     double setpoint = targetAngle.getDegrees();
     double pidOutput = pid.calculate(measurement, setpoint);
-    double ff = calculateGravityFeedforward(getAngle());
+  double ff = calculateGravityFeedforward(getAbsoluteAngle());
     double output = pidOutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     hoodMotor.set(output);
