@@ -32,4 +32,12 @@ public class IntakeConstants {
   public static final double INTAKE_KD = 2.0;
 
   public static final double ENCODER_OFFSET = 0.0; // TODO: set based on calibration
+
+  // Config
+
+  public static final double IZONE = 0.0; // TODO: tune
+
+  // Motors
+
+  public static final double ROLLERMOTOR_SPEED = 1.0; // TODO: tune
 }

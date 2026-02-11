@@ -36,9 +36,10 @@ public class IntakeSubsystem extends SubsystemBase {
     SparkMaxConfig config = new SparkMaxConfig();
     config.closedLoop.pid(
         IntakeConstants.INTAKE_KP, IntakeConstants.INTAKE_KI, IntakeConstants.INTAKE_KD);
-    config.closedLoop.iZone(0);
+    config.closedLoop.iZone(IntakeConstants.IZONE);
     config.closedLoop.outputRange(-1.0, 1.0);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // Setup PID feedback loop and configs
   }
 
@@ -49,7 +50,9 @@ public class IntakeSubsystem extends SubsystemBase {
   public Rotation2d getAngle() {
     return Rotation2d.fromRadians(
         pivotEncoder.getPosition() * IntakeConstants.MOTOR_TO_INTAKE_RATIO);
-    // Get the angle of the encoder in degrees.
+    // Get the angle of the encoder
+    //
+    //                https://spinning.fish
   }
 
   public void setAngle(Rotation2d angle) {
@@ -73,7 +76,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void startRollers() {
-    rollerMotor.set(1.0);
+    rollerMotor.set(IntakeConstants.ROLLERMOTOR_SPEED);
   }
 
   public void stopRollers() {
@@ -89,7 +92,7 @@ public class IntakeSubsystem extends SubsystemBase {
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     pivotMotor.set(output);
-    // Calculate PID and set pivotMotor to it
+    // Calculates PID and sets pivotMotor to it
 
     SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());
     SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle.getDegrees());
