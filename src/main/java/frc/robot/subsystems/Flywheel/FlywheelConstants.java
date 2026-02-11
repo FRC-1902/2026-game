@@ -22,4 +22,9 @@ public class FlywheelConstants {
   public static final double DESIRED_FLYWHEEL_RPM = 2500.0;
   public static final double DESIRED_LOW_FLYWHEEL_RPM =
       250.0; // TODO: Set the correct low RPM for the flywheel when not shooting.
+  public static final double RPM_TOLERANCE = 50.0;
+
+  public static final double FLYWHEEL_KS = 0.0;
+  public static final double FLYWHEEL_KV = 0.0;
+  public static final double FLYWHEEL_KA = 0.0;
 }
