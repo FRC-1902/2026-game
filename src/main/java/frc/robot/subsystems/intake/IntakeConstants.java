@@ -21,7 +21,7 @@ public class IntakeConstants {
   public static final double MOTOR_TO_INTAKE_RATIO =
       MOTOR_TO_CENTER_AXLE_RATIO * CENTER_AXLE_TO_INTAKE_RATIO; // 18:1
 
-  public static final double INTAKE_TO_ENCODER_RATIO = 24.0 / 48.0; // TODO: get real ratio
+  public static final double INTAKE_TO_ENCODER_RATIO = 2.0; // 2:1
 
   public static final double INTAKE_KG = 3.0; // TODO: get real weight
 
