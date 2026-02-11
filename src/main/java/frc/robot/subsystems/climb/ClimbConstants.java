@@ -19,6 +19,7 @@ public class ClimbConstants {
 
   // Minimum allowed elevator height (unit: rotations)
   public static final double CLIMB_MIN_HEIGHT = 0.0; // TODO: Set to encoder value at bottom
+  public static final double CLIMB_MAX_HEIGHT = 1.0; // TODO: Set to encoder value at top
 
   // Climb speed (unit: percent output [-1.0, 1.0])
   public static final double CLIMB_CLIMBING_SPEED = 0.8; // TODO: Tune for safe climbing speed

@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Climb extends SubsystemBase {
   public enum State {
     DOWN, // Moving towards the bottom-most position
-    UP, // Holding position UP
+    UP, // Moving position towards the top-most position
     CLIMBING, // Actively climbing up
     RELEASING, // Actively releasing down
     OFF // Not applying any power (use after DOWN state when it's at the bottom)
@@ -35,6 +36,7 @@ public class Climb extends SubsystemBase {
   public Climb() {
     climbMotor = new SparkMax(ClimbConstants.CLIMB_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
+    config.idleMode(SparkBaseConfig.IdleMode.kBrake);
     climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     encoder = climbMotor.getEncoder();
@@ -49,7 +51,7 @@ public class Climb extends SubsystemBase {
   }
 
   // Set the desired target position for the climb subsystem
-  public void setTargetPosition(double position) {
+  private void setTargetPosition(double position) {
     targetPosition = position;
   }
 
@@ -81,6 +83,23 @@ public class Climb extends SubsystemBase {
     }
   }
 
+  private double calculateClimbTargetPosition() {
+    switch (state) {
+      case DOWN:
+      case CLIMBING:
+      case OFF:
+        setTargetPosition(ClimbConstants.CLIMB_MIN_HEIGHT);
+        return ClimbConstants.CLIMB_MIN_HEIGHT;
+      case UP:
+      case RELEASING:
+        setTargetPosition(ClimbConstants.CLIMB_MAX_HEIGHT);
+        return ClimbConstants.CLIMB_MAX_HEIGHT;
+      default:
+      setTargetPosition(ClimbConstants.CLIMB_MIN_HEIGHT);
+      return ClimbConstants.CLIMB_MIN_HEIGHT;
+    }
+  }
+
   @Override
   public void periodic() {
     // state machine for controlling the climb motor based on the current state and target position
@@ -89,6 +108,7 @@ public class Climb extends SubsystemBase {
         // feedforward
       case DOWN:
       case UP:
+        setTargetPosition(calculateClimbTargetPosition());
         double measurement = getClimbPosition();
         double pidOutput = pid.calculate(measurement, targetPosition);
         double ff = calculateGravityFeedforward();
@@ -100,6 +120,7 @@ public class Climb extends SubsystemBase {
         // For RELEASING state, use PID control to move towards the target position with a stronger
         // gravity feedforward to assist in releasing downwards
       case RELEASING:
+        setTargetPosition(calculateClimbTargetPosition());
         measurement = getClimbPosition();
         pidOutput = pid.calculate(measurement, targetPosition);
         ff = calculateGravityFeedforward();
@@ -111,6 +132,7 @@ public class Climb extends SubsystemBase {
         // For CLIMBING state, move the motor upwards unless the limit switch is triggered or the
         // climb position is below the minimum height
       case CLIMBING:
+        setTargetPosition(calculateClimbTargetPosition());
         if (!isLimitSwitchTriggered() && getClimbPosition() > ClimbConstants.CLIMB_MIN_HEIGHT) {
           climbMotor.set(ClimbConstants.CLIMB_CLIMBING_SPEED);
         } else {
