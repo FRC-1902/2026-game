@@ -31,6 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotMotor = new SparkMax(IntakeConstants.PIVOTMOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     rollerMotor = new SparkMax(IntakeConstants.ROLLERMOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
+    // Set up motors & encoder
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.closedLoop.pid(
