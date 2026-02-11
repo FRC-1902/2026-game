@@ -85,8 +85,8 @@ dependencies {
 }
 
 //test {
-    //useJUnitPlatform()
-  //  systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+//useJUnitPlatform()
+//  systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 //}
 
 test {
