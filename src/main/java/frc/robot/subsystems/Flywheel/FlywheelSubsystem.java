@@ -8,8 +8,8 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.MutAngularVelocity;
@@ -32,11 +32,10 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final SparkMax rightFlywheelMotor;
 
   private final PIDController pid =
-    new PIDController(
-      FlywheelConstants.FLYWHEEL_KP,
-      FlywheelConstants.FLYWHEEL_KI,
-      FlywheelConstants.FLYWHEEL_KD
-    );
+      new PIDController(
+          FlywheelConstants.FLYWHEEL_KP,
+          FlywheelConstants.FLYWHEEL_KI,
+          FlywheelConstants.FLYWHEEL_KD);
 
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
   private final MutVoltage m_appliedVoltage = Volts.mutable(0);
@@ -46,53 +45,51 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final SysIdRoutine m_sysIdRoutine;
 
   private final SimpleMotorFeedforward feedforward =
-    new SimpleMotorFeedforward(
-      FlywheelConstants.FLYWHEEL_KS,
-      FlywheelConstants.FLYWHEEL_KV,
-      FlywheelConstants.FLYWHEEL_KA
-    );
+      new SimpleMotorFeedforward(
+          FlywheelConstants.FLYWHEEL_KS,
+          FlywheelConstants.FLYWHEEL_KV,
+          FlywheelConstants.FLYWHEEL_KA);
 
   public FlywheelSubsystem() {
     // Initialize motor
     rightFlywheelMotor =
-      new SparkMax(FlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        new SparkMax(FlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     leftFlywheelMotor =
-      new SparkMax(FlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        new SparkMax(FlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
     // Configure motor
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(SparkBaseConfig.IdleMode.kCoast);
 
     rightFlywheelMotor.configure(
-      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters
-    );
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     leftFlywheelMotor.configure(
-      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters
-    );
+        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // TODO: get sysid constants and then remove in final code
     m_sysIdRoutine =
-      new SysIdRoutine(
-        // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(
-          // Tell SysId how to plumb the driving voltage to the motor(s).
-          this::setVoltage,
-          // Tell SysId how to record a frame of data for each motor on the mechanism being
-          // characterized.
-          log -> {
-            // Record a frame for the shooter motor.
-            log.motor("shooter-wheel")
-              .voltage(
-                m_appliedVoltage.mut_replace(
-                  rightFlywheelMotor.get() * RobotController.getBatteryVoltage(), Volts))
-              .angularVelocity(
-                m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond));
-          },
-          // Tell SysId to make generated commands require this subsystem, suffix test state
-          // in
-          // WPILog with this subsystem's name ("shooter")
-          this));
+        new SysIdRoutine(
+            // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                // Tell SysId how to plumb the driving voltage to the motor(s).
+                this::setVoltage,
+                // Tell SysId how to record a frame of data for each motor on the mechanism being
+                // characterized.
+                log -> {
+                  // Record a frame for the shooter motor.
+                  log.motor("shooter-wheel")
+                      .voltage(
+                          m_appliedVoltage.mut_replace(
+                              rightFlywheelMotor.get() * RobotController.getBatteryVoltage(),
+                              Volts))
+                      .angularVelocity(
+                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond));
+                },
+                // Tell SysId to make generated commands require this subsystem, suffix test state
+                // in
+                // WPILog with this subsystem's name ("shooter")
+                this));
   }
 
   // Create a new SysId routine for characterizing the flywheel.
@@ -108,7 +105,8 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public double getFlywheelSpeed() {
     // Uses the right side as a reference;
-    return (rightFlywheelMotor.getEncoder().getVelocity()) * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
+    return (rightFlywheelMotor.getEncoder().getVelocity())
+        * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
   }
 
   public void spinUpToSpeed() {
@@ -128,8 +126,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public boolean isAtTargetSpeed() {
-    return Math.abs(getFlywheelSpeed() - targetRpm)
-        <= FlywheelConstants.RPM_TOLERANCE;
+    return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
 
   /**
@@ -155,10 +152,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     double output = 0;
     if (targetRpm > 0.001 || targetRpm < -0.001) {
       output += feedforward.calculate(targetRpm);
-      output += pid.calculate(
-        getFlywheelSpeed(),
-        targetRpm
-      );
+      output += pid.calculate(getFlywheelSpeed(), targetRpm);
     } else {
       output = 0;
     }
