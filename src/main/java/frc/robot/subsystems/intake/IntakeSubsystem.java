@@ -60,7 +60,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void intakeDown() {
         targetAngle = IntakeConstants.ENABLED_INTAKE_ANGLE;
+        // Set the target angle to be the angle of an enabled intake
         setAngle(targetAngle);
+        // Set the angle of the pivotMotor to that angle
         intakeEnabled = true;
     }
 
@@ -82,9 +84,11 @@ public class IntakeSubsystem extends SubsystemBase {
         double output = pidoutput + ff;
         output = Math.max(-1.0, Math.min(1.0, output));
         pivotMotor.set(output);
+        // Calculate PID and set pivotMotor to it
 
         SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle());
         SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle);
         SmartDashboard.putBoolean("Intake/Intake Enabled", intakeEnabled);
+        // Add all values to network table
     }
 }
