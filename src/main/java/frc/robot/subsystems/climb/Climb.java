@@ -95,8 +95,8 @@ public class Climb extends SubsystemBase {
         setTargetPosition(ClimbConstants.CLIMB_MAX_HEIGHT);
         return ClimbConstants.CLIMB_MAX_HEIGHT;
       default:
-      setTargetPosition(ClimbConstants.CLIMB_MIN_HEIGHT);
-      return ClimbConstants.CLIMB_MIN_HEIGHT;
+        setTargetPosition(ClimbConstants.CLIMB_MIN_HEIGHT);
+        return ClimbConstants.CLIMB_MIN_HEIGHT;
     }
   }
 
