@@ -3,22 +3,23 @@ package frc.robot.commands.flywheel;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 
-public class spinUpFlywheelCommand extends Command {
+public class spinDownToLowSpeedCommand extends Command {
 
   private final FlywheelSubsystem flywheelSubsystem;
 
-  public spinUpFlywheelCommand(FlywheelSubsystem flywheelSubsystem) {
+  public spinDownToLowSpeedCommand(FlywheelSubsystem flywheelSubsystem) {
     this.flywheelSubsystem = flywheelSubsystem;
     addRequirements(flywheelSubsystem);
   }
 
   @Override
   public void initialize() {
-    flywheelSubsystem.spinUpToSpeed();
+    flywheelSubsystem.spinDownToLowSpeed();
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+  }
 
   @Override
   public void end(boolean interrupted) {
@@ -27,6 +28,6 @@ public class spinUpFlywheelCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return flywheelSubsystem.isAtTargetSpeed();
+    return flywheelSubsystem.isAtTargetSpeed(); //Uses same method as spinUpToSpeed since the targetRpm is set to low speed in the subsystem code
   }
 }
