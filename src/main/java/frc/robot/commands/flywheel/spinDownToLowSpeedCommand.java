@@ -18,8 +18,7 @@ public class spinDownToLowSpeedCommand extends Command {
   }
 
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   @Override
   public void end(boolean interrupted) {
@@ -28,6 +27,8 @@ public class spinDownToLowSpeedCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return flywheelSubsystem.isAtTargetSpeed(); //Uses same method as spinUpToSpeed since the targetRpm is set to low speed in the subsystem code
+    return flywheelSubsystem
+        .isAtTargetSpeed(); // Uses same method as spinUpToSpeed since the targetRpm is set to low
+    // speed in the subsystem code
   }
 }

@@ -129,7 +129,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
 
-    public boolean isAtTargetLowSpeed() {
+  public boolean isAtTargetLowSpeed() {
     return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
 
