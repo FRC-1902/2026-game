@@ -128,11 +128,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   public boolean isAtTargetSpeed() {
     return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
-
-  public boolean isAtTargetLowSpeed() {
-    return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
-  }
-
+  
   /**
    * Returns a command that will execute a quasistatic test in the given direction.
    *
