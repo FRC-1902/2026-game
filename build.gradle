@@ -89,10 +89,6 @@ dependencies {
 //  systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 //}
 
-test {
-    enabled = false //TEMPORARY TEMPORARY TEMPORARY ADDED BY USER
-}
-
 // Simulation configuration (e.g. environment variables).
 wpi.sim.addGui().defaultEnabled = true
 wpi.sim.addDriverstation()

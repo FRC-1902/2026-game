@@ -20,7 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkAbsoluteEncoder pivotEncoder;
 
   private Rotation2d targetAngle = new Rotation2d();
-  private boolean intakeEnabled = false;
 
   PIDController pid =
       new PIDController(
@@ -28,19 +27,18 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
 
+    pid.setIZone(IntakeConstants.PID_IZONE);
+    pid.setTolerance(IntakeConstants.PID_TOLERANCE);
+
     pivotMotor = new SparkMax(IntakeConstants.PIVOTMOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     rollerMotor = new SparkMax(IntakeConstants.ROLLERMOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    // Set up motors & encoder
+    // Set up motors, encoder & PID
 
     SparkMaxConfig config = new SparkMaxConfig();
-    config.closedLoop.pid(
-        IntakeConstants.INTAKE_KP, IntakeConstants.INTAKE_KI, IntakeConstants.INTAKE_KD);
-    config.closedLoop.iZone(IntakeConstants.IZONE);
-    config.closedLoop.outputRange(-1.0, 1.0);
     pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Setup PID feedback loop and configs
+    // Setup PID feedback loop & configs
   }
 
   private double calculateGravityFeedforward(Rotation2d angle) {
@@ -48,14 +46,14 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    return Rotation2d.fromRadians(
-        pivotEncoder.getPosition() * IntakeConstants.MOTOR_TO_INTAKE_RATIO);
+    return Rotation2d.fromRotations(
+        pivotEncoder.getPosition() * IntakeConstants.ENCODER_TO_INTAKE_RATIO
+            - IntakeConstants.ENCODER_OFFSET);
     // Get the angle of the encoder
-    //
-    //                https://spinning.fish
   }
 
   public void setAngle(Rotation2d angle) {
+    targetAngle = angle;
     double doubleAngle = angle.getDegrees();
     double ffVolts = calculateGravityFeedforward(angle);
     pivotMotor
@@ -67,12 +65,14 @@ public class IntakeSubsystem extends SubsystemBase {
             ffVolts);
   }
 
-  public void intakeDown() {
-    targetAngle = Rotation2d.fromDegrees(IntakeConstants.ENABLED_INTAKE_ANGLE);
+  public void setIntakeState(boolean state) {
+    Rotation2d angle = Rotation2d.fromDegrees(IntakeConstants.ENABLED_INTAKE_ANGLE);
+    if (!state) {
+      angle = Rotation2d.fromDegrees(IntakeConstants.DISABLED_INTAKE_ANGLE);
+    }
     // Set the target angle to be the angle of an enabled intake
-    setAngle(targetAngle);
+    setAngle(angle);
     // Set the angle of the pivotMotor to that angle
-    intakeEnabled = true;
   }
 
   public void startRollers() {
@@ -96,7 +96,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());
     SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle.getDegrees());
-    SmartDashboard.putBoolean("Intake/Intake Enabled", intakeEnabled);
     // Add all values to network table
   }
 }

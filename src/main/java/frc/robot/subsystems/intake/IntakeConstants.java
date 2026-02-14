@@ -22,16 +22,21 @@ public class IntakeConstants {
       MOTOR_TO_CENTER_AXLE_RATIO * CENTER_AXLE_TO_INTAKE_RATIO; // 18:1
 
   public static final double INTAKE_TO_ENCODER_RATIO = 2.0; // 2:1
+  public static final double ENCODER_TO_INTAKE_RATIO = 0.5; // 1:2
 
-  public static final double INTAKE_KG = 3.0; // TODO: get real weight
+  public static final double INTAKE_KG = 1.0; // TODO: get real value
 
   // PID
+
+  public static final double PID_IZONE = 0.0; // TODO: get real values
+  public static final double PID_TOLERANCE = 0.0; // TODO: get real tolerance
 
   public static final double INTAKE_KP = 2.0; // TODO: tune PID values
   public static final double INTAKE_KI = 2.0;
   public static final double INTAKE_KD = 2.0;
 
-  public static final double ENCODER_OFFSET = 0.0; // TODO: set based on calibration
+  public static final double ENCODER_OFFSET =
+      0.0; // TODO: set based on calibration (must be in rotations)
 
   // Config
 
