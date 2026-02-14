@@ -59,7 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotMotor
         .getClosedLoopController()
         .setSetpoint(
-            doubleAngle * IntakeConstants.MOTOR_TO_INTAKE_RATIO,
+            doubleAngle / IntakeConstants.MOTOR_TO_INTAKE_RATIO,
             ControlType.kPosition,
             ClosedLoopSlot.kSlot0,
             ffVolts);

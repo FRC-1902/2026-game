@@ -16,11 +16,7 @@ public class IntakeConstants {
 
   // Gear ratios
 
-  public static final double MOTOR_TO_CENTER_AXLE_RATIO = 9.0; // 9:1
-  public static final double CENTER_AXLE_TO_INTAKE_RATIO = 2.0; // 2:1
-  public static final double MOTOR_TO_INTAKE_RATIO =
-      MOTOR_TO_CENTER_AXLE_RATIO * CENTER_AXLE_TO_INTAKE_RATIO; // 18:1
-
+  public static final double MOTOR_TO_INTAKE_RATIO = 18.0; // 18:1
   public static final double INTAKE_TO_ENCODER_RATIO = 2.0; // 2:1
   public static final double ENCODER_TO_INTAKE_RATIO = 0.5; // 1:2
 
