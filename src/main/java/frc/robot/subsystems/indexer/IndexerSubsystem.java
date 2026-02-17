@@ -1,8 +1,10 @@
 package frc.robot.subsystems.indexer;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,13 +23,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
     // Configure roller motor for power saving
     SparkMaxConfig rollerConfig = new SparkMaxConfig();
-    rollerConfig.idleMode(IdleMode.kCoast);
-    rollerConfig.smartCurrentLimit(0); // tune this as needed
+    rollerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
 
     rollerIndexerMotor.configure(
-        rollerConfig,
-        SparkMax.ResetMode.kNoResetSafeParameters,
-        SparkMax.PersistMode.kPersistParameters);
+        rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void startShooterIndexer() {
