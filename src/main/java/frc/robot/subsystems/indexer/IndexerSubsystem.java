@@ -16,10 +16,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public IndexerSubsystem() {
     shooterIndexerMotor =
-        new SparkMax(IndexerConstants.SHOOTER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        new SparkMax(indexerconstants.SHOOTER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
     rollerIndexerMotor =
-        new SparkMax(IndexerConstants.ROLLER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        new SparkMax(indexerconstants.ROLLER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
     // Configure roller motor for power saving
     SparkMaxConfig rollerConfig = new SparkMaxConfig();
@@ -30,7 +30,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void startShooterIndexer() {
-    shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
+    shooterIndexerMotor.set(indexerconstants.SHOOTER_INDEXER_SPEED);
   }
 
   public void stopShooterIndexer() {
@@ -38,7 +38,7 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public void startRollerIndexer() {
-    rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+    rollerIndexerMotor.set(indexerconstants.ROLLER_INDEXER_SPEED);
   }
 
   public void stopRollerIndexer() {
