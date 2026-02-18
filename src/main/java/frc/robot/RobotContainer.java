@@ -56,14 +56,16 @@ public class RobotContainer {
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
-// TODO: Robot oriented for debugging - change back to field oriented for comp
-  SwerveInputStream driveRobotOriented = SwerveInputStream.of(drivebase.getSwerveDrive(),
-                                                              () -> driverXbox.getLeftY() * -1,
-                                                              () -> driverXbox.getLeftX() * -1)
-                                                          .withControllerRotationAxis(driverXbox::getRightX)
-                                                          .deadband(OperatorConstants.DEADBAND)
-                                                          .scaleTranslation(0.8)
-                                                          .robotRelative(true);
+  // TODO: Robot oriented for debugging - change back to field oriented for comp
+  SwerveInputStream driveRobotOriented =
+      SwerveInputStream.of(
+              drivebase.getSwerveDrive(),
+              () -> driverXbox.getLeftY() * -1,
+              () -> driverXbox.getLeftX() * -1)
+          .withControllerRotationAxis(driverXbox::getRightX)
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8)
+          .robotRelative(true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
