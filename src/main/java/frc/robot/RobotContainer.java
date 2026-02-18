@@ -29,6 +29,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
+  final CommandXboxController manipulatorXbox = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
@@ -48,12 +49,23 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * -1,
-              () -> driverXbox.getLeftX() * -1)
+              () -> driverXbox.getLeftY() * 1,
+              () -> driverXbox.getLeftX() * 1)
           .withControllerRotationAxis(driverXbox::getRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
+
+  // TODO: Robot oriented for debugging - change back to field oriented for comp
+  SwerveInputStream driveRobotOriented =
+      SwerveInputStream.of(
+              drivebase.getSwerveDrive(),
+              () -> driverXbox.getLeftY() * 1,
+              () -> driverXbox.getLeftX() * 1)
+          .withControllerRotationAxis(driverXbox::getRightX)
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8)
+          .robotRelative(true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -81,8 +93,10 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
+  // TODO: swap to field oriented for comp.
   private void configureBindings() {
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
   }
 
