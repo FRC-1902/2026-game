@@ -2,11 +2,10 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,6 +26,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
 
+    pid.enableContinuousInput(0.0, 360.0);
     pid.setIZone(IntakeConstants.PID_IZONE);
     pid.setTolerance(IntakeConstants.PID_TOLERANCE);
 
@@ -35,9 +35,19 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
     // Set up motors, encoder & PID
 
-    SparkMaxConfig config = new SparkMaxConfig();
-    pivotMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    SparkMaxConfig pivotConfig = new SparkMaxConfig();
+    pivotConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
+    pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
+    pivotMotor.configure(
+        pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    SparkMaxConfig rollerConfig = new SparkMaxConfig();
+    rollerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    rollerConfig.smartCurrentLimit(IntakeConstants.ROLLERMOTOR_CURRENTLIMIT);
+    rollerConfig.voltageCompensation(IntakeConstants.ROLLERMOTOR_VOLTAGECOMPENSATION);
+    rollerMotor.configure(
+        rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // Setup PID feedback loop & configs
   }
 
@@ -54,15 +64,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setAngle(Rotation2d angle) {
     targetAngle = angle;
-    double doubleAngle = angle.getDegrees();
-    double ffVolts = calculateGravityFeedforward(angle);
-    pivotMotor
-        .getClosedLoopController()
-        .setSetpoint(
-            doubleAngle / IntakeConstants.MOTOR_TO_INTAKE_RATIO,
-            ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ffVolts);
   }
 
   public void setIntakeState(boolean state) {
@@ -71,7 +72,7 @@ public class IntakeSubsystem extends SubsystemBase {
       angle = Rotation2d.fromDegrees(IntakeConstants.DISABLED_INTAKE_ANGLE);
     }
     setAngle(angle);
-    // Set the angle of the pivotMotor to the enabled/disabled angle
+    // Set the angle of the pivotMotor to the new angle
   }
 
   public void startRollers() {
@@ -79,11 +80,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void stopRollers() {
-    rollerMotor.stopMotor();
+    rollerMotor.set(0);
   }
 
+  @Override
   public void periodic() {
-
     double measurement = getAngle().getDegrees();
     double setpoint = targetAngle.getDegrees();
     double pidoutput = pid.calculate(measurement, setpoint);
