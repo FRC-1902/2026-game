@@ -41,4 +41,10 @@ public class IntakeConstants {
   // Motors
 
   public static final double ROLLERMOTOR_SPEED = 1.0; // TODO: tune
+
+  public static final int ROLLERMOTOR_CURRENTLIMIT = 40; // TODO: ~Temporary value
+  public static final int PIVOTMOTOR_CURRENTLIMIT = 30; // TODO: ~Temporary value
+
+  public static final double ROLLERMOTOR_VOLTAGECOMPENSATION = 12.0;
+  public static final double PIVOTMOTOR_VOLTAGECOMPENSATION = 12.0;
 }
