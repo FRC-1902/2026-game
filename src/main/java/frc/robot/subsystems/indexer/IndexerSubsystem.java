@@ -21,38 +21,47 @@ public class IndexerSubsystem extends SubsystemBase {
     rollerIndexerMotor =
         new SparkMax(IndexerConstants.ROLLER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
-    // Configure roller motor for power saving
     SparkMaxConfig rollerConfig = new SparkMaxConfig();
     rollerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    rollerConfig.smartCurrentLimit(0); // change this as needed
+
+    SparkMaxConfig shooterConfig = new SparkMaxConfig();
+    shooterConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    shooterConfig.smartCurrentLimit(0); // change this as needed
 
     rollerIndexerMotor.configure(
         rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    shooterIndexerMotor.configure(
+        shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  // start shooter
   public void startShooterIndexer() {
     shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
   }
 
+  // stop shooter
   public void stopShooterIndexer() {
     shooterIndexerMotor.stopMotor();
   }
 
+  // start roller
   public void startRollerIndexer() {
     rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
   }
 
+  // stop motor
   public void stopRollerIndexer() {
     rollerIndexerMotor.stopMotor();
   }
 
+  @Override
   public void periodic() {
-    SmartDashboard.putNumber("Indexer/Shooter Speed Cmd", shooterIndexerMotor.get());
-    SmartDashboard.putNumber("Indexer/Roller Speed Cmd", rollerIndexerMotor.get());
+    // logs shooter and roller speeds and currents
+    SmartDashboard.putNumber("Indexer/Shooter Speed", shooterIndexerMotor.get());
+    SmartDashboard.putNumber("Indexer/Roller Speed", rollerIndexerMotor.get());
 
     SmartDashboard.putNumber("Indexer/Shooter Current", shooterIndexerMotor.getOutputCurrent());
     SmartDashboard.putNumber("Indexer/Roller Current", rollerIndexerMotor.getOutputCurrent());
-
-    SmartDashboard.putNumber("Indexer/Shooter Voltage", shooterIndexerMotor.getBusVoltage());
-    SmartDashboard.putNumber("Indexer/Roller Voltage", rollerIndexerMotor.getBusVoltage());
   }
 }
