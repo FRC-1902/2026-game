@@ -1,22 +1,16 @@
 package frc.robot.commands.flywheel;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.flywheel.spinDownToLowSpeedCommand;
 import frc.robot.commands.flywheel.spinUpFlywheelCommand;
-import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
 
 public class flywheelCompositionCommand extends Command{
     
-    private final spinUpFlywheelCommand spinUpCommand;
-    private final spinDownToLowSpeedCommand lowSpeedCommand;
     private final FlywheelSubsystem flywheelSubsystem;
     private final Telemetry telemetry = new Telemetry();
-    private boolean isOurTurnToShoot;
 
     public flywheelCompositionCommand(FlywheelSubsystem flywheelSubsystem) {
-        this.spinUpCommand = new spinUpFlywheelCommand(flywheelSubsystem);
-        this.lowSpeedCommand = new spinDownToLowSpeedCommand(flywheelSubsystem);
-
         this.flywheelSubsystem = flywheelSubsystem;
     }
 
@@ -25,7 +19,12 @@ public class flywheelCompositionCommand extends Command{
 
   @Override
   public void execute() {
-    
+    telemetry.update();
+    if (telemetry.canSpinUp) {
+        new spinUpFlywheelCommand(flywheelSubsystem);
+    } else if (telemetry.canSpinDown) {
+        new spinDownToLowSpeedCommand(flywheelSubsystem);
+    }
   }
 
   @Override
@@ -37,7 +36,7 @@ public class flywheelCompositionCommand extends Command{
 
   @Override
   public boolean isFinished() {
-    return false;
+    return false; // Always returns false because this command should always be running in the background
   }
 }
 
