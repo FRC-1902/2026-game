@@ -36,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // Set up motors, encoder & PID
 
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
-    pivotConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    pivotConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
     pivotMotor.configure(
