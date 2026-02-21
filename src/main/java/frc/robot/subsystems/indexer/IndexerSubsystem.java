@@ -25,7 +25,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
     rollerIndexerMotor =
         new SparkMax(IndexerConstants.ROLLER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-    
+
     shooterIndexerEncoder = shooterIndexerMotor.getEncoder();
     rollerIndexerEncoder = rollerIndexerMotor.getEncoder();
 
