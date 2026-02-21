@@ -1,6 +1,6 @@
 package frc.robot.subsystems.indexer;
 
-public final class IndexerConstants {
+public class IndexerConstants {
 
   // This needs to be adjusted
   public static final int SHOOTER_INDEXER_MOTOR_ID = 0;
