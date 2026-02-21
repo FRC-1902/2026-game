@@ -1,18 +1,23 @@
 package frc.robot.subsystems.indexer;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IndexerSubsystem extends SubsystemBase {
 
   private final SparkMax shooterIndexerMotor;
   private final SparkMax rollerIndexerMotor;
+  private final RelativeEncoder shooterIndexerEncoder;
+  private final RelativeEncoder rollerIndexerEncoder;
 
   public IndexerSubsystem() {
     shooterIndexerMotor =
@@ -20,6 +25,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
     rollerIndexerMotor =
         new SparkMax(IndexerConstants.ROLLER_INDEXER_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+
+    shooterIndexerEncoder = shooterIndexerMotor.getEncoder();
+    rollerIndexerEncoder = rollerIndexerMotor.getEncoder();
 
     SparkMaxConfig rollerConfig = new SparkMaxConfig();
     rollerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
@@ -55,6 +63,19 @@ public class IndexerSubsystem extends SubsystemBase {
     rollerIndexerMotor.stopMotor();
   }
 
+  public Command spinRollerShooterCommand() {
+    return Commands.startEnd(
+        () -> {
+          startRollerIndexer();
+          startShooterIndexer();
+        },
+        () -> {
+          stopRollerIndexer();
+          stopShooterIndexer();
+        },
+        this);
+  }
+
   @Override
   public void periodic() {
     // logs shooter and roller speeds and currents
@@ -63,5 +84,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Indexer/Shooter Current", shooterIndexerMotor.getOutputCurrent());
     SmartDashboard.putNumber("Indexer/Roller Current", rollerIndexerMotor.getOutputCurrent());
+    // logs shooter and roller velocities in rpm
+    SmartDashboard.putNumber("Indexer/Shooter Velocity (RPM)", shooterIndexerEncoder.getVelocity());
+    SmartDashboard.putNumber("Indexer/Roller Velocity (RPM)", rollerIndexerEncoder.getVelocity());
   }
 }
