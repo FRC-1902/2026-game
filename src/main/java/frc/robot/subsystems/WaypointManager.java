@@ -19,6 +19,7 @@ public class WaypointManager {
     initializeWaypoints();
   }
 
+  // TODO: Check these waypoints, specifically the rotation2ds.
   // ASSUME BLUE ALLIANCE FOR ALL ADDED WAYPOINTS, FLIP USING getWaypoint(name, true)
   private void initializeWaypoints() {
     waypoints.put("HUB", new Pose2d(4.624, 4.035, Rotation2d.fromDegrees(180)));
@@ -108,7 +109,8 @@ public class WaypointManager {
     }
 
     Translation2d delta = waypoint.getTranslation().minus(currentPose.getTranslation());
-    return new Rotation2d(delta.getX(), delta.getY());
+    Rotation2d fieldBearing = new Rotation2d(delta.getX(), delta.getY());
+    return fieldBearing.minus(currentPose.getRotation());
   }
 
   /**
