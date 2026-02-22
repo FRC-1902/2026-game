@@ -19,8 +19,12 @@ public class WaypointManager {
     initializeWaypoints();
   }
 
+  // ASSUME BLUE ALLIANCE FOR ALL ADDED WAYPOINTS, FLIP USING getWaypoint(name, true)
   private void initializeWaypoints() {
     waypoints.put("HUB", new Pose2d(4.624, 4.035, Rotation2d.fromDegrees(180)));
+    // Ladder waypoints are based on the DRIVER STATION PERSPECTIVE.
+    waypoints.put("LADDER_LEFT", new Pose2d(1.069, 4.503, Rotation2d.fromDegrees(0)));
+    waypoints.put("LADDER_RIGHT", new Pose2d(1.069, 2.972, Rotation2d.fromDegrees(180)));
   }
 
   /**
@@ -37,7 +41,7 @@ public class WaypointManager {
    * Get a waypoint with alliance flipping
    *
    * @param name Waypoint name
-   * @param flipForAlliance If true, flip X coordinate for red alliance
+   * @param flipForAlliance If true, flip for red alliance
    * @return Waypoint pose, or null if not found
    */
   public Pose2d getWaypoint(String name, boolean flipForAlliance) {
@@ -45,17 +49,15 @@ public class WaypointManager {
     if (waypoint == null || !flipForAlliance) {
       return waypoint;
     }
-
     Optional<Alliance> alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-      // Flip X coordinate for red alliance
       double fieldLength = Vision.fieldLayout.getFieldLength();
+      double fieldWidth = Vision.fieldLayout.getFieldWidth();
       return new Pose2d(
           fieldLength - waypoint.getX(),
-          waypoint.getY(),
-          Rotation2d.fromDegrees(180).minus(waypoint.getRotation()));
+          fieldWidth - waypoint.getY(),
+          waypoint.getRotation().plus(Rotation2d.fromDegrees(180)));
     }
-
     return waypoint;
   }
 
