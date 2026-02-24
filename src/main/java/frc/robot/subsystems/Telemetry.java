@@ -148,21 +148,28 @@ public class Telemetry {
   private void updateSpinStatus(double elapsedTime) {
     canSpinDown = false;
     canSpinUp = false;
-    if(elapsedTime <= TRANSITION_END) { // Can spin during the Transition Period
+    if (elapsedTime <= TRANSITION_END) { // Can spin during the Transition Period
       canSpinUp = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime > TRANSITION_END) { // Can stop spinning if we don't have the first shift
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime > TRANSITION_END) { // Can stop spinning if we don't have the first shift
       canSpinDown = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime >= SHIFT_1_END - SPIN_WINDOW) { // Can spin up before shift 2
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_1_END - SPIN_WINDOW) { // Can spin up before shift 2
       canSpinUp = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime >= SHIFT_1_END + SPIN_WINDOW) { // Can spin down after shift 1
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_1_END + SPIN_WINDOW) { // Can spin down after shift 1
       canSpinDown = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime >= SHIFT_2_END - SPIN_WINDOW) { // Can spin up before shift 3
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_2_END - SPIN_WINDOW) { // Can spin up before shift 3
       canSpinUp = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime >= SHIFT_2_END + SPIN_WINDOW) { // Can spin down after shift 2
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_2_END + SPIN_WINDOW) { // Can spin down after shift 2
       canSpinDown = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime >= SHIFT_3_END - SPIN_WINDOW) { // Can spin up before shift 4
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_3_END - SPIN_WINDOW) { // Can spin up before shift 4
       canSpinUp = true;
-    } else if (!canRobotScore(elapsedTime) && elapsedTime >= SHIFT_3_END + SPIN_WINDOW) { // Can spin down after shift 3
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_3_END + SPIN_WINDOW) { // Can spin down after shift 3
       canSpinDown = true;
     } else if (elapsedTime >= SHIFT_4_END - SPIN_WINDOW) { // Can spin up during endgame
       canSpinUp = true;
