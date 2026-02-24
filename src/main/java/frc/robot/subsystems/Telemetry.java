@@ -24,7 +24,7 @@ public class Telemetry {
   private static final double SHIFT_4_END = 110.0; // 85 + 25
   private static final double ENDGAME_END = 140.0; // 110 + 30
 
-  private static final double SPIN_WINDOW = 5.0;
+  private static final double SPIN_WINDOW = 3.0;
 
   private double teleopStartTime = -1;
 
