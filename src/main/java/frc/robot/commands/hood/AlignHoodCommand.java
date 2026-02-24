@@ -1,0 +1,56 @@
+package frc.robot.commands.hood;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.WaypointManager;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
+public class AlignHoodCommand extends Command {
+
+  private final Hood hood;
+  private final SwerveSubsystem swerve;
+  private final WaypointManager waypointManager;
+
+  public AlignHoodCommand(Hood hood, SwerveSubsystem swerve, WaypointManager waypointManager) {
+    this.hood = hood;
+    this.swerve = swerve;
+    this.waypointManager = waypointManager;
+
+    addRequirements(hood);
+  }
+
+  @Override
+  public void initialize() {
+    updateHoodAngle();
+  }
+
+  @Override
+  public void execute() {
+    updateHoodAngle();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    if (interrupted) {
+      hood.stop();
+    }
+  }
+
+  @Override
+  public boolean isFinished() {
+    return hood.atTargetAngle();
+  }
+
+  private void updateHoodAngle() {
+    double distance = waypointManager.getDistanceToWaypoint(swerve.getPose(), "HUB");
+
+    if (distance < 0) {
+      return;
+    }
+
+    hood.setAngleForDistance(distance);
+
+    SmartDashboard.putNumber("Hood/Distance to Hub", distance);
+  }
+}
