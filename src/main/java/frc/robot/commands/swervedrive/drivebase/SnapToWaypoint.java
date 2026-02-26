@@ -61,7 +61,7 @@ public class SnapToWaypoint extends Command {
 
     currentDistance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
     currentRotError =
-        Math.abs(currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians());
+        Math.abs(targetPose.getRotation().minus(currentPose.getRotation()).getRadians());
 
     SmartDashboard.putNumber("Snap/Distance", currentDistance);
     SmartDashboard.putNumber("Snap/RotError", Math.toDegrees(currentRotError));
