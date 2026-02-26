@@ -1,16 +1,15 @@
 package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
 
-public class FlywheelCompositionCommand extends Command {
+public class FlywheelCommand extends Command {
 
   private final FlywheelSubsystem flywheelSubsystem;
   private final Telemetry telemetry = new Telemetry();
 
-  public FlywheelCompositionCommand(FlywheelSubsystem flywheelSubsystem) {
+  public FlywheelCommand(FlywheelSubsystem flywheelSubsystem) {
     this.flywheelSubsystem = flywheelSubsystem;
   }
 
@@ -21,9 +20,9 @@ public class FlywheelCompositionCommand extends Command {
   public void execute() {
     telemetry.update();
     if (telemetry.canSpinUp) {
-      CommandScheduler.getInstance().schedule(new spinUpFlywheelCommand(flywheelSubsystem));
+      flywheelSubsystem.spinUpToSpeed();
     } else if (telemetry.canSpinDown) {
-      CommandScheduler.getInstance().schedule(new spinDownToLowSpeedCommand(flywheelSubsystem));
+      flywheelSubsystem.spinDownToLowSpeed();
     }
   }
 
