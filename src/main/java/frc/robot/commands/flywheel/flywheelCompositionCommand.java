@@ -5,12 +5,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
 
-public class flywheelCompositionCommand extends Command {
+public class FlywheelCompositionCommand extends Command {
 
   private final FlywheelSubsystem flywheelSubsystem;
   private final Telemetry telemetry = new Telemetry();
 
-  public flywheelCompositionCommand(FlywheelSubsystem flywheelSubsystem) {
+  public FlywheelCompositionCommand(FlywheelSubsystem flywheelSubsystem) {
     this.flywheelSubsystem = flywheelSubsystem;
   }
 

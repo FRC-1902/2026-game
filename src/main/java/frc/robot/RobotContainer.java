@@ -77,7 +77,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
     // Runs the Flywheel Composition Command
-    CommandScheduler.getInstance().schedule(new flywheelCompositionCommand(flywheel).repeatedly());
+    CommandScheduler.getInstance().schedule(new FlywheelCompositionCommand(flywheel).repeatedly());
   }
 
   /**
