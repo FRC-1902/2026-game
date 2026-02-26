@@ -11,6 +11,8 @@ public class FlywheelCommand extends Command {
 
   public FlywheelCommand(FlywheelSubsystem flywheelSubsystem) {
     this.flywheelSubsystem = flywheelSubsystem;
+
+    addRequirements(flywheelSubsystem);
   }
 
   @Override
