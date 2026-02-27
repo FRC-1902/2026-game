@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.intake.StartRollers;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
@@ -28,14 +28,14 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
+  public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
-
-  Command v_StartRollers = new StartRollers();
 
   private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
@@ -88,7 +88,7 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
-    driverXbox.a().whileTrue(v_StartRollers);
+    driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
   }
 
   /**
