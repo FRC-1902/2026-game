@@ -4,8 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-//Math stuff for AlignToHub
-//Calculates the angular velocity needed to face the hub based on the robot's current pose and the hub's position
+
+// Math stuff for AlignToHub
+// Calculates the angular velocity needed to face the hub based on the robot's current pose and the
+// hub's position
 public class CalculateVelocityToHub {
 
   private final PIDController thetaController;
@@ -28,10 +30,7 @@ public class CalculateVelocityToHub {
     Translation2d toHub = hubPosition.minus(robotPos);
     Rotation2d desiredAngle = toHub.getAngle();
 
-    return thetaController.calculate(
-        robotRot.getRadians(),
-        desiredAngle.getRadians()
-    );
+    return thetaController.calculate(robotRot.getRadians(), desiredAngle.getRadians());
   }
 
   public boolean atSetpoint() {
