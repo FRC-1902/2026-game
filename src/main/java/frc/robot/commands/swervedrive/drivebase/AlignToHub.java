@@ -1,34 +1,45 @@
 package frc.robot.commands.swervedrive.drivebase;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.DoubleSupplier;
 
-/*
-Turns towards a specific point (the hub),
-uses a PID controller to calculate the necessary angular velocity (omega)
-to face the hub based on the robot's current pose and the hub's position
-*/
-
 public class AlignToHub extends Command {
 
   private final SwerveSubsystem swerve;
-  private final CalculateVelocityToHub CalculateVelocityToHub;
-  private double omegaOut = 0.0;
+  private final PIDController thetaController;
 
-  // TODO: set real hub position
-  private static final Translation2d HUB_POSITION = new Translation2d(0.0, 0.0);
+  private double omegaOut = 0.0;
 
   public AlignToHub(SwerveSubsystem swerve) {
     this.swerve = swerve;
-    this.CalculateVelocityToHub = new CalculateVelocityToHub(HUB_POSITION);
+
+    thetaController = new PIDController(4.5, 0.0, 0.2);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    thetaController.setTolerance(Math.toRadians(2.0));
   }
 
   @Override
   public void execute() {
-    double omega = CalculateVelocityToHub.calculateOmega(swerve.getPose());
 
+    Pose2d currentPose = swerve.getPose();
+
+    // Use WaypointManager to get angle to hub
+    Rotation2d desiredAngle = swerve.getWaypointManager().getAngleToWaypoint(currentPose, "HUB");
+
+    if (desiredAngle == null) {
+      omegaOut = 0.0;
+      return;
+    }
+
+    double omega =
+        thetaController.calculate(
+            currentPose.getRotation().getRadians(), desiredAngle.getRadians());
+
+    // Clamp to robot max angular velocity
     double maxOmega = swerve.getSwerveDrive().getMaximumChassisAngularVelocity();
     omegaOut = Math.max(-maxOmega, Math.min(omega, maxOmega));
   }
