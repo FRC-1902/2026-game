@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.flywheel.*;
+import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
@@ -37,6 +39,7 @@ public class RobotContainer {
 
   private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
+  private final FlywheelSubsystem flywheel;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
@@ -70,6 +73,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -98,6 +102,7 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
   }
 
   /**
