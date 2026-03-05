@@ -88,6 +88,7 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
+    driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
   }
 
