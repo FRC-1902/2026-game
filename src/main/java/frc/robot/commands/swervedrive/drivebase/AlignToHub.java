@@ -3,53 +3,81 @@ package frc.robot.commands.swervedrive.drivebase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.DoubleSupplier;
+import swervelib.math.SwerveMath;
 
 public class AlignToHub extends Command {
-
   private final SwerveSubsystem swerve;
-  private final PIDController thetaController;
+  private final WaypointManager waypointManager;
+  private final String waypointName;
+  private final DoubleSupplier translationX;
+  private final DoubleSupplier translationY;
+  
+  // This will probably need to be tuned
+  private final PIDController rotController = new PIDController(0.05, 0, 0.002);
 
-  private double omegaOut = 0.0;
-
-  public AlignToHub(SwerveSubsystem swerve) {
+  public AlignToHub(
+      SwerveSubsystem swerve,
+      WaypointManager waypointManager,
+      String waypointName,
+      DoubleSupplier translationX,
+      DoubleSupplier translationY) {
     this.swerve = swerve;
+    this.waypointManager = waypointManager;
+    this.waypointName = waypointName;
+    this.translationX = translationX;
+    this.translationY = translationY;
 
-    thetaController = new PIDController(4.5, 0.0, 0.2);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    thetaController.setTolerance(Math.toRadians(2.0));
+    // Declare subsystem dependencies
+    addRequirements(swerve);
+
+    // Tells controller -180 and 180 degrees are the same point
+    rotController.enableContinuousInput(-180, 180);
+    
+    // Set tolerance: Stop attempting to correct if within 2 degrees
+    rotController.setTolerance(2.0);
   }
 
   @Override
   public void execute() {
-
     Pose2d currentPose = swerve.getPose();
-
-    // Use WaypointManager to get angle to hub
-    Rotation2d desiredAngle = swerve.getWaypointManager().getAngleToWaypoint(currentPose, "HUB");
-
-    if (desiredAngle == null) {
-      omegaOut = 0.0;
-      return;
+    Rotation2d targetAngle = waypointManager.getAngleToWaypoint(currentPose, waypointName);
+    
+    // Check if the waypoint exists
+    double rotationOutput = 0;
+      if (targetAngle != null) {
+        rotationOutput = rotController.calculate(
+            currentPose.getRotation().getDegrees(), 
+            targetAngle.getDegrees()
+        );
+      
+      // If within 2 degree tolerance, snap the rotation output to 0
+      if (rotController.atSetpoint()) {
+          rotationOutput = 0;
+      }
     }
 
-    double omega =
-        thetaController.calculate(
-            currentPose.getRotation().getRadians(), desiredAngle.getRadians());
+    double maxVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
+    Translation2d translation = SwerveMath.scaleTranslation(
+        new Translation2d(
+            translationX.getAsDouble() * maxVelocity, 
+            translationY.getAsDouble() * maxVelocity), 
+        0.8);
 
-    // Clamp to robot max angular velocity
-    double maxOmega = swerve.getSwerveDrive().getMaximumChassisAngularVelocity();
-    omegaOut = Math.max(-maxOmega, Math.min(omega, maxOmega));
-  }
-
-  public DoubleSupplier getOmegaSupplier() {
-    return () -> omegaOut;
+    swerve.drive(
+        translation,
+        rotationOutput,
+        true // Field-centric
+    );
   }
 
   @Override
-  public boolean isFinished() {
-    return false;
+  public void end(boolean interrupted) {
+    // Stop the robot when LT is released
+    swerve.drive(new Translation2d(0, 0), 0, true);
   }
 }

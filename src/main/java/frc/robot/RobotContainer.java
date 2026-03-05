@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
@@ -98,6 +99,17 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    /*  On LT hold (manip controller) pivot to face the waypoint
+     while allowing translational movement from the driver controller */
+    manipulatorXbox.leftTrigger(0.5).whileTrue(
+        new AlignToHub(
+            drivebase, 
+            drivebase.getWaypointManager(), //
+            "HUB", // TODO: Change to actual waypoint name
+            () -> -driverXbox.getLeftY(), 
+            () -> -driverXbox.getLeftX()
+        )
+    );
   }
 
   /**
