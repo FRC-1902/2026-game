@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.io.File;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,13 +15,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.flywheel.*;
-import frc.robot.subsystems.Flywheel.*;
+import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
-import java.io.File;
 import swervelib.SwerveInputStream;
 
 /**
@@ -34,7 +34,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
-  final CommandXboxController manipulatorXbox = new CommandXboxController(1);
+  final CommandXboxController manipXbox = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
@@ -55,23 +55,12 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * 1,
-              () -> driverXbox.getLeftX() * 1)
+              () -> driverXbox.getLeftY() * -1,
+              () -> driverXbox.getLeftX() * -1)
           .withControllerRotationAxis(driverXbox::getRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
-
-  // TODO: Robot oriented for debugging - change back to field oriented for comp
-  SwerveInputStream driveRobotOriented =
-      SwerveInputStream.of(
-              drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * 1,
-              () -> driverXbox.getLeftX() * 1)
-          .withControllerRotationAxis(driverXbox::getRightX)
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8)
-          .robotRelative(true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -89,6 +78,7 @@ public class RobotContainer {
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
   }
 
   /**
@@ -100,10 +90,8 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-
-  // TODO: swap to field oriented for comp.
   private void configureBindings() {
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
@@ -129,6 +117,6 @@ public class RobotContainer {
   }
 
   public Vision getVision() {
-    return vision;
+    return vision; 
   }
 }
