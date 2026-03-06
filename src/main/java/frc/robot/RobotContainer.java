@@ -16,6 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.*;
 import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
@@ -28,6 +29,8 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -103,6 +106,8 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
+    driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
+    driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
   }
 
   /**
