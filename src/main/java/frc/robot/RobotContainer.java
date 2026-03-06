@@ -12,11 +12,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
@@ -33,6 +36,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
+  final CommandXboxController manipXbox = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
@@ -92,8 +96,9 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
-    driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
+    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
+    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
+    driverXbox.y().onTrue(new InstantCommand(() -> flywheel.removeDefaultCommand()).andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
   }
 
   /**
