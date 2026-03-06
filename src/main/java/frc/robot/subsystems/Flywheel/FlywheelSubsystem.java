@@ -30,6 +30,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   private final SparkMax leftFlywheelMotor;
   private final SparkMax rightFlywheelMotor;
+  private boolean toggleState;
 
   private final PIDController pid =
       new PIDController(
@@ -56,6 +57,8 @@ public class FlywheelSubsystem extends SubsystemBase {
         new SparkMax(FlywheelConstants.RIGHT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     leftFlywheelMotor =
         new SparkMax(FlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+
+      toggleState = false;
 
     // Configure motor
     SparkMaxConfig config = new SparkMaxConfig();
@@ -127,6 +130,18 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public boolean isAtTargetSpeed() {
     return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
+  }
+
+  public void toggle() {
+    toggleState = !toggleState;
+
+    if(toggleState) {
+      spinUpToSpeed();
+    } else if (!toggleState) {
+      spinDownToLowSpeed();
+    } else {
+      spinDownToZero();
+    }
   }
 
   /**
