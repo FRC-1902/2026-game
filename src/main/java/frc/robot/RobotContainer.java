@@ -100,16 +100,16 @@ public class RobotContainer {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     /*  On LT hold (manip controller) pivot to face the waypoint
-     while allowing translational movement from the driver controller */
-    manipulatorXbox.leftTrigger(0.5).whileTrue(
-        new AlignToHub(
-            drivebase, 
-            drivebase.getWaypointManager(), //
-            "HUB", // TODO: Change to actual waypoint name
-            () -> -driverXbox.getLeftY(), 
-            () -> -driverXbox.getLeftX()
-        )
-    );
+    while allowing translational movement from the driver controller */
+    manipulatorXbox
+        .leftTrigger(0.5)
+        .whileTrue(
+            new AlignToHub(
+                drivebase,
+                drivebase.getWaypointManager(), //
+                "HUB", // TODO: Change to actual waypoint name
+                () -> -driverXbox.getLeftY(),
+                () -> -driverXbox.getLeftX()));
   }
 
   /**

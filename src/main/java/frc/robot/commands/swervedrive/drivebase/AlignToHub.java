@@ -16,7 +16,7 @@ public class AlignToHub extends Command {
   private final String waypointName;
   private final DoubleSupplier translationX;
   private final DoubleSupplier translationY;
-  
+
   // This will probably need to be tuned
   private final PIDController rotController = new PIDController(0.05, 0, 0.002);
 
@@ -37,7 +37,7 @@ public class AlignToHub extends Command {
 
     // Tells controller -180 and 180 degrees are the same point
     rotController.enableContinuousInput(-180, 180);
-    
+
     // Set tolerance: Stop attempting to correct if within 2 degrees
     rotController.setTolerance(2.0);
   }
@@ -46,33 +46,29 @@ public class AlignToHub extends Command {
   public void execute() {
     Pose2d currentPose = swerve.getPose();
     Rotation2d targetAngle = waypointManager.getAngleToWaypoint(currentPose, waypointName);
-    
+
     // Check if the waypoint exists
     double rotationOutput = 0;
-      if (targetAngle != null) {
-        rotationOutput = rotController.calculate(
-            currentPose.getRotation().getDegrees(), 
-            targetAngle.getDegrees()
-        );
-      
+    if (targetAngle != null) {
+      rotationOutput =
+          rotController.calculate(currentPose.getRotation().getDegrees(), targetAngle.getDegrees());
+
       // If within 2 degree tolerance, snap the rotation output to 0
       if (rotController.atSetpoint()) {
-          rotationOutput = 0;
+        rotationOutput = 0;
       }
     }
 
     double maxVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
-    Translation2d translation = SwerveMath.scaleTranslation(
-        new Translation2d(
-            translationX.getAsDouble() * maxVelocity, 
-            translationY.getAsDouble() * maxVelocity), 
-        0.8);
+    Translation2d translation =
+        SwerveMath.scaleTranslation(
+            new Translation2d(
+                translationX.getAsDouble() * maxVelocity, translationY.getAsDouble() * maxVelocity),
+            0.8);
 
     swerve.drive(
-        translation,
-        rotationOutput,
-        true // Field-centric
-    );
+        translation, rotationOutput, true // Field-centric
+        );
   }
 
   @Override
