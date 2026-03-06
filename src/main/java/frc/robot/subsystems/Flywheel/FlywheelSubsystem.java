@@ -58,7 +58,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     leftFlywheelMotor =
         new SparkMax(FlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
-      toggleState = false;
+    toggleState = false;
 
     // Configure motor
     SparkMaxConfig config = new SparkMaxConfig();
@@ -135,7 +135,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   public void toggle() {
     toggleState = !toggleState;
 
-    if(toggleState) {
+    if (toggleState) {
       spinUpToSpeed();
     } else if (!toggleState) {
       spinDownToLowSpeed();

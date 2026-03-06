@@ -15,7 +15,6 @@ public class FlywheelCommand extends Command {
     addRequirements(flywheelSubsystem);
   }
 
-
   @Override
   public void initialize() {}
 
