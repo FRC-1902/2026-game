@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.io.File;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -13,15 +11,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.climb.ClimbCompositionCommand;
 import frc.robot.commands.flywheel.FlywheelCommand;
-import frc.robot.subsystems.Telemetry;
+import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
+import frc.robot.commands.swervedrive.drivebase.PrepareToClimb;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.Climb.State;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
+import java.io.File;
 import swervelib.SwerveInputStream;
 
 /**
@@ -45,10 +50,13 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
   private final FlywheelSubsystem flywheel;
+  private final Climb climber;
+  private final Side side;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> climbChooser = new SendableChooser<>();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
@@ -69,6 +77,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
+    climber = new Climb();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
@@ -78,9 +87,10 @@ public class RobotContainer {
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
+    climbChooser.addOption("Climb Left");
+
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
   }
 
   /**
@@ -98,7 +108,24 @@ public class RobotContainer {
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
-    driverXbox.y().onTrue(new InstantCommand(() -> flywheel.removeDefaultCommand()).andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
+    driverXbox
+        .y()
+        .onTrue(
+            new InstantCommand(() -> flywheel.removeDefaultCommand())
+                .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
+    manipXbox
+        .b()
+        .onTrue(new ClimbCompositionCommand(InstanceIntakeSubsystem, drivebase, climber, null));
+    manipXbox
+        .rightStick()
+        .onTrue(
+            new InstantCommand(
+                () ->
+                    new SequentialCommandGroup(
+                        new InstantCommand(() -> climber.setState(State.RELEASING), climber),
+                        new InstantCommand(() -> new PrepareToClimb(swerve, null)),
+                        new InstantCommand(() -> climber.setState(State.DOWN), climber),
+                        new InstantCommand(() -> climber.setState(State.OFF), climber))));
   }
 
   /**
@@ -120,6 +147,6 @@ public class RobotContainer {
   }
 
   public Vision getVision() {
-    return vision; 
+    return vision;
   }
 }
