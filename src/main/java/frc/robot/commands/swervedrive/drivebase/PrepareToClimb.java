@@ -15,7 +15,8 @@ public class PrepareToClimb extends SequentialCommandGroup {
   }
 
   public PrepareToClimb(SwerveSubsystem swerve, AlignForClimb.Side side) {
-    String waypointName = side == AlignForClimb.Side.LEFT ? "LADDER_LEFT_PREPARE" : "LADDER_RIGHT_PREPARE";
+    String waypointName =
+        side == AlignForClimb.Side.LEFT ? "LADDER_LEFT_PREPARE" : "LADDER_RIGHT_PREPARE";
 
     Supplier<Pose2d> targetPoseSupplier =
         () -> {
