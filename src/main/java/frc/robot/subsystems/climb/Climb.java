@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climb;
 
-import java.util.Optional;
-
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -17,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
+import java.util.Optional;
 
 public class Climb extends SubsystemBase {
   public enum State {
@@ -62,14 +61,14 @@ public class Climb extends SubsystemBase {
   }
 
   public AlignForClimb.Side getSide() {
-    
+
     Optional<Alliance> alliance = DriverStation.getAlliance();
-    if ((alliance.isPresent() && alliance.get() == Alliance.Red) && side == Side.LEFT){
-       side = Side.RIGHT;
+    if ((alliance.isPresent() && alliance.get() == Alliance.Red) && side == Side.LEFT) {
+      side = Side.RIGHT;
     } else if ((alliance.isPresent() && alliance.get() == Alliance.Red) && side == Side.RIGHT) {
       side = Side.LEFT;
     }
-    
+
     return side;
   }
 

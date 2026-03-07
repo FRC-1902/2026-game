@@ -25,7 +25,7 @@ public class ClimbCompositionCommand extends SequentialCommandGroup {
     swerve = swerveSubsystem;
     climber = climbSubsystem;
     this.side = side;
-    
+
     addCommands(
         intake.DisableIntakeCommand(),
         new InstantCommand(() -> new PrepareToClimb(swerve, this.side)),
