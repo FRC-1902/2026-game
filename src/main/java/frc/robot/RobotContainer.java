@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.climb.ClimbCompositionCommand;
+import frc.robot.commands.climb.ManualDPADClimbDown;
+import frc.robot.commands.climb.ManualDPADClimbUp;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.commands.swervedrive.drivebase.PrepareToClimb;
@@ -132,6 +134,8 @@ public class RobotContainer {
                         new InstantCommand(() -> new PrepareToClimb(drivebase, climber.getSide())),
                         new InstantCommand(() -> climber.setState(State.DOWN), climber),
                         new InstantCommand(() -> climber.setState(State.OFF), climber))));
+    manipXbox.povUp().onTrue(new InstantCommand(() -> new ManualDPADClimbUp(climber)));
+    manipXbox.povDown().onTrue(new InstantCommand(() -> new ManualDPADClimbDown(climber)));
   }
 
   /**
