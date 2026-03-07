@@ -73,7 +73,6 @@ public class AlignToHub extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    // Stop the robot when LT is released
-    swerve.drive(new Translation2d(0, 0), 0, true);
+    return;
   }
 }
