@@ -51,11 +51,11 @@ public class RobotContainer {
   public final Telemetry telemetry = new Telemetry();
   private final FlywheelSubsystem flywheel;
   private final Climb climber;
-  private final Side side = Side.LEFT;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> climbSideChooser = new SendableChooser<>();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
@@ -85,6 +85,15 @@ public class RobotContainer {
 
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
+
+    // Add the options to set which side we are climbing on
+    climbSideChooser.addOption(
+        "Climb Left", new InstantCommand(() -> climber.setSide(Side.LEFT), climber));
+    climbSideChooser.addOption(
+        "Climb Right", new InstantCommand(() -> climber.setSide(Side.RIGHT), climber));
+
+    // Run the Instant Command to set the Climber Side
+    climbSideChooser.getSelected();
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -120,7 +129,7 @@ public class RobotContainer {
                 () ->
                     new SequentialCommandGroup(
                         new InstantCommand(() -> climber.setState(State.RELEASING), climber),
-                        new InstantCommand(() -> new PrepareToClimb(drivebase, null)),
+                        new InstantCommand(() -> new PrepareToClimb(drivebase, climber.getSide())),
                         new InstantCommand(() -> climber.setState(State.DOWN), climber),
                         new InstantCommand(() -> climber.setState(State.OFF), climber))));
   }

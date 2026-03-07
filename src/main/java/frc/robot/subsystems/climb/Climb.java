@@ -1,5 +1,7 @@
 package frc.robot.subsystems.climb;
 
+import java.util.Optional;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -9,8 +11,12 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
+import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 
 public class Climb extends SubsystemBase {
   public enum State {
@@ -27,6 +33,7 @@ public class Climb extends SubsystemBase {
   private double targetPosition;
   private State state;
   private double output;
+  private Side side;
 
   // Set PID
   private final PIDController pid =
@@ -48,6 +55,22 @@ public class Climb extends SubsystemBase {
   // Set the desired state of the climb subsystem
   public void setState(State newState) {
     state = newState;
+  }
+
+  public void setSide(AlignForClimb.Side side2) {
+    this.side = side2;
+  }
+
+  public AlignForClimb.Side getSide() {
+    
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    if ((alliance.isPresent() && alliance.get() == Alliance.Red) && side == Side.LEFT){
+       side = Side.RIGHT;
+    } else if ((alliance.isPresent() && alliance.get() == Alliance.Red) && side == Side.RIGHT) {
+      side = Side.LEFT;
+    }
+    
+    return side;
   }
 
   // Set the desired target position for the climb subsystem
