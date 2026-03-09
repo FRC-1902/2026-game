@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.*;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -105,6 +106,19 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
+    /*  On LT hold (manip controller) pivot to face the waypoint
+    while allowing translational movement from the driver controller */
+    manipulatorXbox
+        .leftTrigger(0.5)
+        .whileTrue(
+            new AlignToHub(
+                drivebase,
+                drivebase.getWaypointManager(), //
+                "HUB", // TODO: Change to actual waypoint name
+                () -> -driverXbox.getLeftY(),
+                () -> -driverXbox.getLeftX()));
+
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
