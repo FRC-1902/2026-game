@@ -3,7 +3,7 @@ package frc.robot.commands.climb;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
-import frc.robot.commands.swervedrive.drivebase.PrepareToClimb;
+import frc.robot.commands.swervedrive.drivebase.DriveToClimb;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.climb.Climb.State;
 import frc.robot.subsystems.intake.*;
@@ -28,9 +28,9 @@ public class ClimbCompositionCommand extends SequentialCommandGroup {
 
     addCommands(
         intake.DisableIntakeCommand(),
-        new InstantCommand(() -> new PrepareToClimb(swerve, this.side)),
+        new DriveToClimb(swerve, this.side),
         new InstantCommand(() -> climber.setState(State.UP), climber),
-        new InstantCommand(() -> new AlignForClimb(swerve, this.side)),
+        new AlignForClimb(swerve, this.side),
         new InstantCommand(() -> climber.setState(State.CLIMBING)));
   }
 }

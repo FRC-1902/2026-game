@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.Supplier;
 
-public class PrepareToClimb extends SequentialCommandGroup {
+public class DriveToClimb extends SequentialCommandGroup {
   public enum Side {
     LEFT,
     RIGHT
   }
 
-  public PrepareToClimb(SwerveSubsystem swerve, AlignForClimb.Side side) {
+  public DriveToClimb(SwerveSubsystem swerve, AlignForClimb.Side side) {
     String waypointName =
         side == AlignForClimb.Side.LEFT ? "LADDER_LEFT_PREPARE" : "LADDER_RIGHT_PREPARE";
 

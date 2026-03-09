@@ -10,7 +10,7 @@ public class ManualDPADClimbDown extends SequentialCommandGroup {
 
   public ManualDPADClimbDown(Climb climbSubsystem) {
     climber = climbSubsystem;
-    ;
+    
 
     if (climber.getState() == State.UP) {
       addCommands(new InstantCommand(() -> climber.setState(State.CLIMBING)));

@@ -20,7 +20,7 @@ import frc.robot.commands.climb.ManualDPADClimbDown;
 import frc.robot.commands.climb.ManualDPADClimbUp;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
-import frc.robot.commands.swervedrive.drivebase.PrepareToClimb;
+import frc.robot.commands.swervedrive.drivebase.DriveToClimb;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
@@ -111,8 +111,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+    Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
@@ -123,21 +123,12 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
     manipXbox
         .b()
-        .onTrue(
+        .whileTrue(
             new ClimbCompositionCommand(
                 InstanceIntakeSubsystem, drivebase, climber, climber.getSide()));
-    manipXbox
-        .rightStick()
-        .onTrue(
-            new InstantCommand(
-                () ->
-                    new SequentialCommandGroup(
-                        new InstantCommand(() -> climber.setState(State.RELEASING), climber),
-                        new InstantCommand(() -> new PrepareToClimb(drivebase, climber.getSide())),
-                        new InstantCommand(() -> climber.setState(State.DOWN), climber),
-                        new InstantCommand(() -> climber.setState(State.OFF), climber))));
-    manipXbox.povUp().onTrue(new InstantCommand(() -> new ManualDPADClimbUp(climber)));
-    manipXbox.povDown().onTrue(new InstantCommand(() -> new ManualDPADClimbDown(climber)));
+                    
+    manipXbox.povUp().onTrue(new ManualDPADClimbUp(climber));
+    manipXbox.povDown().onTrue(new ManualDPADClimbDown(climber));
   }
 
   /**
