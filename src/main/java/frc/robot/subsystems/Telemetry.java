@@ -13,6 +13,8 @@ public class Telemetry {
   private Alliance turnOrder = null;
   private SwerveSubsystem drivebase;
   private boolean turnOrderLogged = false;
+  public boolean canSpinUp = false;
+  public boolean canSpinDown = false;
 
   // Game period timing constants (in seconds, relative to start of teleop)
   private static final double TRANSITION_END = 10.0;
@@ -21,6 +23,8 @@ public class Telemetry {
   private static final double SHIFT_3_END = 85.0; // 60 + 25
   private static final double SHIFT_4_END = 110.0; // 85 + 25
   private static final double ENDGAME_END = 140.0; // 110 + 30
+
+  private static final double SPIN_WINDOW = 3.0;
 
   private double teleopStartTime = -1;
 
@@ -52,7 +56,7 @@ public class Telemetry {
       SmartDashboard.putNumber("Estimated Heading (deg)", pose.getRotation().getDegrees());
     }
 
-    // Update period timing metrics if teleop has started and we have turn order
+    // Update period timing metrics and flywheel status if teleop has started and we have turn order
     if (teleopStartTime > 0 && turnOrderLogged && turnOrder != null) {
       updatePeriodMetrics();
     }
@@ -71,7 +75,7 @@ public class Telemetry {
       timeToNextPeriod = TRANSITION_END - elapsedTime;
       upcomingPeriod = "Shift 1";
     } else if (elapsedTime < SHIFT_1_END) {
-      currentPeriod = "Shift 1 (Locked)";
+      currentPeriod = "Shift 1";
       timeToNextPeriod = SHIFT_1_END - elapsedTime;
       upcomingPeriod = "Shift 2";
     } else if (elapsedTime < SHIFT_2_END) {
@@ -98,6 +102,7 @@ public class Telemetry {
 
     // Determine if robot can score
     boolean canScore = canRobotScore(elapsedTime);
+    updateSpinStatus(elapsedTime);
 
     SmartDashboard.putString("Current Period", currentPeriod);
     SmartDashboard.putNumber("Time to Next Period (s)", timeToNextPeriod);
@@ -138,6 +143,37 @@ public class Telemetry {
     }
 
     return isInactivePeriod;
+  }
+
+  private void updateSpinStatus(double elapsedTime) {
+    canSpinDown = false;
+    canSpinUp = false;
+    if (elapsedTime <= TRANSITION_END) { // Can spin during the Transition Period
+      canSpinUp = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime > TRANSITION_END) { // Can stop spinning if we don't have the first shift
+      canSpinDown = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_1_END - SPIN_WINDOW) { // Can spin up before shift 2
+      canSpinUp = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_1_END + SPIN_WINDOW) { // Can spin down after shift 1
+      canSpinDown = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_2_END - SPIN_WINDOW) { // Can spin up before shift 3
+      canSpinUp = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_2_END + SPIN_WINDOW) { // Can spin down after shift 2
+      canSpinDown = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_3_END - SPIN_WINDOW) { // Can spin up before shift 4
+      canSpinUp = true;
+    } else if (!canRobotScore(elapsedTime)
+        && elapsedTime >= SHIFT_3_END + SPIN_WINDOW) { // Can spin down after shift 3
+      canSpinDown = true;
+    } else if (elapsedTime >= SHIFT_4_END - SPIN_WINDOW) { // Can spin up during endgame
+      canSpinUp = true;
+    }
   }
 
   public void checkAndLogTurnOrder() {

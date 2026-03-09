@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -59,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return Rotation2d.fromRotations(
         pivotEncoder.getPosition() * IntakeConstants.ENCODER_TO_INTAKE_RATIO
             - IntakeConstants.ENCODER_OFFSET);
-    // Get the angle of the encoder
+    // Get the angle of the encoder in rotations
   }
 
   public void setAngle(Rotation2d angle) {
@@ -71,8 +72,19 @@ public class IntakeSubsystem extends SubsystemBase {
     if (!state) {
       angle = Rotation2d.fromDegrees(IntakeConstants.DISABLED_INTAKE_ANGLE);
     }
-    setAngle(angle);
-    // Set the angle of the pivotMotor to the new angle
+    // Set the target angle to be the angle of an enabled intake
+    if (targetAngle != angle) {
+      setAngle(angle);
+    }
+    // Set the angle of the pivotMotor to that angle
+  }
+
+  public boolean getIntakeState() {
+    if (getAngle().getDegrees() == IntakeConstants.DISABLED_INTAKE_ANGLE) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   public void startRollers() {
@@ -97,5 +109,17 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());
     SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle.getDegrees());
     // Add all values to network table
+  }
+
+  public Command EnableIntakeCommand() {
+    return this.runOnce(() -> setIntakeState(true));
+  }
+
+  public Command DisableIntakeCommand() {
+    return this.runOnce(() -> setIntakeState(false));
+  }
+
+  public Command StartRollersCommand() {
+    return this.startEnd(() -> startRollers(), () -> stopRollers());
   }
 }

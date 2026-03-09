@@ -13,8 +13,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.flywheel.*;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
@@ -28,6 +31,8 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
+  public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandXboxController manipulatorXbox = new CommandXboxController(1);
@@ -38,6 +43,7 @@ public class RobotContainer {
 
   private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
+  private final FlywheelSubsystem flywheel;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
@@ -71,6 +77,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -99,6 +106,7 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
     /*  On LT hold (manip controller) pivot to face the waypoint
     while allowing translational movement from the driver controller */
     manipulatorXbox
@@ -110,6 +118,10 @@ public class RobotContainer {
                 "HUB", // TODO: Change to actual waypoint name
                 () -> -driverXbox.getLeftY(),
                 () -> -driverXbox.getLeftX()));
+
+    flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
+    driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
+    driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
   }
 
   /**
