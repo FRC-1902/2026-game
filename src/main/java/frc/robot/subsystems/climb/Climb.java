@@ -56,6 +56,10 @@ public class Climb extends SubsystemBase {
     state = newState;
   }
 
+  public Climb.State getState() {
+    return state;
+  }
+
   public void setSide(AlignForClimb.Side side2) {
     this.side = side2;
   }
