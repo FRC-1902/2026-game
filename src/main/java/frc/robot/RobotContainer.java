@@ -123,7 +123,9 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
     manipXbox
         .b()
-        .onTrue(new ClimbCompositionCommand(InstanceIntakeSubsystem, drivebase, climber, climber.getSide()));
+        .onTrue(
+            new ClimbCompositionCommand(
+                InstanceIntakeSubsystem, drivebase, climber, climber.getSide()));
     manipXbox
         .rightStick()
         .onTrue(

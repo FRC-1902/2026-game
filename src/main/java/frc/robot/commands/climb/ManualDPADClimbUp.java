@@ -17,6 +17,5 @@ public class ManualDPADClimbUp extends SequentialCommandGroup {
     } else if (climber.getState() == State.CLIMBING) {
       addCommands(new InstantCommand(() -> climber.setState(State.RELEASING)));
     }
-
   }
 }

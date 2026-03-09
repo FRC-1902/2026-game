@@ -20,6 +20,5 @@ public class ManualDPADClimbDown extends SequentialCommandGroup {
               new InstantCommand(() -> climber.setState(State.DOWN)),
               new InstantCommand(() -> climber.setState(State.OFF))));
     }
-
   }
 }
