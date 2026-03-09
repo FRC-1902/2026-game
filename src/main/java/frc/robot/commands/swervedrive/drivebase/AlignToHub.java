@@ -17,15 +17,16 @@ public class AlignToHub extends Command {
   private final DoubleSupplier translationX;
   private final DoubleSupplier translationY;
 
-  // This will probably need to be tuned
-  private final PIDController rotController = new PIDController(0.05, 0, 0.002);
+  // TODO: this pid will need to be tuned
+  private final PIDController rotController = new PIDController(0, 0, 0);
 
   public AlignToHub(
       SwerveSubsystem swerve,
       WaypointManager waypointManager,
       String waypointName,
       DoubleSupplier translationX,
-      DoubleSupplier translationY) {
+      DoubleSupplier translationY
+  ) {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
     this.waypointName = waypointName;
@@ -51,7 +52,7 @@ public class AlignToHub extends Command {
     double rotationOutput = 0;
     if (targetAngle != null) {
       rotationOutput =
-          rotController.calculate(currentPose.getRotation().getDegrees(), targetAngle.getDegrees());
+        rotController.calculate(currentPose.getRotation().getDegrees(), targetAngle.getDegrees());
 
       // If within 2 degree tolerance, snap the rotation output to 0
       if (rotController.atSetpoint()) {
@@ -61,18 +62,18 @@ public class AlignToHub extends Command {
 
     double maxVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
     Translation2d translation =
-        SwerveMath.scaleTranslation(
-            new Translation2d(
-                translationX.getAsDouble() * maxVelocity, translationY.getAsDouble() * maxVelocity),
-            0.8);
+      SwerveMath.scaleTranslation(
+          new Translation2d(
+          translationX.getAsDouble() * maxVelocity, translationY.getAsDouble() * maxVelocity
+        ),
+        0.8
+      );
 
-    swerve.drive(
-        translation, rotationOutput, true // Field-centric
-        );
+    swerve.drive(translation, rotationOutput, true);
   }
 
   @Override
   public void end(boolean interrupted) {
     return;
   }
-}
+.}
