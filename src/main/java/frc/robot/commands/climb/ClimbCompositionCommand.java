@@ -30,7 +30,7 @@ public class ClimbCompositionCommand extends SequentialCommandGroup {
         intake.DisableIntakeCommand(),
         new InstantCommand(() -> new PrepareToClimb(swerve, this.side)),
         new InstantCommand(() -> climber.setState(State.UP), climber),
-        new InstantCommand(() -> new AlignForClimb(swerve, climber.getSide())),
+        new InstantCommand(() -> new AlignForClimb(swerve, this.side)),
         new InstantCommand(() -> climber.setState(State.CLIMBING)));
   }
 }
