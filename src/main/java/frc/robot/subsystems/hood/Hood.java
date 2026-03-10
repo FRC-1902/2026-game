@@ -86,10 +86,6 @@ public class Hood extends SubsystemBase {
     return pid.atSetpoint();
   }
 
-  public void stop() {
-    hoodMotor.stopMotor();
-  }
-
   @Override
   public void periodic() {
     // External PID control loop
@@ -99,7 +95,9 @@ public class Hood extends SubsystemBase {
     double ff = calculateGravityFeedforward(getAbsoluteAngle());
     double output = pidOutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
-    hoodMotor.set(output);
+    // hoodMotor.set(output);
+    // TODO: re-enable motors
+    hoodMotor.set(0);
 
     SmartDashboard.putNumber("Hood/Current Angle", measurement);
     SmartDashboard.putNumber("Hood/Absolute Angle", getAbsoluteAngle().getDegrees());

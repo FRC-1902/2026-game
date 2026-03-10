@@ -88,7 +88,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void startRollers() {
-    rollerMotor.set(IntakeConstants.ROLLERMOTOR_SPEED);
+    // rollerMotor.set(IntakeConstants.ROLLERMOTOR_SPEED);
+    // TODO: re-enable motors
+    rollerMotor.set(0);
   }
 
   public void stopRollers() {
@@ -103,7 +105,9 @@ public class IntakeSubsystem extends SubsystemBase {
     double ff = calculateGravityFeedforward(getAngle());
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
-    pivotMotor.set(output);
+    // pivotMotor.set(output);
+    pivotMotor.set(0);
+    //TODO: re-enable motors
     // Calculates PID and sets pivotMotor to it
 
     SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());

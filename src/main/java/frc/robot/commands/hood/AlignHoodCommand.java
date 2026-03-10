@@ -31,11 +31,7 @@ public class AlignHoodCommand extends Command {
   }
 
   @Override
-  public void end(boolean interrupted) {
-    if (interrupted) {
-      hood.stop();
-    }
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

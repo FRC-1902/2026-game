@@ -45,7 +45,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
   // start shooter
   public void startShooterIndexer() {
-    shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
+    // shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
+    // TODO: re-enable motors
+    shooterIndexerMotor.set(0);
   }
 
   // stop shooter
@@ -55,7 +57,9 @@ public class IndexerSubsystem extends SubsystemBase {
 
   // start roller
   public void startRollerIndexer() {
-    rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+    // rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+    // TODO: re-enable motors
+    rollerIndexerMotor.set(0);
   }
 
   // stop motor

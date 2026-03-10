@@ -140,7 +140,9 @@ public class Climb extends SubsystemBase {
         double ff = calculateGravityFeedforward();
         output = pidOutput + ff;
         output = Math.max(-1.0, Math.min(1.0, output));
-        climbMotor.set(output);
+        // climbMotor.set(output);
+        climbMotor.set(0);
+        // TODO: re-enable motors
         break;
 
         // For RELEASING state, use PID control to move towards the target position with a stronger
@@ -152,7 +154,10 @@ public class Climb extends SubsystemBase {
         ff = calculateGravityFeedforward();
         output = pidOutput + ff;
         output = Math.max(-1.0, Math.min(1.0, output));
-        climbMotor.set(output);
+        // climbMotor.set(output);
+        climbMotor.set(0);
+        // TODO: re-enable motors
+
         break;
 
         // For CLIMBING state, move the motor upwards unless the limit switch is triggered or the
@@ -160,7 +165,9 @@ public class Climb extends SubsystemBase {
       case CLIMBING:
         setTargetPosition(calculateClimbTargetPosition());
         if (!isLimitSwitchTriggered() && getClimbPosition() > ClimbConstants.CLIMB_MIN_HEIGHT) {
-          climbMotor.set(ClimbConstants.CLIMB_CLIMBING_SPEED);
+          // climbMotor.set(ClimbConstants.CLIMB_CLIMBING_SPEED);
+          // TODO: re-enable motors
+          climbMotor.set(0);
         } else {
           climbMotor.set(0.0);
         }
