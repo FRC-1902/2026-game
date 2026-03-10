@@ -8,7 +8,7 @@ public class ClimbConstants {
   public static final double CLIMB_KI = 0.0;
   public static final double CLIMB_KD = 0.0;
 
-  public static final int CLIMB_MOTOR_ID = 0; // TODO: Update motor CAN ID
+  public static final int CLIMB_MOTOR_ID = 6; // TODO: Update motor CAN ID
 
   public static final double CLIMB_IZONE = 0.0; // TODO: TUNE TUNE TUNE
   public static final double CLIMB_TOLERANCE = 0.0; // TODO: TUNE!!!!!

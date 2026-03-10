@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -20,11 +19,11 @@ import frc.robot.commands.climb.ManualDPADClimbDown;
 import frc.robot.commands.climb.ManualDPADClimbUp;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
-import frc.robot.commands.swervedrive.drivebase.DriveToClimb;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.Climb.State;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
@@ -39,7 +38,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
+  // public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -53,6 +52,7 @@ public class RobotContainer {
   public final Telemetry telemetry = new Telemetry();
   private final FlywheelSubsystem flywheel;
   private final Climb climber;
+  private final IndexerSubsystem indexer;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
@@ -79,8 +79,12 @@ public class RobotContainer {
     flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
     climber = new Climb();
+    indexer = new IndexerSubsystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    // Initialize the Climber State
+    climber.setState(State.OFF);
 
     // Set the default auto (do nothing)
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
@@ -114,21 +118,22 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
-    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
+    /* manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
+    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); */
+    driverXbox.x().onTrue(indexer.spinRollerShooterCommand());
     driverXbox
         .y()
         .onTrue(
             new InstantCommand(() -> flywheel.removeDefaultCommand())
                 .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
-    manipXbox
+    /* manipXbox
         .b()
         .whileTrue(
             new ClimbCompositionCommand(
-                InstanceIntakeSubsystem, drivebase, climber, climber.getSide()));
-                    
+                InstanceIntakeSubsystem, drivebase, climber, climber.getSide())); 
+
     manipXbox.povUp().onTrue(new ManualDPADClimbUp(climber));
-    manipXbox.povDown().onTrue(new ManualDPADClimbDown(climber));
+    manipXbox.povDown().onTrue(new ManualDPADClimbDown(climber)); */
   }
 
   /**

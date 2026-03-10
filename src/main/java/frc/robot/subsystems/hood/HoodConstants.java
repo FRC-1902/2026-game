@@ -5,7 +5,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 /** Constants for the Hood subsystem. */
 public class HoodConstants {
   // Motor CAN ID
-  public static final int HOOD_MOTOR_ID = 0; // TODO: Set the correct CAN ID
+  public static final int HOOD_MOTOR_ID = 40; // TODO: Set the correct CAN ID
 
   // Encoder DIO port
   public static final int HOOD_ENCODER_DIO_PORT = 0; // TODO: Set the correct DIO port

@@ -172,7 +172,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       output = 0;
     }
     leftFlywheelMotor.setVoltage(output);
-    rightFlywheelMotor.setVoltage(output);
+    rightFlywheelMotor.setVoltage(-output);
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
     SmartDashboard.putNumber("Flywheel/Target RPM", FlywheelConstants.DESIRED_FLYWHEEL_RPM);
