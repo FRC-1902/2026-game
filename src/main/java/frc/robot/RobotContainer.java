@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
@@ -117,7 +118,14 @@ public class RobotContainer {
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     /* manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); */
-    driverXbox.x().onTrue(indexer.spinRollerShooterCommand());
+
+    driverXbox.x().whileTrue(indexer.spinRollerShooterCommand());
+
+    manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
+    manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
+    manipXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
+    manipXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
+    
     driverXbox
         .y()
         .onTrue(

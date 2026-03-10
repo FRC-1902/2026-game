@@ -22,9 +22,9 @@ public class FlywheelCommand extends Command {
   public void execute() {
     telemetry.update();
     if (telemetry.canSpinUp) {
-      flywheelSubsystem.spinUpToSpeed();
+      flywheelSubsystem.spinToHighSpeed();
     } else if (telemetry.canSpinDown) {
-      flywheelSubsystem.spinDownToLowSpeed();
+      flywheelSubsystem.spinToLowSpeed();
     }
   }
 

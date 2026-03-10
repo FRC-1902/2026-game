@@ -69,7 +69,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // TODO: get sysid constants and then remove in final code
     m_sysIdRoutine =
         new SysIdRoutine(
             // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
@@ -112,11 +111,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
   }
 
-  public void spinUpToSpeed() {
+  public void spinToHighSpeed() {
     setFlywheelSpeed(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
   }
 
-  public void spinDownToLowSpeed() {
+  public void spinToLowSpeed() {
     setFlywheelSpeed(FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
   }
 
@@ -136,9 +135,9 @@ public class FlywheelSubsystem extends SubsystemBase {
     toggleState = !toggleState;
 
     if (toggleState) {
-      spinUpToSpeed();
+      spinToHighSpeed();
     } else if (!toggleState) {
-      spinDownToLowSpeed();
+      spinToLowSpeed();
     } else {
       spinDownToZero();
     }
@@ -171,11 +170,14 @@ public class FlywheelSubsystem extends SubsystemBase {
     } else {
       output = 0;
     }
-    leftFlywheelMotor.setVoltage(output);
-    rightFlywheelMotor.setVoltage(-output);
+
+    // leftFlywheelMotor.setVoltage(output);
+    // rightFlywheelMotor.setVoltage(-output);
+    // TODO: re-enable motors
+
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
-    SmartDashboard.putNumber("Flywheel/Target RPM", FlywheelConstants.DESIRED_FLYWHEEL_RPM);
+    SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
     SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
   }
 }
