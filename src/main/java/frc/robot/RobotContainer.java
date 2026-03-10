@@ -55,7 +55,7 @@ public class RobotContainer {
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  private final SendableChooser<Command> climbSideChooser = new SendableChooser<>();
+  private final SendableChooser<Side> climbSideChooser = new SendableChooser<>();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
