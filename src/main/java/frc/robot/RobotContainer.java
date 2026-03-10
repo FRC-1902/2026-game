@@ -91,14 +91,11 @@ public class RobotContainer {
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
     // Add the options to set which side we are climbing on
-    climbSideChooser.addOption(
-        "Climb Left", new InstantCommand(() -> climber.setSide(Side.LEFT), climber));
-    climbSideChooser.addOption(
-        "Climb Right", new InstantCommand(() -> climber.setSide(Side.RIGHT), climber));
+    climbSideChooser.addOption("Climb Left", Side.LEFT);
+    climbSideChooser.addOption("Climb Right", Side.RIGHT);
 
-    // Run the Instant Command to set the Climber Side
-    climbSideChooser.getSelected();
-
+    climber.setSide(climbSideChooser.getSelected());
+    
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -123,7 +120,7 @@ public class RobotContainer {
     manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
     manipXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
     manipXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
-    
+
     driverXbox
         .y()
         .onTrue(
