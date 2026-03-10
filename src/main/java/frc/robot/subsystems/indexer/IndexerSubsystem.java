@@ -46,12 +46,12 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command spinRollerShooterCommand() {
     return Commands.startEnd(
         () -> {
-          rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
-          shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
+          // rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+          // shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
         },
         () -> {
-          shooterIndexerMotor.set(0);
-          rollerIndexerMotor.set(0);
+          // shooterIndexerMotor.set(0);
+          // rollerIndexerMotor.set(0);
         },
         this
       );
@@ -60,12 +60,12 @@ public class IndexerSubsystem extends SubsystemBase {
   public Command outtakeCommand() {
     return Commands.startEnd(
         () -> {
-          rollerIndexerMotor.set(-IndexerConstants.ROLLER_INDEXER_SPEED);
-          shooterIndexerMotor.set(-IndexerConstants.SHOOTER_INDEXER_SPEED);
+          // rollerIndexerMotor.set(-IndexerConstants.ROLLER_INDEXER_SPEED);
+          // shooterIndexerMotor.set(-IndexerConstants.SHOOTER_INDEXER_SPEED);
         },
         () -> {
-          shooterIndexerMotor.set(0);
-          rollerIndexerMotor.set(0);
+          // shooterIndexerMotor.set(0);
+          // rollerIndexerMotor.set(0);
         },
         this
       );
