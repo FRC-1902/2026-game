@@ -7,10 +7,9 @@ import frc.robot.subsystems.climb.Climb.State;
 public class ManualDPADClimbDown extends SequentialCommandGroup {
   public ManualDPADClimbDown(Climb climbSubsystem) {
     addCommands(
-      // TODO: this needs some more work
-      // maybe gate entering climb vs going down to be 2 different things?
-      // also, think about difference between going up and releasing the bar up
-      climbSubsystem.setStateCommand(State.CLIMBING)
-    );
+        // TODO: this needs some more work
+        // maybe gate entering climb vs going down to be 2 different things?
+        // also, think about difference between going up and releasing the bar up
+        climbSubsystem.setStateCommand(State.CLIMBING));
   }
 }

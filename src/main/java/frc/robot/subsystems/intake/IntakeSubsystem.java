@@ -112,7 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
     output = Math.max(-1.0, Math.min(1.0, output));
     // pivotMotor.set(output);
     pivotMotor.set(0);
-    //TODO: re-enable motors
+    // TODO: re-enable motors
     // Calculates PID and sets pivotMotor to it
 
     SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());
@@ -122,12 +122,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command EnableIntakeCommand() {
     return this.runOnce(() -> setIntakeState(true))
-      .alongWith(new WaitUntilCommand(this::atSetpoint));
+        .alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Command disableIntakeCommand() {
     return this.runOnce(() -> setIntakeState(false))
-      .alongWith(new WaitUntilCommand(this::atSetpoint));
+        .alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Command StartRollersCommand() {

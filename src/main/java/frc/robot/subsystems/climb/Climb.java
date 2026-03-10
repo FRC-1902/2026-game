@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
@@ -60,8 +59,7 @@ public class Climb extends SubsystemBase {
   }
 
   public Command setStateCommand(State newState) {
-    return runOnce(() -> setState(newState))
-      .alongWith(new WaitUntilCommand(this::atSetpoint));
+    return runOnce(() -> setState(newState)).alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Climb.State getState() {

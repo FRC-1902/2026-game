@@ -53,8 +53,7 @@ public class IndexerSubsystem extends SubsystemBase {
           // shooterIndexerMotor.set(0);
           // rollerIndexerMotor.set(0);
         },
-        this
-      );
+        this);
   }
 
   public Command outtakeCommand() {
@@ -67,8 +66,7 @@ public class IndexerSubsystem extends SubsystemBase {
           // shooterIndexerMotor.set(0);
           // rollerIndexerMotor.set(0);
         },
-        this
-      );
+        this);
   }
 
   @Override
