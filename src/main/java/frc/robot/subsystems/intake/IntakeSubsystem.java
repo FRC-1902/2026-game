@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IntakeSubsystem extends SubsystemBase {
 
@@ -97,6 +98,10 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.set(0);
   }
 
+  public boolean atSetpoint() {
+    return pid.atSetpoint();
+  }
+
   @Override
   public void periodic() {
     double measurement = getAngle().getDegrees();
@@ -116,11 +121,13 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command EnableIntakeCommand() {
-    return this.runOnce(() -> setIntakeState(true));
+    return this.runOnce(() -> setIntakeState(true))
+      .alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
-  public Command DisableIntakeCommand() {
-    return this.runOnce(() -> setIntakeState(false));
+  public Command disableIntakeCommand() {
+    return this.runOnce(() -> setIntakeState(false))
+      .alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Command StartRollersCommand() {

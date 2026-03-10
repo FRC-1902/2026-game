@@ -12,7 +12,10 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import java.util.Optional;
@@ -54,6 +57,11 @@ public class Climb extends SubsystemBase {
   // Set the desired state of the climb subsystem
   public void setState(State newState) {
     state = newState;
+  }
+
+  public Command setStateCommand(State newState) {
+    return runOnce(() -> setState(newState))
+      .alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Climb.State getState() {
@@ -100,10 +108,10 @@ public class Climb extends SubsystemBase {
   private double calculateGravityFeedforward() {
     switch (state) {
       case RELEASING:
-        return ClimbConstants.CLIMB_RELEASING_KCOS;
+        return ClimbConstants.CLIMB_RELEASING_KG;
       case DOWN:
       case UP:
-        return ClimbConstants.CLIMB_HOLDING_KCOS;
+        return ClimbConstants.CLIMB_HOLDING_KG;
       default:
         return 0.0;
     }
@@ -134,30 +142,18 @@ public class Climb extends SubsystemBase {
         // feedforward
       case DOWN:
       case UP:
+      case RELEASING:
         setTargetPosition(calculateClimbTargetPosition());
         double measurement = getClimbPosition();
         double pidOutput = pid.calculate(measurement, targetPosition);
+        // For RELEASING state, use PID control to move towards the target position with a stronger
+        // gravity feedforward to assist in releasing downwards
         double ff = calculateGravityFeedforward();
         output = pidOutput + ff;
         output = Math.max(-1.0, Math.min(1.0, output));
         // climbMotor.set(output);
         climbMotor.set(0);
         // TODO: re-enable motors
-        break;
-
-        // For RELEASING state, use PID control to move towards the target position with a stronger
-        // gravity feedforward to assist in releasing downwards
-      case RELEASING:
-        setTargetPosition(calculateClimbTargetPosition());
-        measurement = getClimbPosition();
-        pidOutput = pid.calculate(measurement, targetPosition);
-        ff = calculateGravityFeedforward();
-        output = pidOutput + ff;
-        output = Math.max(-1.0, Math.min(1.0, output));
-        // climbMotor.set(output);
-        climbMotor.set(0);
-        // TODO: re-enable motors
-
         break;
 
         // For CLIMBING state, move the motor upwards unless the limit switch is triggered or the

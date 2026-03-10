@@ -14,8 +14,8 @@ public class ClimbConstants {
   public static final double CLIMB_TOLERANCE = 0.0; // TODO: TUNE!!!!!
 
   // Feedforward constants
-  public static final double CLIMB_HOLDING_KCOS = 0.0; // TODO: Tune for holding elevator (DOWN/UP)
-  public static final double CLIMB_RELEASING_KCOS = 0.0; // TODO: Tune for releasing (heavier FF)
+  public static final double CLIMB_HOLDING_KG = 0.0; // TODO: Tune for holding elevator (DOWN/UP)
+  public static final double CLIMB_RELEASING_KG = 0.0; // TODO: Tune for releasing (heavier FF)
 
   // Minimum allowed elevator height (unit: rotations)
   public static final double CLIMB_MIN_HEIGHT = 0.0; // TODO: Set to encoder value at bottom

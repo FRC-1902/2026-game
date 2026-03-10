@@ -27,10 +27,13 @@ public class ClimbCompositionCommand extends SequentialCommandGroup {
     this.side = side;
 
     addCommands(
-        intake.DisableIntakeCommand(),
-        new DriveToClimb(swerve, this.side),
-        new InstantCommand(() -> climber.setState(State.UP), climber),
+        intake.disableIntakeCommand(),
+        new ParallelCommandGroup(
+          climber.setStateCommand(State.UP),
+          new DriveToClimb(swerve, this.side)
+        ),
         new AlignForClimb(swerve, this.side),
-        new InstantCommand(() -> climber.setState(State.CLIMBING)));
+        climber.setStateCommand(State.CLIMBING)
+      );
   }
 }
