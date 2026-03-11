@@ -1,7 +1,10 @@
 package frc.robot.subsystems.Flywheel;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
@@ -13,6 +16,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
@@ -42,6 +46,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final MutVoltage m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
   private final MutAngularVelocity m_velocity = RadiansPerSecond.mutable(0);
+  private final MutAngle m_position = Radians.mutable(0);
 
   private final SysIdRoutine m_sysIdRoutine;
 
@@ -63,16 +68,24 @@ public class FlywheelSubsystem extends SubsystemBase {
     // Configure motor
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    config.inverted(true);
+    config.smartCurrentLimit(50);
 
     rightFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    config.inverted(false);
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_sysIdRoutine =
         new SysIdRoutine(
             // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(),
+            new SysIdRoutine.Config(
+              Volts.of(4).per(Second), 
+              Volts.of(4), 
+              Second.of(10)
+            ),
             new SysIdRoutine.Mechanism(
                 // Tell SysId how to plumb the driving voltage to the motor(s).
                 this::setVoltage,
@@ -86,7 +99,9 @@ public class FlywheelSubsystem extends SubsystemBase {
                               rightFlywheelMotor.get() * RobotController.getBatteryVoltage(),
                               Volts))
                       .angularVelocity(
-                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond));
+                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond)
+                      )
+                      .angularPosition(m_position.mut_replace(rightFlywheelMotor.getEncoder().getPosition(), Rotations));
                 },
                 // Tell SysId to make generated commands require this subsystem, suffix test state
                 // in
@@ -99,6 +114,11 @@ public class FlywheelSubsystem extends SubsystemBase {
   private void setVoltage(Voltage v) {
     leftFlywheelMotor.setVoltage(v);
     rightFlywheelMotor.setVoltage(v);
+  }
+
+  private void setSpeed(double s) {
+    leftFlywheelMotor.set(s);
+    rightFlywheelMotor.set(s);
   }
 
   public void setFlywheelSpeed(double rpm) {
@@ -161,6 +181,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     return m_sysIdRoutine.dynamic(direction);
   }
 
+  public Command testCommand() {
+    return startEnd(
+      () -> setSpeed(1),
+      () -> setSpeed(0)
+    );
+  }
+
   @Override
   public void periodic() {
     double output = 0;
@@ -178,6 +205,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
     SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
+    SmartDashboard.putNumber("Flywheel/ right current draw", rightFlywheelMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Flywheel/ left current draw", leftFlywheelMotor.getOutputCurrent());
     SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
   }
 }

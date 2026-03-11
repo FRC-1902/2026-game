@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -115,6 +116,9 @@ public class RobotContainer {
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     /* manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); */
+
+    manipXbox.leftBumper().whileTrue(new ParallelCommandGroup(indexer.spinRollerShooterCommand(), flywheel.testCommand()));
+    manipXbox.rightBumper().whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
 
     manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
     manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
