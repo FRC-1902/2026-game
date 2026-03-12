@@ -1,7 +1,7 @@
 package frc.robot.subsystems.climb;
 
 public class ClimbConstants {
-  public static final int LIMIT_SWITCH_PORT = 0; // TODO: Update port binding
+  public static final int LIMIT_SWITCH_PORT = 2; // TODO: Update port binding
 
   // PID
   public static final double CLIMB_KP = 0.0; // TODO: Tune PID

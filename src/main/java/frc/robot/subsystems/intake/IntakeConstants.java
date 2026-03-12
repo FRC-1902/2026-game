@@ -9,7 +9,7 @@ public class IntakeConstants {
 
   // IDs/Ports
 
-  public static final int INTAKE_ENCODER_PORT = 0; // TODO: set correct port
+  public static final int INTAKE_ENCODER_PORT = 1; // TODO: set correct port
 
   public static final int ROLLERMOTOR_ID = 1; // TODO: set correct port
   public static final int PIVOTMOTOR_ID = 4; // TODO: set correct port

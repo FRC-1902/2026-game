@@ -5,7 +5,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 /** Constants for the Hood subsystem. */
 public class HoodConstants {
   // Motor CAN ID
-  public static final int HOOD_MOTOR_ID = 40; // TODO: Set the correct CAN ID
+  public static final int HOOD_MOTOR_ID = 40;
 
   // Encoder DIO port
   public static final int HOOD_ENCODER_DIO_PORT = 0; // TODO: Set the correct DIO port
@@ -23,7 +23,7 @@ public class HoodConstants {
   public static final double ENCODER_TO_HOOD_RATIO = 2.0; // 2:1
 
   // PID
-  public static final double HOOD_KP = 0.1; // TODO: Tune PID (or basically just P)
+  public static final double HOOD_KP = 0.005; // TODO: Tune PID (or basically just P)
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
@@ -31,13 +31,13 @@ public class HoodConstants {
   public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
 
   // Soft limits (in degrees)
-  public static final double HOOD_MIN_ANGLE = 0.0; // TODO: Set based on physical limits
-  public static final double HOOD_MAX_ANGLE = 90.0; // TODO: Set based on physical limits
+  public static final double HOOD_MIN_ANGLE = 6.8; // TODO: Set based on physical limits
+  public static final double HOOD_MAX_ANGLE = 23.5; // TODO: Set based on physical limits
 
   // Tolerance for reaching target angle (in degrees)
   public static final double HOOD_ANGLE_TOLERANCE = 3.0;
 
-  public static final double HOOD_IZONE = 3.0; // TODO: Tune IZONE vlue
+  public static final double HOOD_IZONE = 0; // TODO: Tune IZONE vlue
 
   // Distance to angle interpolation table
   // Distances in meters, angles in degrees

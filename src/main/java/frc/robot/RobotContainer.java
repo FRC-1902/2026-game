@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
@@ -22,6 +21,7 @@ import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.Climb.State;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -52,6 +52,7 @@ public class RobotContainer {
   private final FlywheelSubsystem flywheel;
   private final Climb climber;
   private final IndexerSubsystem indexer;
+  private final Hood hood;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
@@ -79,6 +80,7 @@ public class RobotContainer {
     telemetry.setDrivebase(drivebase);
     climber = new Climb();
     indexer = new IndexerSubsystem();
+    hood = new Hood();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
@@ -96,7 +98,7 @@ public class RobotContainer {
     climbSideChooser.addOption("Climb Right", Side.RIGHT);
 
     climber.setSide(climbSideChooser.getSelected());
-    
+
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -117,13 +119,16 @@ public class RobotContainer {
     /* manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); */
 
-    manipXbox.leftBumper().whileTrue(new ParallelCommandGroup(indexer.spinRollerShooterCommand(), flywheel.testCommand()));
-    manipXbox.rightBumper().whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
+    manipXbox
+        .leftBumper()
+        .whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
+    manipXbox
+        .rightBumper()
+        .whileTrue(
+            new ParallelCommandGroup(indexer.spinRollerShooterCommand(), flywheel.testCommand()));
 
-    manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
-    manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
-    manipXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
-    manipXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
+    manipXbox.povUp().onTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
+    manipXbox.povDown().onTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
 
     driverXbox
         .y()

@@ -4,6 +4,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Hood extends SubsystemBase {
   private final SparkFlex hoodMotor;
   private final DutyCycleEncoder absoluteEncoder;
+  private Rotation2d newAngle;
+  private double clamped;
 
   private Rotation2d targetAngle = new Rotation2d();
   private final PIDController pid =
@@ -25,6 +28,9 @@ public class Hood extends SubsystemBase {
 
     // Configure motor
     SparkFlexConfig config = new SparkFlexConfig();
+
+    config.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    config.inverted(true);
 
     config.closedLoop.outputRange(-1.0, 1.0);
     config.encoder.positionConversionFactor(360.0 / HoodConstants.MOTOR_TO_HOOD_RATIO);
@@ -65,7 +71,7 @@ public class Hood extends SubsystemBase {
 
   public void setAngle(Rotation2d angle) {
     // Clamp angle to valid range
-    double clamped =
+    clamped =
         Math.max(
             HoodConstants.HOOD_MIN_ANGLE,
             Math.min(HoodConstants.HOOD_MAX_ANGLE, angle.getDegrees()));
@@ -86,6 +92,16 @@ public class Hood extends SubsystemBase {
     return pid.atSetpoint();
   }
 
+  public Rotation2d upOneDegree() {
+    newAngle = Rotation2d.fromDegrees(clamped + 1);
+    return newAngle;
+  }
+
+  public Rotation2d downOneDegree() {
+    newAngle = Rotation2d.fromDegrees(clamped - 1);
+    return newAngle;
+  }
+
   @Override
   public void periodic() {
     // External PID control loop
@@ -95,9 +111,7 @@ public class Hood extends SubsystemBase {
     double ff = calculateGravityFeedforward(getAbsoluteAngle());
     double output = pidOutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
-    // hoodMotor.set(output);
-    // TODO: re-enable motors
-    hoodMotor.set(0);
+    hoodMotor.set(output);
 
     SmartDashboard.putNumber("Hood/Current Angle", measurement);
     SmartDashboard.putNumber("Hood/Absolute Angle", getAbsoluteAngle().getDegrees());

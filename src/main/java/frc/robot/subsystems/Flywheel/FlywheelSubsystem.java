@@ -15,8 +15,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
@@ -81,11 +81,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     m_sysIdRoutine =
         new SysIdRoutine(
             // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(
-              Volts.of(4).per(Second), 
-              Volts.of(4), 
-              Second.of(10)
-            ),
+            new SysIdRoutine.Config(Volts.of(4).per(Second), Volts.of(4), Second.of(10)),
             new SysIdRoutine.Mechanism(
                 // Tell SysId how to plumb the driving voltage to the motor(s).
                 this::setVoltage,
@@ -98,10 +94,11 @@ public class FlywheelSubsystem extends SubsystemBase {
                           m_appliedVoltage.mut_replace(
                               rightFlywheelMotor.get() * RobotController.getBatteryVoltage(),
                               Volts))
+                      .angularPosition(
+                          m_position.mut_replace(
+                              rightFlywheelMotor.getEncoder().getPosition(), Rotations))
                       .angularVelocity(
-                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond)
-                      )
-                      .angularPosition(m_position.mut_replace(rightFlywheelMotor.getEncoder().getPosition(), Rotations));
+                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond));
                 },
                 // Tell SysId to make generated commands require this subsystem, suffix test state
                 // in
@@ -182,10 +179,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public Command testCommand() {
-    return startEnd(
-      () -> setSpeed(1),
-      () -> setSpeed(0)
-    );
+    return startEnd(() -> setSpeed(-1), () -> setSpeed(0));
   }
 
   @Override
