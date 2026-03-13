@@ -120,6 +120,7 @@ public class RobotContainer {
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
     manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
+    manipXbox.b().onTrue(InstanceIntakeSubsystem.disableIntakeCommand());
 
     // manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
     // manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));

@@ -1,11 +1,13 @@
 package frc.robot.subsystems.intake;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  public static final double DISABLED_INTAKE_ANGLE =
-      60; // TODO: get proper angle for intake whilst up
-  public static final double ENABLED_INTAKE_ANGLE =
-      140.4; // TODO: get proper angle for intake whilst down
+  // Angles are expressed in rotations (turns). Use Rotation2d.fromRotations(value).
+  public static final Rotation2d DISABLED_INTAKE_ANGLE =
+      Rotation2d.fromRotations(0.0); // TODO: get proper angle for intake whilst up
+  public static final Rotation2d ENABLED_INTAKE_ANGLE =
+      Rotation2d.fromRotations(0.2337); // TODO: get proper angle for intake whilst down
 
   // IDs/Ports
 
@@ -29,8 +31,9 @@ public class IntakeConstants {
   public static final double INTAKE_KI = 0.0;
   public static final double INTAKE_KD = 0.0;
 
-  public static final double ENCODER_OFFSET =
-      0.0; // TODO: set based on calibration (must be in rotations)
+  // Encoder offset must be provided in rotations (turns).
+  public static final Rotation2d ENCODER_OFFSET =
+      Rotation2d.fromRotations(0.3237); // TODO: set based on calibration (rotations)
 
   // Config
 

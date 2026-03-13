@@ -28,7 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
 
-    pid.enableContinuousInput(IntakeConstants.DISABLED_INTAKE_ANGLE, IntakeConstants.ENABLED_INTAKE_ANGLE);
+  // Use rotations as the unit for the PID controller
+  pid.enableContinuousInput(0.0, 360.0);
     pid.setIZone(IntakeConstants.PID_IZONE);
     pid.setTolerance(IntakeConstants.PID_TOLERANCE);
 
@@ -58,9 +59,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    return Rotation2d.fromRotations(
-        pivotEncoder.getPosition() * IntakeConstants.ENCODER_TO_INTAKE_RATIO
-            - IntakeConstants.ENCODER_OFFSET);
+    Rotation2d rawAngle = Rotation2d.fromRotations(
+        pivotEncoder.getPosition());
+    Rotation2d offsetAngle = rawAngle.minus(IntakeConstants.ENCODER_OFFSET);
+    return offsetAngle.times(IntakeConstants.ENCODER_TO_INTAKE_RATIO);
     // Get the angle of the encoder in rotations
   }
 
@@ -69,10 +71,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakeState(boolean state) {
-    Rotation2d angle = Rotation2d.fromDegrees(IntakeConstants.ENABLED_INTAKE_ANGLE);
+    // IntakeConstants angles are already Rotation2d instances expressed in rotations
+    Rotation2d angle = IntakeConstants.ENABLED_INTAKE_ANGLE;
     if (!state) {
-      angle = Rotation2d.fromDegrees(IntakeConstants.DISABLED_INTAKE_ANGLE);
-    }
+      angle = IntakeConstants.DISABLED_INTAKE_ANGLE;
+    } 
     // Set the target angle to be the angle of an enabled intake
     if (targetAngle != angle) {
       setAngle(angle);
@@ -81,11 +84,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean getIntakeState() {
-    if (getAngle().getDegrees() == IntakeConstants.DISABLED_INTAKE_ANGLE) {
-      return false;
-    } else {
-      return true;
-    }
+    // Compare rotations with a small epsilon instead of reference equality
+    double eps = 1e-6;
+    double current = getAngle().getRotations();
+    double disabled = IntakeConstants.DISABLED_INTAKE_ANGLE.getRotations();
+    return Math.abs(current - disabled) > eps;
   }
 
   public void startRollers() {
@@ -104,8 +107,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double measurement = getAngle().getDegrees();
-    double setpoint = targetAngle.getDegrees();
+  // PID measurement and setpoint are in rotations (turns)
+  double measurement = getAngle().getRotations();
+  double setpoint = targetAngle.getRotations();
     double pidoutput = pid.calculate(measurement, setpoint);
     double ff = calculateGravityFeedforward(getAngle());
     double output = pidoutput + ff;
@@ -115,8 +119,8 @@ public class IntakeSubsystem extends SubsystemBase {
     // TODO: re-enable motors
     // Calculates PID and sets pivotMotor to it
 
-    SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());
-    SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle.getDegrees());
+    SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getRotations());
+    SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle.getRotations());
     // Add all values to network table
   }
 

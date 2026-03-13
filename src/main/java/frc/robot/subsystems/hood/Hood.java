@@ -40,7 +40,7 @@ public class Hood extends SubsystemBase {
     absoluteEncoder = new DutyCycleEncoder(HoodConstants.HOOD_ENCODER_DIO_PORT);
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
-    pid.enableContinuousInput(HoodConstants.HOOD_MIN_ANGLE, HoodConstants.HOOD_MAX_ANGLE);
+    pid.enableContinuousInput(0, 360);
 
     pid.setIZone(HoodConstants.HOOD_IZONE);
 
