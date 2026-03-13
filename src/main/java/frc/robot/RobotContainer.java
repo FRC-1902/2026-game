@@ -19,13 +19,13 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.Climb.State;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
@@ -136,7 +136,11 @@ public class RobotContainer {
 
     manipXbox.povUp().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
     manipXbox.povDown().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
-    manipXbox.povLeft().onTrue(Commands.runOnce(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
+    manipXbox
+        .povLeft()
+        .onTrue(
+            Commands.runOnce(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
 
     driverXbox
         .y()

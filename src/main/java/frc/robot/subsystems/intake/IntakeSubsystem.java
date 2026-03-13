@@ -28,8 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
 
-  // Use rotations as the unit for the PID controller
-  pid.enableContinuousInput(0.0, 360.0);
+    // Use rotations as the unit for the PID controller
+    pid.enableContinuousInput(0.0, 360.0);
     pid.setIZone(IntakeConstants.PID_IZONE);
     pid.setTolerance(IntakeConstants.PID_TOLERANCE);
 
@@ -59,8 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    Rotation2d rawAngle = Rotation2d.fromRotations(
-        pivotEncoder.getPosition());
+    Rotation2d rawAngle = Rotation2d.fromRotations(pivotEncoder.getPosition());
     Rotation2d offsetAngle = rawAngle.minus(IntakeConstants.ENCODER_OFFSET);
     return offsetAngle.times(IntakeConstants.ENCODER_TO_INTAKE_RATIO);
     // Get the angle of the encoder in rotations
@@ -72,12 +71,12 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setIntakeState(boolean state) {
     // IntakeConstants angles are already Rotation2d instances expressed in rotations
-    if (state) {
-      setAngle(IntakeConstants.ENABLED_INTAKE_ANGLE);
-    } else if (!state) {
-      setAngle(IntakeConstants.DISABLED_INTAKE_ANGLE);
+    Rotation2d angle = IntakeConstants.ENABLED_INTAKE_ANGLE;
+    if (!state) {
+      angle = IntakeConstants.DISABLED_INTAKE_ANGLE;
     } 
     // Set the target angle to be the angle of an enabled intake
+    setAngle(angle);
     // Set the angle of the pivotMotor to that angle
   }
 
@@ -103,7 +102,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-  // PID measurement and setpoint are in rotations (turns)
+    // PID measurement and setpoint are in rotations (turns)
     double measurement = getAngle().getRotations();
     double setpoint = targetAngle.getRotations();
     double pidoutput = pid.calculate(measurement, setpoint);

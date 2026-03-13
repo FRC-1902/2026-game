@@ -1,13 +1,12 @@
 package frc.robot.subsystems.intake;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
   // Angles are expressed in rotations (turns). Use Rotation2d.fromRotations(value).
-  public static final Rotation2d DISABLED_INTAKE_ANGLE =
-      Rotation2d.fromRotations(0.0);
-  public static final Rotation2d ENABLED_INTAKE_ANGLE =
-      Rotation2d.fromRotations(0.2337);
+  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromRotations(0.0);
+  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromRotations(0.2337);
 
   // IDs/Ports
 
