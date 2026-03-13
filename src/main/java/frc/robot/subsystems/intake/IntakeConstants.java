@@ -5,14 +5,14 @@ public class IntakeConstants {
 
   // Angles are expressed in rotations (turns). Use Rotation2d.fromRotations(value).
   public static final Rotation2d DISABLED_INTAKE_ANGLE =
-      Rotation2d.fromRotations(0.0); // TODO: get proper angle for intake whilst up
+      Rotation2d.fromRotations(0.0);
   public static final Rotation2d ENABLED_INTAKE_ANGLE =
-      Rotation2d.fromRotations(0.2337); // TODO: get proper angle for intake whilst down
+      Rotation2d.fromRotations(0.2337);
 
   // IDs/Ports
 
-  public static final int ROLLERMOTOR_ID = 1; // TODO: set correct port
-  public static final int PIVOTMOTOR_ID = 4; // TODO: set correct port
+  public static final int ROLLERMOTOR_ID = 1;
+  public static final int PIVOTMOTOR_ID = 4;
 
   // Gear ratios
 
