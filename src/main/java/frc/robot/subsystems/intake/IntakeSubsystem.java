@@ -74,7 +74,7 @@ public class IntakeSubsystem extends SubsystemBase {
     Rotation2d angle = IntakeConstants.ENABLED_INTAKE_ANGLE;
     if (!state) {
       angle = IntakeConstants.DISABLED_INTAKE_ANGLE;
-    } 
+    }
     // Set the target angle to be the angle of an enabled intake
     setAngle(angle);
     // Set the angle of the pivotMotor to that angle
