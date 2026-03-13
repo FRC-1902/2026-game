@@ -31,11 +31,11 @@ public class HoodConstants {
   public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
 
   // Soft limits (in degrees)
-  public static final double HOOD_MIN_ANGLE = 6.8; // TODO: Set based on physical limits
-  public static final double HOOD_MAX_ANGLE = 23.5; // TODO: Set based on physical limits
+  public static final double HOOD_MIN_ANGLE = 6.15; // TODO: Set based on physical limits
+  public static final double HOOD_MAX_ANGLE = 24.1; // TODO: Set based on physical limits
 
   // Tolerance for reaching target angle (in degrees)
-  public static final double HOOD_ANGLE_TOLERANCE = 3.0;
+  public static final double HOOD_ANGLE_TOLERANCE = 0.0;
 
   public static final double HOOD_IZONE = 0; // TODO: Tune IZONE vlue
 

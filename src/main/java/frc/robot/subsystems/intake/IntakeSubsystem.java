@@ -28,7 +28,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem() {
 
-    pid.enableContinuousInput(0.0, 360.0);
+    pid.enableContinuousInput(IntakeConstants.DISABLED_INTAKE_ANGLE, IntakeConstants.ENABLED_INTAKE_ANGLE);
     pid.setIZone(IntakeConstants.PID_IZONE);
     pid.setTolerance(IntakeConstants.PID_TOLERANCE);
 
@@ -91,7 +91,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void startRollers() {
     // rollerMotor.set(IntakeConstants.ROLLERMOTOR_SPEED);
     // TODO: re-enable motors
-    rollerMotor.set(0);
+    rollerMotor.set(1);
   }
 
   public void stopRollers() {
@@ -111,7 +111,7 @@ public class IntakeSubsystem extends SubsystemBase {
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     // pivotMotor.set(output);
-    pivotMotor.set(0);
+    pivotMotor.set(output);
     // TODO: re-enable motors
     // Calculates PID and sets pivotMotor to it
 

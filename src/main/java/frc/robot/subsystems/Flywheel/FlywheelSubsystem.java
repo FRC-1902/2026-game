@@ -179,7 +179,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public Command testCommand() {
-    return startEnd(() -> setSpeed(-1), () -> setSpeed(0));
+    return startEnd(() -> setSpeed(1), () -> setSpeed(0));
   }
 
   @Override

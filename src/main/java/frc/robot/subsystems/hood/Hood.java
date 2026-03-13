@@ -29,7 +29,7 @@ public class Hood extends SubsystemBase {
     // Configure motor
     SparkFlexConfig config = new SparkFlexConfig();
 
-    config.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    config.idleMode(SparkBaseConfig.IdleMode.kBrake);
     config.inverted(true);
 
     config.closedLoop.outputRange(-1.0, 1.0);
@@ -40,7 +40,7 @@ public class Hood extends SubsystemBase {
     absoluteEncoder = new DutyCycleEncoder(HoodConstants.HOOD_ENCODER_DIO_PORT);
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
-    pid.enableContinuousInput(0.0, 360.0);
+    pid.enableContinuousInput(HoodConstants.HOOD_MIN_ANGLE, HoodConstants.HOOD_MAX_ANGLE);
 
     pid.setIZone(HoodConstants.HOOD_IZONE);
 

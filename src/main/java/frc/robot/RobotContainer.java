@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,12 +19,13 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.Climb.State;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
-import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
@@ -37,7 +39,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  // public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
+  public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -116,19 +118,24 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    /* manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
-    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); */
+    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
+    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
 
-    manipXbox
-        .leftBumper()
-        .whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
+    // manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
+    // manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
+    // manipXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
+    // manipXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
+    // manipXbox
+    //     .leftBumper()
+    //     .whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
     manipXbox
         .rightBumper()
         .whileTrue(
             new ParallelCommandGroup(indexer.spinRollerShooterCommand(), flywheel.testCommand()));
 
-    manipXbox.povUp().onTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
-    manipXbox.povDown().onTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
+    manipXbox.povUp().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
+    manipXbox.povDown().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
+    manipXbox.povLeft().onTrue(Commands.runOnce(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
 
     driverXbox
         .y()
