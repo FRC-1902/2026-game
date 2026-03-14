@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -12,18 +11,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.commands.hood.AlignHoodCommand;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.Climb.State;
 import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -118,43 +117,16 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
-    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
-    manipXbox.b().onTrue(InstanceIntakeSubsystem.disableIntakeCommand());
-
-    // manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
-    // manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
-    // manipXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
-    // manipXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
-    // manipXbox
-    //     .leftBumper()
-    //     .whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
-    manipXbox
-        .rightBumper()
-        .whileTrue(
-            new ParallelCommandGroup(indexer.spinRollerShooterCommand(), flywheel.testCommand()));
-
-    manipXbox.povUp().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
-    manipXbox.povDown().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
-    manipXbox
-        .povLeft()
-        .onTrue(
-            Commands.runOnce(
-                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
-
     driverXbox
         .y()
         .onTrue(
             new InstantCommand(() -> flywheel.removeDefaultCommand())
-                .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
-    /* manipXbox
-        .b()
-        .whileTrue(
-            new ClimbCompositionCommand(
-                InstanceIntakeSubsystem, drivebase, climber, climber.getSide()));
-
-    manipXbox.povUp().onTrue(new ManualDPADClimbUp(climber));
-    manipXbox.povDown().onTrue(new ManualDPADClimbDown(climber)); */
+                .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel))); // manual override for the flywheel, toggles between hish and low speed
+    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());  // Put intake out on the press of x
+    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); // run the rollers while x is pressed
+    manipXbox.b().onTrue(InstanceIntakeSubsystem.disableIntakeCommand()); // disable the intake on the press of b
+    manipXbox.leftTrigger().whileTrue(new AlignToHub(drivebase, drivebase.getWaypointManager(), "HUB", driverXbox.getLeftX(), driverXbox.getLeftY()).alongWith(new AlignHoodCommand(hood, drivebase, drivebase.getWaypointManager()))); // TODO: Put Align to Hub Command here
+    manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand()); // Enables indexer feeding balls into flywheel
   }
 
   /**
