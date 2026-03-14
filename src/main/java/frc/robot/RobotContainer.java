@@ -127,7 +127,11 @@ public class RobotContainer {
                         () -> flywheel.toggle(),
                         flywheel))); // manual override for the flywheel, toggles between high and
     // low
-    driverXbox.x().onTrue(new InstantCommand(() -> flywheel.spinFlywheelBackwards()).alongWith(indexer.outtakeCommand()));
+    driverXbox
+        .x()
+        .onTrue(
+            new InstantCommand(() -> flywheel.spinFlywheelBackwards())
+                .alongWith(indexer.outtakeCommand()));
     manipXbox
         .x()
         .whileTrue(
@@ -152,7 +156,8 @@ public class RobotContainer {
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer.spinRollerShooterCommand(flywheel)); // Enables indexer feeding balls into flywheel
+            indexer.spinRollerShooterCommand(
+                flywheel)); // Enables indexer feeding balls into flywheel
   }
 
   /**

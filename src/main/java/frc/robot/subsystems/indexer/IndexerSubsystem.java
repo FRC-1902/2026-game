@@ -44,21 +44,20 @@ public class IndexerSubsystem extends SubsystemBase {
         shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public Command spinRollerShooterCommand(FlywheelSubsystem  flywheel) { // Runs the shooter indexer
+  public Command spinRollerShooterCommand(FlywheelSubsystem flywheel) { // Runs the shooter indexer
     if (flywheel.isAtTargetSpeed()) {
       return Commands.startEnd(
-        () -> {
-          shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
-        },
-        () -> {
-          shooterIndexerMotor.set(0);
-          rollerIndexerMotor.set(0);
-        },
-        this);
+          () -> {
+            shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
+          },
+          () -> {
+            shooterIndexerMotor.set(0);
+            rollerIndexerMotor.set(0);
+          },
+          this);
     } else {
       return Commands.none();
     }
-    
   }
 
   public Command outtakeCommand() { // Runs the shooter indexer motor backwards
