@@ -1,17 +1,15 @@
 package frc.robot.subsystems.intake;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  // Angles are expressed in rotations (turns). Use Rotation2d.fromRotations(value).
-  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromRotations(0.0);
-  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromRotations(0.2337);
+  public static final double DISABLED_INTAKE_ANGLE = 0; // TODO: get proper angle for intake whilst up
+  public static final double ENABLED_INTAKE_ANGLE = 0; // TODO: get proper angle for intake whilst down
 
   // IDs/Ports
 
-  public static final int ROLLERMOTOR_ID = 1;
-  public static final int PIVOTMOTOR_ID = 4;
+  public static final int ROLLERMOTOR_ID = 1; // TODO: set correct port
+  public static final int PIVOTMOTOR_ID = 4; // TODO: set correct port
 
   // Gear ratios
 
@@ -30,9 +28,8 @@ public class IntakeConstants {
   public static final double INTAKE_KI = 0.0;
   public static final double INTAKE_KD = 0.0;
 
-  // Encoder offset must be provided in rotations (turns).
   public static final Rotation2d ENCODER_OFFSET =
-      Rotation2d.fromRotations(0.3237); // TODO: set based on calibration (rotations)
+      Rotation2d.fromDegrees(48); // TODO: set based on calibration (must be in rotations)
 
   // Config
 
