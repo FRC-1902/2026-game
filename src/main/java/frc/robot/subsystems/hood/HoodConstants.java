@@ -1,5 +1,6 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 /** Constants for the Hood subsystem. */
@@ -35,9 +36,8 @@ public class HoodConstants {
   public static final double HOOD_MAX_ANGLE = 24.1; 
 
   // Tolerance for reaching target angle (in degrees)
-  public static final double HOOD_ANGLE_TOLERANCE = 0.0;
-
-  public static final double HOOD_IZONE = 0; 
+  public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(2.0);
+  public static final Rotation2d HOOD_IZONE = Rotation2d.fromDegrees(10.0);
 
   // Distance to angle interpolation table
   // Distances in meters, angles in degrees
