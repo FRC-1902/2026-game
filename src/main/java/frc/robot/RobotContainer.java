@@ -150,7 +150,7 @@ public class RobotContainer {
                     new AlignHoodCommand(
                         hood,
                         drivebase,
-                        drivebase.getWaypointManager()))); // TODO: Put Align to Hub Command here
+                        drivebase.getWaypointManager()))); // Shoots
     manipXbox
         .rightTrigger()
         .whileTrue(
