@@ -1,5 +1,6 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 /** Constants for the Hood subsystem. */
@@ -13,7 +14,7 @@ public class HoodConstants {
   // Encoder ratios
   // Through Bore encoder belted to hood via 48T (hood) -> 24T (encoder)
   // 2 encoder rotations = 1 hood rotation
-  public static final double ENCODER_TO_HOOD_RATIO = 2.0; // 2:1
+  public static final double ENCODER_TO_HOOD_RATIO = 0.5; // 2:1
 
   // PID
   public static final double HOOD_KP = 0.005; // TODO: Tune PID (or basically just P)
@@ -50,5 +51,5 @@ public class HoodConstants {
 
   // Absolute encoder offset (in degrees)
   // This is the angle reading when the hood is at 0 degrees
-  public static final double ENCODER_OFFSET = 0.0; // TODO: Set based on calibration
+  public static final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.0); // TODO: setup
 }

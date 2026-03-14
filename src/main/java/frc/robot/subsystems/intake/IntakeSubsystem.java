@@ -21,7 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkAbsoluteEncoder pivotEncoder;
   private final PIDController pid;
 
-  private Rotation2d targetAngle = new Rotation2d();
+  private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
   public IntakeSubsystem() {
     // setup pid
@@ -78,9 +78,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setIntakeState(boolean state) {
     if (state) {
-      setAngle(Rotation2d.fromDegrees(IntakeConstants.ENABLED_INTAKE_ANGLE));
+      setAngle(IntakeConstants.ENABLED_INTAKE_ANGLE);
     } else {
-      setAngle(Rotation2d.fromDegrees(IntakeConstants.DISABLED_INTAKE_ANGLE));
+      setAngle(IntakeConstants.DISABLED_INTAKE_ANGLE);
     }
   }
 
@@ -112,16 +112,16 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // calculate pid + ff for pivot motor
-    double measurement = getAngle().getDegrees();
+    Rotation2d measurement = getAngle();
     double setpoint = targetAngle.getDegrees();
-    double pidoutput = pid.calculate(measurement, setpoint);
-    double ff = calculateGravityFeedforward(getAngle());
+    double pidoutput = pid.calculate(measurement.getDegrees(), setpoint);
+    double ff = calculateGravityFeedforward(measurement);
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     pivotMotor.set(output);
 
     // add all values to network table
-    SmartDashboard.putNumber("Intake/Current Pivot Angle", measurement);
+    SmartDashboard.putNumber("Intake/Current Pivot Angle", measurement.getDegrees());
     SmartDashboard.putNumber("Intake/Target Pivot Angle", setpoint);
     SmartDashboard.putNumber("Intake/Output Percent", output);
   }

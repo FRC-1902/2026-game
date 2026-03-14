@@ -15,12 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class HoodSubsystem extends SubsystemBase {
   private final SparkFlex hoodMotor;
   private final DutyCycleEncoder absoluteEncoder;
-  private Rotation2d newAngle;
-  private double clamped;
+  private final PIDController pid;
 
-  private Rotation2d targetAngle = new Rotation2d();
-  private final PIDController pid =
-      new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
+  private Rotation2d targetAngle = Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE);
 
   public HoodSubsystem() {
     // Initialize motor
@@ -39,21 +36,25 @@ public class HoodSubsystem extends SubsystemBase {
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
     // configure pid
+    pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
     pid.enableContinuousInput(0, 360);
     pid.setIZone(HoodConstants.HOOD_IZONE);
     pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE);
   }
 
   public Rotation2d getAbsoluteAngle() {
-    // Multiply by 360 to get encoder degrees, then divide by gear ratio to get hood degrees
-    double encoderRotations = absoluteEncoder.get();
-    double angle =
-        (encoderRotations * 360.0 / HoodConstants.ENCODER_TO_HOOD_RATIO)
-            - HoodConstants.ENCODER_OFFSET;
+    double rawEncoderRot = absoluteEncoder.get();
+    double zeroOffsetRot = HoodConstants.ENCODER_OFFSET.getRotations();
 
-    // Wrap to 0-360 range
-    angle = ((angle % 360.0) + 360.0) % 360.0;
-    return Rotation2d.fromDegrees(angle);
+    double encoderDeltaRot = rawEncoderRot - zeroOffsetRot;
+    double hoodRot = encoderDeltaRot * HoodConstants.ENCODER_TO_HOOD_RATIO;
+
+    hoodRot = hoodRot % 1.0;
+    if (hoodRot < 0) {
+      hoodRot += 1.0;
+    }
+
+    return Rotation2d.fromRotations(hoodRot);
   }
 
   // Get the current hood angle from the external encoder.
@@ -68,7 +69,7 @@ public class HoodSubsystem extends SubsystemBase {
 
   public void setAngle(Rotation2d angle) {
     // Clamp angle to valid range
-    clamped =
+    double clamped =
         Math.max(
             HoodConstants.HOOD_MIN_ANGLE,
             Math.min(HoodConstants.HOOD_MAX_ANGLE, angle.getDegrees()));
@@ -85,18 +86,16 @@ public class HoodSubsystem extends SubsystemBase {
     setAngle(getAngleForDistance(distance));
   }
 
-  public boolean atTargetAngle() {
+  public boolean atSetpoint() {
     return pid.atSetpoint();
   }
 
   public Rotation2d upOneDegree() {
-    newAngle = Rotation2d.fromDegrees(clamped + 1);
-    return newAngle;
+    return getTargetAngle().plus(Rotation2d.fromDegrees(1));
   }
 
   public Rotation2d downOneDegree() {
-    newAngle = Rotation2d.fromDegrees(clamped - 1);
-    return newAngle;
+    return getTargetAngle().minus(Rotation2d.fromDegrees(1));
   }
 
   @Override
@@ -113,7 +112,7 @@ public class HoodSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Hood/Current Angle", measurement);
     SmartDashboard.putNumber("Hood/Absolute Angle", getAbsoluteAngle().getDegrees());
     SmartDashboard.putNumber("Hood/Target Angle", setpoint);
-    SmartDashboard.putBoolean("Hood/At Target", atTargetAngle());
+    SmartDashboard.putBoolean("Hood/At Setpoint", atSetpoint());
     SmartDashboard.putNumber("Hood/Motor Current", hoodMotor.getOutputCurrent());
     SmartDashboard.putNumber("Hood/Motor Output", hoodMotor.getAppliedOutput());
     SmartDashboard.putNumber("Hood/PID Output", pidOutput);

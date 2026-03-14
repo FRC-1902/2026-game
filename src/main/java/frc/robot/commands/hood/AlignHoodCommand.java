@@ -36,7 +36,7 @@ public class AlignHoodCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return hood.atTargetAngle();
+    return hood.atSetpoint();
   }
 
   private void updateHoodAngle() {

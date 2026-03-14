@@ -4,10 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  public static final double DISABLED_INTAKE_ANGLE =
-      0; // TODO: get proper angle for intake whilst up
-  public static final double ENABLED_INTAKE_ANGLE =
-      0; // TODO: get proper angle for intake whilst down
+  // TODO: get proper angles for intake
+  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(0);
+  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(0);
 
   // CAN IDs
 
