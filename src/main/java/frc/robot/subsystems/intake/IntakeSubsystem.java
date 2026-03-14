@@ -11,7 +11,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
@@ -21,7 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax pivotMotor;
   private final SparkAbsoluteEncoder pivotEncoder;
   private final PIDController pid;
-  private boolean isIntakeDown = false;
 
   private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
@@ -97,30 +95,17 @@ public class IntakeSubsystem extends SubsystemBase {
     return pid.atSetpoint();
   }
 
-  private void intakeBoolEnabled() {
-    isIntakeDown = true;
-  }
-
-  private void intakeBoolDisabled() {
-    isIntakeDown = false;
-  }
-
   public Command enableIntakeCommand() {
-    return this.runOnce(() -> setIntakeState(true)).andThen(new WaitUntilCommand(this::atSetpoint)).andThen(runOnce(() -> intakeBoolEnabled()));
+    return this.runOnce(() -> setIntakeState(true)).andThen(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Command disableIntakeCommand() {
     return this.runOnce(() -> setIntakeState(false))
-        .andThen(new WaitUntilCommand(this::atSetpoint)).andThen(runOnce(() -> intakeBoolDisabled()));
+        .andThen(new WaitUntilCommand(this::atSetpoint));
   }
 
   public Command startRollersCommand() {
-    if (isIntakeDown) {
-      return this.startEnd(() -> startRollers(), () -> stopRollers());
-    } else {
-      return Commands.none();
-    }
-    
+    return this.startEnd(() -> startRollers(), () -> stopRollers());
   }
 
   @Override
