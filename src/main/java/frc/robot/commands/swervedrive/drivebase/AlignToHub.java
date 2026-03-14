@@ -61,9 +61,7 @@ public class AlignToHub extends Command {
     double maxVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
     Translation2d translation =
         SwerveMath.scaleTranslation(
-            new Translation2d(
-                translationX * maxVelocity, translationY * maxVelocity),
-            0.8);
+            new Translation2d(translationX * maxVelocity, translationY * maxVelocity), 0.8);
 
     swerve.drive(translation, rotationOutput, true);
   }

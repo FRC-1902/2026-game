@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
+import frc.robot.commands.hood.AlignHoodCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
-import frc.robot.commands.hood.AlignHoodCommand;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
@@ -121,12 +121,40 @@ public class RobotContainer {
         .y()
         .onTrue(
             new InstantCommand(() -> flywheel.removeDefaultCommand())
-                .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel))); // manual override for the flywheel, toggles between hish and low speed
-    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());  // Put intake out on the press of x
-    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand()); // run the rollers while x is pressed
-    manipXbox.b().onTrue(InstanceIntakeSubsystem.disableIntakeCommand()); // disable the intake on the press of b
-    manipXbox.leftTrigger().whileTrue(new AlignToHub(drivebase, drivebase.getWaypointManager(), "HUB", driverXbox.getLeftX(), driverXbox.getLeftY()).alongWith(new AlignHoodCommand(hood, drivebase, drivebase.getWaypointManager()))); // TODO: Put Align to Hub Command here
-    manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand()); // Enables indexer feeding balls into flywheel
+                .andThen(
+                    new InstantCommand(
+                        () -> flywheel.toggle(),
+                        flywheel))); // manual override for the flywheel, toggles between hish and
+    // low speed
+    manipXbox
+        .x()
+        .onTrue(InstanceIntakeSubsystem.EnableIntakeCommand()); // Put intake out on the press of x
+    manipXbox
+        .x()
+        .whileTrue(
+            InstanceIntakeSubsystem.StartRollersCommand()); // run the rollers while x is pressed
+    manipXbox
+        .b()
+        .onTrue(
+            InstanceIntakeSubsystem.disableIntakeCommand()); // disable the intake on the press of b
+    manipXbox
+        .leftTrigger()
+        .whileTrue(
+            new AlignToHub(
+                    drivebase,
+                    drivebase.getWaypointManager(),
+                    "HUB",
+                    driverXbox.getLeftX(),
+                    driverXbox.getLeftY())
+                .alongWith(
+                    new AlignHoodCommand(
+                        hood,
+                        drivebase,
+                        drivebase.getWaypointManager()))); // TODO: Put Align to Hub Command here
+    manipXbox
+        .rightTrigger()
+        .whileTrue(
+            indexer.spinRollerShooterCommand()); // Enables indexer feeding balls into flywheel
   }
 
   /**
