@@ -112,6 +112,7 @@ public class IntakeSubsystem extends SubsystemBase {
     } else {
       return Commands.none();
     }
+    
   }
 
   @Override
@@ -125,7 +126,7 @@ public class IntakeSubsystem extends SubsystemBase {
     output = Math.max(-1.0, Math.min(1.0, output));
     pivotMotor.set(output);
 
-    if (atSetpoint() && targetAngle == IntakeConstants.ENABLED_INTAKE_ANGLE) {
+    if(atSetpoint() && targetAngle == IntakeConstants.ENABLED_INTAKE_ANGLE) {
       isIntakeDown = true;
     } else {
       isIntakeDown = false;
