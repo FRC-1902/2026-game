@@ -57,11 +57,12 @@ public class IntakeSubsystem extends SubsystemBase {
     return IntakeConstants.INTAKE_KG * Math.cos(angle.getRadians());
   }
 
-  public Rotation2d getAngle() {
-    Rotation2d rawAngle = Rotation2d.fromRotations(pivotEncoder.getPosition());
-    Rotation2d offsetAngle = rawAngle.minus(IntakeConstants.ENCODER_OFFSET);
-    return offsetAngle.times(IntakeConstants.ENCODER_TO_INTAKE_RATIO);
-  }
+public Rotation2d getAngle() {
+  double rawRotations = pivotEncoder.getPosition();
+  double offsetRotations = IntakeConstants.ENCODER_OFFSET.getRotations();
+  double mechanismRotations = (rawRotations - offsetRotations) * IntakeConstants.ENCODER_TO_INTAKE_RATIO;
+  return Rotation2d.fromRotations(mechanismRotations);
+}
 
   public void setAngle(Rotation2d angle) {
     targetAngle = angle;

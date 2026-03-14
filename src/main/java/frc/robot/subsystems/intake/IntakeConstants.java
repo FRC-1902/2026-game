@@ -14,8 +14,8 @@ public class IntakeConstants {
   // Gear ratios
 
   public static final double MOTOR_TO_INTAKE_RATIO = 18.0; // 18:1
-  public static final double INTAKE_TO_ENCODER_RATIO = 2.0; // 2:1
-  public static final double ENCODER_TO_INTAKE_RATIO = 0.5; // 1:2
+  public static final double INTAKE_TO_ENCODER_RATIO = 1.0; // 2:1
+  public static final double ENCODER_TO_INTAKE_RATIO = 1.0; // 1:2
 
   public static final double INTAKE_KG = 0.0; // TODO: get real value
 
@@ -29,7 +29,7 @@ public class IntakeConstants {
   public static final double INTAKE_KD = 0.0;
 
   public static final Rotation2d ENCODER_OFFSET =
-      Rotation2d.fromDegrees(48); // TODO: set based on calibration (must be in rotations)
+      Rotation2d.fromDegrees(35.3); // TODO: set based on calibration (must be in rotations)
 
   // Config
 
