@@ -99,6 +99,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
   }
 
+  public void spinFlywheelBackwards() {
+    setFlywheelSpeed(-FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
+  }
+
   @Override
   public void periodic() {
     double output = 0;
