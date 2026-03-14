@@ -38,8 +38,8 @@ public class HoodSubsystem extends SubsystemBase {
     // configure pid
     pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
     pid.enableContinuousInput(0, 360);
-    pid.setIZone(HoodConstants.HOOD_IZONE);
-    pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE);
+    pid.setIZone(HoodConstants.HOOD_IZONE.getDegrees());
+    pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE.getDegrees());
   }
 
   public Rotation2d getAbsoluteAngle() {
