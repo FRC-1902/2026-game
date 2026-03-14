@@ -124,7 +124,7 @@ public class RobotContainer {
                 .andThen(
                     new InstantCommand(
                         () -> flywheel.toggle(),
-                        flywheel))); // manual override for the flywheel, toggles between hish and
+                        flywheel))); // manual override for the flywheel, toggles between high and
     // low speed
     manipXbox
         .x()
