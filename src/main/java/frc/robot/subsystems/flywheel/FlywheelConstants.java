@@ -1,12 +1,10 @@
-package frc.robot.subsystems.Flywheel;
+package frc.robot.subsystems.flywheel;
 
 /** Constants for the Hood subsystem. */
 public class FlywheelConstants {
   // Motor CAN ID
-  public static final int RIGHT_FLYWHEEL_MOTOR_ID =
-      0; // TODO: Set the correct CAN ID for the right flywheel motor
-  public static final int LEFT_FLYWHEEL_MOTOR_ID =
-      1; // TODO: Set the correct CAN ID for the left flywheel motor
+  public static final int RIGHT_FLYWHEEL_MOTOR_ID = 34;
+  public static final int LEFT_FLYWHEEL_MOTOR_ID = 39;
 
   // PID
   public static final double FLYWHEEL_KP = 0.1; // TODO: Tune PID

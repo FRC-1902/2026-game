@@ -1,7 +1,10 @@
-package frc.robot.subsystems.Flywheel;
+package frc.robot.subsystems.flywheel;
 
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
@@ -12,6 +15,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
@@ -30,6 +34,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   private final SparkMax leftFlywheelMotor;
   private final SparkMax rightFlywheelMotor;
+  private boolean toggleState;
 
   private final PIDController pid =
       new PIDController(
@@ -41,6 +46,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final MutVoltage m_appliedVoltage = Volts.mutable(0);
   // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
   private final MutAngularVelocity m_velocity = RadiansPerSecond.mutable(0);
+  private final MutAngle m_position = Radians.mutable(0);
 
   private final SysIdRoutine m_sysIdRoutine;
 
@@ -57,20 +63,25 @@ public class FlywheelSubsystem extends SubsystemBase {
     leftFlywheelMotor =
         new SparkMax(FlywheelConstants.LEFT_FLYWHEEL_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
+    toggleState = false;
+
     // Configure motor
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(SparkBaseConfig.IdleMode.kCoast);
+    config.inverted(true);
+    config.smartCurrentLimit(50);
 
     rightFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    config.inverted(false);
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // TODO: get sysid constants and then remove in final code
     m_sysIdRoutine =
         new SysIdRoutine(
             // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(),
+            new SysIdRoutine.Config(Volts.of(4).per(Second), Volts.of(4), Second.of(10)),
             new SysIdRoutine.Mechanism(
                 // Tell SysId how to plumb the driving voltage to the motor(s).
                 this::setVoltage,
@@ -83,6 +94,9 @@ public class FlywheelSubsystem extends SubsystemBase {
                           m_appliedVoltage.mut_replace(
                               rightFlywheelMotor.get() * RobotController.getBatteryVoltage(),
                               Volts))
+                      .angularPosition(
+                          m_position.mut_replace(
+                              rightFlywheelMotor.getEncoder().getPosition(), Rotations))
                       .angularVelocity(
                           m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond));
                 },
@@ -99,6 +113,11 @@ public class FlywheelSubsystem extends SubsystemBase {
     rightFlywheelMotor.setVoltage(v);
   }
 
+  private void setSpeed(double s) {
+    leftFlywheelMotor.set(s);
+    rightFlywheelMotor.set(s);
+  }
+
   public void setFlywheelSpeed(double rpm) {
     targetRpm = rpm;
   }
@@ -109,11 +128,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
   }
 
-  public void spinUpToSpeed() {
+  public void spinToHighSpeed() {
     setFlywheelSpeed(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
   }
 
-  public void spinDownToLowSpeed() {
+  public void spinToLowSpeed() {
     setFlywheelSpeed(FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
   }
 
@@ -127,6 +146,18 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public boolean isAtTargetSpeed() {
     return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
+  }
+
+  public void toggle() {
+    toggleState = !toggleState;
+
+    if (toggleState) {
+      spinToHighSpeed();
+    } else if (!toggleState) {
+      spinToLowSpeed();
+    } else {
+      spinDownToZero();
+    }
   }
 
   /**
@@ -147,6 +178,10 @@ public class FlywheelSubsystem extends SubsystemBase {
     return m_sysIdRoutine.dynamic(direction);
   }
 
+  public Command testCommand() {
+    return startEnd(() -> setSpeed(1), () -> setSpeed(0));
+  }
+
   @Override
   public void periodic() {
     double output = 0;
@@ -156,11 +191,16 @@ public class FlywheelSubsystem extends SubsystemBase {
     } else {
       output = 0;
     }
-    leftFlywheelMotor.setVoltage(output);
-    rightFlywheelMotor.setVoltage(output);
+
+    // leftFlywheelMotor.setVoltage(output);
+    // rightFlywheelMotor.setVoltage(-output);
+    // TODO: re-enable motors
+
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
-    SmartDashboard.putNumber("Flywheel/Target RPM", FlywheelConstants.DESIRED_FLYWHEEL_RPM);
+    SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
+    SmartDashboard.putNumber("Flywheel/ right current draw", rightFlywheelMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Flywheel/ left current draw", leftFlywheelMotor.getOutputCurrent());
     SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
   }
 }

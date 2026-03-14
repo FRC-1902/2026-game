@@ -12,34 +12,40 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private final SparkMax rollerMotor;
   private final SparkMax pivotMotor;
   private final SparkAbsoluteEncoder pivotEncoder;
+  private final PIDController pid;
 
-  private Rotation2d targetAngle = new Rotation2d();
-
-  PIDController pid =
-      new PIDController(
-          IntakeConstants.INTAKE_KP, IntakeConstants.INTAKE_KI, IntakeConstants.INTAKE_KD);
+  private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
   public IntakeSubsystem() {
+    // setup pid
+    pid =
+        new PIDController(
+            IntakeConstants.INTAKE_KP, IntakeConstants.INTAKE_KI, IntakeConstants.INTAKE_KD);
+    pid.enableContinuousInput(0, 360);
+    pid.setIZone(IntakeConstants.PID_IZONE.getDegrees());
+    pid.setTolerance(IntakeConstants.PID_TOLERANCE.getDegrees());
 
-    pid.enableContinuousInput(0.0, 360.0);
-    pid.setIZone(IntakeConstants.PID_IZONE);
-    pid.setTolerance(IntakeConstants.PID_TOLERANCE);
-
+    // construct motors + encoders
     pivotMotor = new SparkMax(IntakeConstants.PIVOTMOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     rollerMotor = new SparkMax(IntakeConstants.ROLLERMOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     pivotEncoder = pivotMotor.getAbsoluteEncoder();
-    // Set up motors, encoder & PID
 
+    // configure motors
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
+
+    // TODO: clean this up after orlando
+    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.42));
+
     pivotMotor.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -49,7 +55,6 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.voltageCompensation(IntakeConstants.ROLLERMOTOR_VOLTAGECOMPENSATION);
     rollerMotor.configure(
         rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    // Setup PID feedback loop & configs
   }
 
   private double calculateGravityFeedforward(Rotation2d angle) {
@@ -57,33 +62,24 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    return Rotation2d.fromRotations(
-        pivotEncoder.getPosition() * IntakeConstants.ENCODER_TO_INTAKE_RATIO
-            - IntakeConstants.ENCODER_OFFSET);
-    // Get the angle of the encoder in rotations
+    double rotations = pivotEncoder.getPosition();
+    rotations *= IntakeConstants.ENCODER_TO_INTAKE_RATIO;
+    
+    // TODO: clean this up after orlando
+    rotations -= (60 / 360.0);
+
+    return Rotation2d.fromRotations(rotations);
   }
 
-  public void setAngle(Rotation2d angle) {
+  private void setAngle(Rotation2d angle) {
     targetAngle = angle;
   }
 
   public void setIntakeState(boolean state) {
-    Rotation2d angle = Rotation2d.fromDegrees(IntakeConstants.ENABLED_INTAKE_ANGLE);
-    if (!state) {
-      angle = Rotation2d.fromDegrees(IntakeConstants.DISABLED_INTAKE_ANGLE);
-    }
-    // Set the target angle to be the angle of an enabled intake
-    if (targetAngle != angle) {
-      setAngle(angle);
-    }
-    // Set the angle of the pivotMotor to that angle
-  }
-
-  public boolean getIntakeState() {
-    if (getAngle().getDegrees() == IntakeConstants.DISABLED_INTAKE_ANGLE) {
-      return false;
+    if (state) {
+      setAngle(IntakeConstants.ENABLED_INTAKE_ANGLE);
     } else {
-      return true;
+      setAngle(IntakeConstants.DISABLED_INTAKE_ANGLE);
     }
   }
 
@@ -95,31 +91,37 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.set(0);
   }
 
+  public boolean atSetpoint() {
+    return pid.atSetpoint();
+  }
+
+  public Command enableIntakeCommand() {
+    return this.runOnce(() -> setIntakeState(true)).andThen(new WaitUntilCommand(this::atSetpoint));
+  }
+
+  public Command disableIntakeCommand() {
+    return this.runOnce(() -> setIntakeState(false))
+        .andThen(new WaitUntilCommand(this::atSetpoint));
+  }
+
+  public Command startRollersCommand() {
+    return this.startEnd(() -> startRollers(), () -> stopRollers());
+  }
+
   @Override
   public void periodic() {
-    double measurement = getAngle().getDegrees();
+    // calculate pid + ff for pivot motor
+    Rotation2d measurement = getAngle();
     double setpoint = targetAngle.getDegrees();
-    double pidoutput = pid.calculate(measurement, setpoint);
-    double ff = calculateGravityFeedforward(getAngle());
+    double pidoutput = pid.calculate(measurement.getDegrees(), setpoint);
+    double ff = calculateGravityFeedforward(measurement);
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     pivotMotor.set(output);
-    // Calculates PID and sets pivotMotor to it
 
-    SmartDashboard.putNumber("Intake/Current Pivot Angle", getAngle().getDegrees());
-    SmartDashboard.putNumber("Intake/Target Pivot Angle", targetAngle.getDegrees());
-    // Add all values to network table
-  }
-
-  public Command EnableIntakeCommand() {
-    return this.runOnce(() -> setIntakeState(true));
-  }
-
-  public Command DisableIntakeCommand() {
-    return this.runOnce(() -> setIntakeState(false));
-  }
-
-  public Command StartRollersCommand() {
-    return this.startEnd(() -> startRollers(), () -> stopRollers());
+    // add all values to network table
+    SmartDashboard.putNumber("Intake/Current Pivot Angle", measurement.getDegrees());
+    SmartDashboard.putNumber("Intake/Target Pivot Angle", setpoint);
+    SmartDashboard.putNumber("Intake/Output Percent", output);
   }
 }

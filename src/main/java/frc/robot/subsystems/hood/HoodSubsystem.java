@@ -4,6 +4,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,46 +12,49 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Hood extends SubsystemBase {
+public class HoodSubsystem extends SubsystemBase {
   private final SparkFlex hoodMotor;
   private final DutyCycleEncoder absoluteEncoder;
+  private final PIDController pid;
 
-  private Rotation2d targetAngle = new Rotation2d();
-  private final PIDController pid =
-      new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
+  private Rotation2d targetAngle = Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE);
 
-  public Hood() {
+  public HoodSubsystem() {
     // Initialize motor
     hoodMotor = new SparkFlex(HoodConstants.HOOD_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
     // Configure motor
     SparkFlexConfig config = new SparkFlexConfig();
 
-    config.closedLoop.outputRange(-1.0, 1.0);
-    config.encoder.positionConversionFactor(360.0 / HoodConstants.MOTOR_TO_HOOD_RATIO);
+    config.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    config.inverted(true);
 
     hoodMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    // configure encoder on dio
     absoluteEncoder = new DutyCycleEncoder(HoodConstants.HOOD_ENCODER_DIO_PORT);
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
-    pid.enableContinuousInput(0.0, 360.0);
-
-    pid.setIZone(HoodConstants.HOOD_IZONE);
-
-    pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE);
+    // configure pid
+    pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
+    pid.enableContinuousInput(0, 360);
+    pid.setIZone(HoodConstants.HOOD_IZONE.getDegrees());
+    pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE.getDegrees());
   }
 
   public Rotation2d getAbsoluteAngle() {
-    // Multiply by 360 to get encoder degrees, then divide by gear ratio to get hood degrees
-    double encoderRotations = absoluteEncoder.get();
-    double angle =
-        (encoderRotations * 360.0 / HoodConstants.ENCODER_TO_HOOD_RATIO)
-            - HoodConstants.ENCODER_OFFSET;
+    double rawEncoderRot = absoluteEncoder.get();
+    double zeroOffsetRot = HoodConstants.ENCODER_OFFSET / 360;
 
-    // Wrap to 0-360 range
-    angle = ((angle % 360.0) + 360.0) % 360.0;
-    return Rotation2d.fromDegrees(angle);
+    double encoderDeltaRot = rawEncoderRot - zeroOffsetRot;
+    double hoodRot = encoderDeltaRot * HoodConstants.ENCODER_TO_HOOD_RATIO;
+
+    hoodRot = hoodRot % 1.0;
+    if (hoodRot < 0) {
+      hoodRot += 1.0;
+    }
+
+    return Rotation2d.fromRotations(hoodRot);
   }
 
   // Get the current hood angle from the external encoder.
@@ -82,12 +86,16 @@ public class Hood extends SubsystemBase {
     setAngle(getAngleForDistance(distance));
   }
 
-  public boolean atTargetAngle() {
+  public boolean atSetpoint() {
     return pid.atSetpoint();
   }
 
-  public void stop() {
-    hoodMotor.stopMotor();
+  public Rotation2d upOneDegree() {
+    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(20));
+  }
+
+  public Rotation2d downOneDegree() {
+    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(20));
   }
 
   @Override
@@ -104,7 +112,7 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Hood/Current Angle", measurement);
     SmartDashboard.putNumber("Hood/Absolute Angle", getAbsoluteAngle().getDegrees());
     SmartDashboard.putNumber("Hood/Target Angle", setpoint);
-    SmartDashboard.putBoolean("Hood/At Target", atTargetAngle());
+    SmartDashboard.putBoolean("Hood/At Setpoint", atSetpoint());
     SmartDashboard.putNumber("Hood/Motor Current", hoodMotor.getOutputCurrent());
     SmartDashboard.putNumber("Hood/Motor Output", hoodMotor.getAppliedOutput());
     SmartDashboard.putNumber("Hood/PID Output", pidOutput);

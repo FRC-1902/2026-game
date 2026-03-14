@@ -4,19 +4,29 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.*;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
-import frc.robot.subsystems.Flywheel.*;
+import frc.robot.commands.flywheel.FlywheelCommand;
+import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.climb.ClimbSubsystem;
+import frc.robot.subsystems.climb.ClimbSubsystem.State;
+import frc.robot.subsystems.flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.hood.HoodConstants;
+import frc.robot.subsystems.hood.HoodSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
@@ -35,7 +45,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
-  final CommandXboxController manipulatorXbox = new CommandXboxController(1);
+  final CommandXboxController manipXbox = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
@@ -44,10 +54,14 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
   private final FlywheelSubsystem flywheel;
+  private final ClimbSubsystem climber;
+  private final IndexerSubsystem indexer;
+  private final HoodSubsystem hood;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Side> climbSideChooser = new SendableChooser<>();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
@@ -56,37 +70,38 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * 1,
-              () -> driverXbox.getLeftX() * 1)
+              () -> driverXbox.getLeftY() * -1,
+              () -> driverXbox.getLeftX() * -1)
           .withControllerRotationAxis(driverXbox::getRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
-
-  // TODO: Robot oriented for debugging - change back to field oriented for comp
-  SwerveInputStream driveRobotOriented =
-      SwerveInputStream.of(
-              drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * 1,
-              () -> driverXbox.getLeftX() * 1)
-          .withControllerRotationAxis(driverXbox::getRightX)
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8)
-          .robotRelative(true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
+    climber = new ClimbSubsystem();
+    indexer = new IndexerSubsystem();
+    hood = new HoodSubsystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    // Initialize the Climber State
+    climber.setState(State.OFF);
 
     // Set the default auto (do nothing)
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
 
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
+
+    // Add the options to set which side we are climbing on
+    climbSideChooser.addOption("Climb Left", Side.LEFT);
+    climbSideChooser.addOption("Climb Right", Side.RIGHT);
+
+    climber.setSide(climbSideChooser.getSelected());
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -101,12 +116,9 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-
-  // TODO: swap to field oriented for comp.
   private void configureBindings() {
-    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
-    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
-
+    Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     /*  On LT hold (manip controller) pivot to face the waypoint
     while allowing translational movement from the driver controller */
     manipulatorXbox
@@ -120,8 +132,43 @@ public class RobotContainer {
                 () -> -driverXbox.getLeftX()));
 
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    driverXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
-    driverXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
+    manipXbox.x().onTrue(InstanceIntakeSubsystem.enableIntakeCommand());
+    manipXbox.x().whileTrue(InstanceIntakeSubsystem.startRollersCommand());
+    manipXbox.b().onTrue(InstanceIntakeSubsystem.disableIntakeCommand());
+
+    // manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
+    // manipXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
+    // manipXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
+    // manipXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
+    // manipXbox
+    //     .leftBumper()
+    //     .whileTrue(new ParallelCommandGroup(indexer.outtakeCommand(), flywheel.testCommand()));
+    manipXbox
+        .rightBumper()
+        .whileTrue(
+            new ParallelCommandGroup(indexer.spinRollerShooterCommand(), flywheel.testCommand()));
+
+    manipXbox.povUp().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
+    manipXbox.povDown().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
+    manipXbox
+        .povLeft()
+        .onTrue(
+            Commands.runOnce(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
+
+    driverXbox
+        .y()
+        .onTrue(
+            new InstantCommand(() -> flywheel.removeDefaultCommand())
+                .andThen(new InstantCommand(() -> flywheel.toggle(), flywheel)));
+    /* manipXbox
+        .b()
+        .whileTrue(
+            new ClimbCompositionCommand(
+                InstanceIntakeSubsystem, drivebase, climber, climber.getSide()));
+
+    manipXbox.povUp().onTrue(new ManualDPADClimbUp(climber));
+    manipXbox.povDown().onTrue(new ManualDPADClimbDown(climber)); */
   }
 
   /**

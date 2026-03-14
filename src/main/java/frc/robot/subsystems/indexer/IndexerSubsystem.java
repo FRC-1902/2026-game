@@ -31,11 +31,11 @@ public class IndexerSubsystem extends SubsystemBase {
 
     SparkMaxConfig rollerConfig = new SparkMaxConfig();
     rollerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
-    rollerConfig.smartCurrentLimit(0); // change this as needed
+    rollerConfig.smartCurrentLimit(30); // change this as needed
 
     SparkMaxConfig shooterConfig = new SparkMaxConfig();
     shooterConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
-    shooterConfig.smartCurrentLimit(0); // change this as needed
+    shooterConfig.smartCurrentLimit(30); // change this as needed
 
     rollerIndexerMotor.configure(
         rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -43,35 +43,28 @@ public class IndexerSubsystem extends SubsystemBase {
         shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  // start shooter
-  public void startShooterIndexer() {
-    shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
-  }
-
-  // stop shooter
-  public void stopShooterIndexer() {
-    shooterIndexerMotor.stopMotor();
-  }
-
-  // start roller
-  public void startRollerIndexer() {
-    rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
-  }
-
-  // stop motor
-  public void stopRollerIndexer() {
-    rollerIndexerMotor.stopMotor();
-  }
-
   public Command spinRollerShooterCommand() {
     return Commands.startEnd(
         () -> {
-          startRollerIndexer();
-          startShooterIndexer();
+          // rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+          shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
         },
         () -> {
-          stopRollerIndexer();
-          stopShooterIndexer();
+          shooterIndexerMotor.set(0);
+          rollerIndexerMotor.set(0);
+        },
+        this);
+  }
+
+  public Command outtakeCommand() {
+    return Commands.startEnd(
+        () -> {
+          // rollerIndexerMotor.set(-IndexerConstants.ROLLER_INDEXER_SPEED);
+          shooterIndexerMotor.set(-IndexerConstants.SHOOTER_INDEXER_SPEED);
+        },
+        () -> {
+          shooterIndexerMotor.set(0);
+          rollerIndexerMotor.set(0);
         },
         this);
   }
