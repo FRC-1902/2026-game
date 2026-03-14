@@ -22,7 +22,7 @@ import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.Climb.State;
-import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -38,7 +38,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  public IntakeSubsystem InstanceIntakeSubsystem = new IntakeSubsystem();
+  public IntakeSubsystem intake;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -53,7 +53,7 @@ public class RobotContainer {
   private final FlywheelSubsystem flywheel;
   private final Climb climber;
   private final IndexerSubsystem indexer;
-  private final Hood hood;
+  private final HoodSubsystem hood;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
@@ -81,7 +81,8 @@ public class RobotContainer {
     telemetry.setDrivebase(drivebase);
     climber = new Climb();
     indexer = new IndexerSubsystem();
-    hood = new Hood();
+    hood = new HoodSubsystem();
+    intake = new IntakeSubsystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
@@ -128,13 +129,13 @@ public class RobotContainer {
     manipXbox
     .x()
     .whileTrue(
-        InstanceIntakeSubsystem.EnableIntakeCommand()
-            .andThen(InstanceIntakeSubsystem.StartRollersCommand())
+        intake.enableIntakeCommand()
+            .andThen(intake.startRollersCommand())
     ); // Sequenced command to enable intake and then start rollers after intake is ENABLED
     manipXbox
         .b()
         .onTrue(
-            InstanceIntakeSubsystem.disableIntakeCommand()); // disable the intake on the press of b
+            intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
         .leftTrigger()
         .whileTrue(
