@@ -10,13 +10,6 @@ public class HoodConstants {
   // Encoder DIO port
   public static final int HOOD_ENCODER_DIO_PORT = 0; // TODO: Set the correct DIO port
 
-  // Mechanical ratios
-  // Motor -> 9:1 planetary -> 3:1 planetary -> 24T -> 24T (center axle) -> 48T (hood)
-  public static final double MOTOR_TO_CENTER_AXLE_RATIO = 9.0 * 3.0 * (24.0 / 24.0); // 27:1
-  public static final double CENTER_AXLE_TO_HOOD_RATIO = 48.0 / 24.0; // 2:1
-  public static final double MOTOR_TO_HOOD_RATIO =
-      MOTOR_TO_CENTER_AXLE_RATIO * CENTER_AXLE_TO_HOOD_RATIO; // 54:1
-
   // Encoder ratios
   // Through Bore encoder belted to hood via 48T (hood) -> 24T (encoder)
   // 2 encoder rotations = 1 hood rotation

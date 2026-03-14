@@ -19,7 +19,7 @@ import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import java.util.Optional;
 
-public class Climb extends SubsystemBase {
+public class ClimbSubsystem extends SubsystemBase {
   public enum State {
     DOWN, // Moving towards the bottom-most position
     UP, // Moving position towards the top-most position
@@ -41,7 +41,7 @@ public class Climb extends SubsystemBase {
       new PIDController(ClimbConstants.CLIMB_KP, ClimbConstants.CLIMB_KI, ClimbConstants.CLIMB_KD);
 
   // Initialize motor and inbuilt encoder
-  public Climb() {
+  public ClimbSubsystem() {
     climbMotor = new SparkMax(ClimbConstants.CLIMB_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(SparkBaseConfig.IdleMode.kBrake);
@@ -62,7 +62,7 @@ public class Climb extends SubsystemBase {
     return runOnce(() -> setState(newState)).alongWith(new WaitUntilCommand(this::atSetpoint));
   }
 
-  public Climb.State getState() {
+  public ClimbSubsystem.State getState() {
     return state;
   }
 

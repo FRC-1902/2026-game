@@ -5,7 +5,7 @@ import frc.robot.commands.swervedrive.drivebase.AlignForClimb;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.commands.swervedrive.drivebase.DriveToClimb;
 import frc.robot.subsystems.climb.*;
-import frc.robot.subsystems.climb.Climb.State;
+import frc.robot.subsystems.climb.ClimbSubsystem.State;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.swervedrive.*;
 
@@ -13,13 +13,13 @@ public class ClimbCompositionCommand extends SequentialCommandGroup {
 
   private final IntakeSubsystem intake;
   private final SwerveSubsystem swerve;
-  private final Climb climber;
+  private final ClimbSubsystem climber;
   private Side side;
 
   public ClimbCompositionCommand(
       IntakeSubsystem intakeSubsystem,
       SwerveSubsystem swerveSubsystem,
-      Climb climbSubsystem,
+      ClimbSubsystem climbSubsystem,
       Side side) {
     intake = intakeSubsystem;
     swerve = swerveSubsystem;

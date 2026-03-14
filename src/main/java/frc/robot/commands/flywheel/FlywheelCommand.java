@@ -1,8 +1,8 @@
 package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.*;
-import frc.robot.subsystems.Flywheel.*;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.flywheel.*;
 
 public class FlywheelCommand extends Command {
 

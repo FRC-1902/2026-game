@@ -1,4 +1,4 @@
-package frc.robot.subsystems.Flywheel;
+package frc.robot.subsystems.flywheel;
 
 /** Constants for the Hood subsystem. */
 public class FlywheelConstants {

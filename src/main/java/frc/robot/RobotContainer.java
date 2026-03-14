@@ -18,12 +18,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
-import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.Climb.State;
-import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.climb.ClimbSubsystem;
+import frc.robot.subsystems.climb.ClimbSubsystem.State;
+import frc.robot.subsystems.flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.hood.HoodConstants;
+import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -52,9 +52,9 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
   private final FlywheelSubsystem flywheel;
-  private final Climb climber;
+  private final ClimbSubsystem climber;
   private final IndexerSubsystem indexer;
-  private final Hood hood;
+  private final HoodSubsystem hood;
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
@@ -80,9 +80,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
-    climber = new Climb();
+    climber = new ClimbSubsystem();
     indexer = new IndexerSubsystem();
-    hood = new Hood();
+    hood = new HoodSubsystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
 
@@ -118,8 +118,8 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    manipXbox.x().onTrue(InstanceIntakeSubsystem.EnableIntakeCommand());
-    manipXbox.x().whileTrue(InstanceIntakeSubsystem.StartRollersCommand());
+    manipXbox.x().onTrue(InstanceIntakeSubsystem.enableIntakeCommand());
+    manipXbox.x().whileTrue(InstanceIntakeSubsystem.startRollersCommand());
     manipXbox.b().onTrue(InstanceIntakeSubsystem.disableIntakeCommand());
 
     // manipXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));

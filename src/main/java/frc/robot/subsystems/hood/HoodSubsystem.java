@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Hood extends SubsystemBase {
+public class HoodSubsystem extends SubsystemBase {
   private final SparkFlex hoodMotor;
   private final DutyCycleEncoder absoluteEncoder;
   private Rotation2d newAngle;
@@ -22,7 +22,7 @@ public class Hood extends SubsystemBase {
   private final PIDController pid =
       new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
 
-  public Hood() {
+  public HoodSubsystem() {
     // Initialize motor
     hoodMotor = new SparkFlex(HoodConstants.HOOD_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
 
@@ -32,18 +32,15 @@ public class Hood extends SubsystemBase {
     config.idleMode(SparkBaseConfig.IdleMode.kBrake);
     config.inverted(true);
 
-    config.closedLoop.outputRange(-1.0, 1.0);
-    config.encoder.positionConversionFactor(360.0 / HoodConstants.MOTOR_TO_HOOD_RATIO);
-
     hoodMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    // configure encoder on dio
     absoluteEncoder = new DutyCycleEncoder(HoodConstants.HOOD_ENCODER_DIO_PORT);
     absoluteEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
+    // configure pid
     pid.enableContinuousInput(0, 360);
-
     pid.setIZone(HoodConstants.HOOD_IZONE);
-
     pid.setTolerance(HoodConstants.HOOD_ANGLE_TOLERANCE);
   }
 
