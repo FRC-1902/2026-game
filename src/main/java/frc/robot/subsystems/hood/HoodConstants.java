@@ -17,19 +17,19 @@ public class HoodConstants {
   public static final double ENCODER_TO_HOOD_RATIO = 0.5; // 2:1
 
   // PID
-  public static final double HOOD_KP = 0.005; // TODO: Tune PID (or basically just P)
+  public static final double HOOD_KP = 0.013;
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
   // Gravity feedforward constant (percent output at full gravity)
-  public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
+  public static final double HOOD_KCOS = 0.01;
 
   // Soft limits (in degrees)
   public static final double HOOD_MIN_ANGLE = 6.15; // TODO: Set based on physical limits
   public static final double HOOD_MAX_ANGLE = 24.1; // TODO: Set based on physical limits
 
   // Tolerance for reaching target angle (in degrees)
-  public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(2.0);
+  public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(1.0);
   public static final Rotation2d HOOD_IZONE = Rotation2d.fromDegrees(10.0);
 
   // Distance to angle interpolation table
@@ -50,5 +50,5 @@ public class HoodConstants {
 
   // Absolute encoder offset (in degrees)
   // This is the angle reading when the hood is at 0 degrees
-  public static final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.0); // TODO: setup
+  public static final double ENCODER_OFFSET = 82;
 }

@@ -44,7 +44,7 @@ public class HoodSubsystem extends SubsystemBase {
 
   public Rotation2d getAbsoluteAngle() {
     double rawEncoderRot = absoluteEncoder.get();
-    double zeroOffsetRot = HoodConstants.ENCODER_OFFSET.getRotations();
+    double zeroOffsetRot = HoodConstants.ENCODER_OFFSET / 360;
 
     double encoderDeltaRot = rawEncoderRot - zeroOffsetRot;
     double hoodRot = encoderDeltaRot * HoodConstants.ENCODER_TO_HOOD_RATIO;
@@ -91,11 +91,11 @@ public class HoodSubsystem extends SubsystemBase {
   }
 
   public Rotation2d upOneDegree() {
-    return getTargetAngle().plus(Rotation2d.fromDegrees(1));
+    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(20));
   }
 
   public Rotation2d downOneDegree() {
-    return getTargetAngle().minus(Rotation2d.fromDegrees(1));
+    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(20));
   }
 
   @Override
