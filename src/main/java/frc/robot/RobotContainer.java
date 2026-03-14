@@ -129,8 +129,8 @@ public class RobotContainer {
     // low
     driverXbox
         .x()
-        .onTrue(
-            new InstantCommand(() -> flywheel.spinFlywheelBackwards())
+        .whileTrue(
+            Commands.run(() -> flywheel.spinFlywheelBackwards())
                 .alongWith(indexer.outtakeCommand()));
     manipXbox
         .x()
