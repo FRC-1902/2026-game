@@ -42,6 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
+
+    // TODO: clean this up after orlando
+    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.42));
+
     pivotMotor.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -58,18 +62,13 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    double rawEncoderRot = pivotEncoder.getPosition();
-    double zeroOffsetRot = IntakeConstants.ENCODER_OFFSET.getRotations();
+    double rotations = pivotEncoder.getPosition();
+    rotations *= IntakeConstants.ENCODER_TO_INTAKE_RATIO;
+    
+    // TODO: clean this up after orlando
+    rotations -= (60 / 360.0);
 
-    double encoderDeltaRot = rawEncoderRot - zeroOffsetRot;
-    double intakeRot = encoderDeltaRot * IntakeConstants.ENCODER_TO_INTAKE_RATIO;
-
-    intakeRot = intakeRot % 1.0;
-    if (intakeRot < 0) {
-      intakeRot += 1.0;
-    }
-
-    return Rotation2d.fromRotations(intakeRot);
+    return Rotation2d.fromRotations(rotations);
   }
 
   private void setAngle(Rotation2d angle) {
