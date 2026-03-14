@@ -11,6 +11,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
@@ -20,6 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax pivotMotor;
   private final SparkAbsoluteEncoder pivotEncoder;
   private final PIDController pid;
+  private boolean isIntakeDown = false;
 
   private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
@@ -105,7 +107,11 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public Command startRollersCommand() {
-    return this.startEnd(() -> startRollers(), () -> stopRollers());
+    if (isIntakeDown) {
+      return this.startEnd(() -> startRollers(), () -> stopRollers());
+    } else {
+      return Commands.none();
+    }
   }
 
   @Override
@@ -118,6 +124,12 @@ public class IntakeSubsystem extends SubsystemBase {
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     pivotMotor.set(output);
+
+    if (atSetpoint() && targetAngle == IntakeConstants.ENABLED_INTAKE_ANGLE) {
+      isIntakeDown = true;
+    } else {
+      isIntakeDown = false;
+    }
 
     // add all values to network table
     SmartDashboard.putNumber("Intake/Current Pivot Angle", measurement.getDegrees());

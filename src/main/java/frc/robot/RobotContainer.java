@@ -136,10 +136,8 @@ public class RobotContainer {
         .x()
         .whileTrue(
             intake
-                .enableIntakeCommand()
-                .andThen(
-                    intake.startRollersCommand())); // Sequenced command to enable intake and then
-    // start rollers after intake is ENABLED
+                .enableIntakeCommand());
+    manipXbox.x().whileTrue(intake.startRollersCommand()); 
     manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
         .leftTrigger()
