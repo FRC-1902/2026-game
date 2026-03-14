@@ -3,16 +3,16 @@ package frc.robot.commands.hood;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.WaypointManager;
-import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class AlignHoodCommand extends Command {
 
-  private final Hood hood;
+  private final HoodSubsystem hood;
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
 
-  public AlignHoodCommand(Hood hood, SwerveSubsystem swerve, WaypointManager waypointManager) {
+  public AlignHoodCommand(HoodSubsystem hood, SwerveSubsystem swerve, WaypointManager waypointManager) {
     this.hood = hood;
     this.swerve = swerve;
     this.waypointManager = waypointManager;
@@ -35,7 +35,7 @@ public class AlignHoodCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return hood.atTargetAngle();
+    return hood.atSetpoint();
   }
 
   private void updateHoodAngle() {
