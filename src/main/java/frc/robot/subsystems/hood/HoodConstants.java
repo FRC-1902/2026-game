@@ -8,7 +8,7 @@ public class HoodConstants {
   public static final int HOOD_MOTOR_ID = 40;
 
   // Encoder DIO port
-  public static final int HOOD_ENCODER_DIO_PORT = 0; // TODO: Set the correct DIO port
+  public static final int HOOD_ENCODER_DIO_PORT = 0; 
 
   // Mechanical ratios
   // Motor -> 9:1 planetary -> 3:1 planetary -> 24T -> 24T (center axle) -> 48T (hood)
@@ -23,21 +23,21 @@ public class HoodConstants {
   public static final double ENCODER_TO_HOOD_RATIO = 2.0; // 2:1
 
   // PID
-  public static final double HOOD_KP = 0.005; // TODO: Tune PID (or basically just P)
+  public static final double HOOD_KP = 0.005; 
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
   // Gravity feedforward constant (percent output at full gravity)
-  public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
+  public static final double HOOD_KCOS = 0.0; 
 
   // Soft limits (in degrees)
-  public static final double HOOD_MIN_ANGLE = 6.15; // TODO: Set based on physical limits
-  public static final double HOOD_MAX_ANGLE = 24.1; // TODO: Set based on physical limits
+  public static final double HOOD_MIN_ANGLE = 6.15; 
+  public static final double HOOD_MAX_ANGLE = 24.1; 
 
   // Tolerance for reaching target angle (in degrees)
   public static final double HOOD_ANGLE_TOLERANCE = 0.0;
 
-  public static final double HOOD_IZONE = 0; // TODO: Tune IZONE vlue
+  public static final double HOOD_IZONE = 0; 
 
   // Distance to angle interpolation table
   // Distances in meters, angles in degrees
