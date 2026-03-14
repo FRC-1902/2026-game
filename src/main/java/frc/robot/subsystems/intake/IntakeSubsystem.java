@@ -97,13 +97,21 @@ public class IntakeSubsystem extends SubsystemBase {
     return pid.atSetpoint();
   }
 
+  private void intakeBoolEnabled() {
+    isIntakeDown = true;
+  }
+
+  private void intakeBoolDisabled() {
+    isIntakeDown = false;
+  }
+
   public Command enableIntakeCommand() {
-    return this.runOnce(() -> setIntakeState(true)).andThen(new WaitUntilCommand(this::atSetpoint));
+    return this.runOnce(() -> setIntakeState(true)).andThen(new WaitUntilCommand(this::atSetpoint)).andThen(runOnce(() -> intakeBoolEnabled()));
   }
 
   public Command disableIntakeCommand() {
     return this.runOnce(() -> setIntakeState(false))
-        .andThen(new WaitUntilCommand(this::atSetpoint));
+        .andThen(new WaitUntilCommand(this::atSetpoint)).andThen(runOnce(() -> intakeBoolDisabled()));
   }
 
   public Command startRollersCommand() {
@@ -125,12 +133,6 @@ public class IntakeSubsystem extends SubsystemBase {
     double output = pidoutput + ff;
     output = Math.max(-1.0, Math.min(1.0, output));
     pivotMotor.set(output);
-
-    if(atSetpoint() && targetAngle == IntakeConstants.ENABLED_INTAKE_ANGLE) {
-      isIntakeDown = true;
-    } else {
-      isIntakeDown = false;
-    }
 
     // add all values to network table
     SmartDashboard.putNumber("Intake/Current Pivot Angle", measurement.getDegrees());
