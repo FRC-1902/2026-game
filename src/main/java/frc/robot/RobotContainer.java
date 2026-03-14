@@ -124,15 +124,13 @@ public class RobotContainer {
                 .andThen(
                     new InstantCommand(
                         () -> flywheel.toggle(),
-                        flywheel))); // manual override for the flywheel, toggles between high and
-    // low speed
+                        flywheel))); // manual override for the flywheel, toggles between high and low
     manipXbox
-        .x()
-        .onTrue(InstanceIntakeSubsystem.EnableIntakeCommand()); // Put intake out on the press of x
-    manipXbox
-        .x()
-        .whileTrue(
-            InstanceIntakeSubsystem.StartRollersCommand()); // run the rollers while x is pressed
+    .x()
+    .whileTrue(
+        InstanceIntakeSubsystem.EnableIntakeCommand()
+            .andThen(InstanceIntakeSubsystem.StartRollersCommand())
+    ); // Sequenced command to enable intake and then start rollers after intake is ENABLED
     manipXbox
         .b()
         .onTrue(
