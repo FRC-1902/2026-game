@@ -29,11 +29,11 @@ public class IndexerSubsystem extends SubsystemBase {
     shooterIndexerEncoder = shooterIndexerMotor.getEncoder();
     rollerIndexerEncoder = rollerIndexerMotor.getEncoder();
 
-    SparkMaxConfig rollerConfig = new SparkMaxConfig();
+    SparkMaxConfig rollerConfig = new SparkMaxConfig(); // Configure roller motor (non existent rn)
     rollerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
     rollerConfig.smartCurrentLimit(30); // change this as needed
 
-    SparkMaxConfig shooterConfig = new SparkMaxConfig();
+    SparkMaxConfig shooterConfig = new SparkMaxConfig(); // Configures shooter indexer motors
     shooterConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
     shooterConfig.smartCurrentLimit(30); // change this as needed
 
@@ -43,10 +43,9 @@ public class IndexerSubsystem extends SubsystemBase {
         shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public Command spinRollerShooterCommand() {
+  public Command spinRollerShooterCommand() { // Runs the shooter indexer
     return Commands.startEnd(
         () -> {
-          // rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
           shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
         },
         () -> {
@@ -56,10 +55,9 @@ public class IndexerSubsystem extends SubsystemBase {
         this);
   }
 
-  public Command outtakeCommand() {
+  public Command outtakeCommand() { // Runs the shooter indexer motor backwards
     return Commands.startEnd(
         () -> {
-          // rollerIndexerMotor.set(-IndexerConstants.ROLLER_INDEXER_SPEED);
           shooterIndexerMotor.set(-IndexerConstants.SHOOTER_INDEXER_SPEED);
         },
         () -> {
