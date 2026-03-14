@@ -12,7 +12,8 @@ public class AlignHoodCommand extends Command {
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
 
-  public AlignHoodCommand(HoodSubsystem hood, SwerveSubsystem swerve, WaypointManager waypointManager) {
+  public AlignHoodCommand(
+      HoodSubsystem hood, SwerveSubsystem swerve, WaypointManager waypointManager) {
     this.hood = hood;
     this.swerve = swerve;
     this.waypointManager = waypointManager;

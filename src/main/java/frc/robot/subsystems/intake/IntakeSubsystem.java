@@ -64,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public Rotation2d getAngle() {
     double rotations = pivotEncoder.getPosition();
     rotations *= IntakeConstants.ENCODER_TO_INTAKE_RATIO;
-    
+
     // TODO: clean this up after orlando
     rotations -= (60 / 360.0);
 

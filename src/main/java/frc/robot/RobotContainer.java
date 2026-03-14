@@ -125,17 +125,17 @@ public class RobotContainer {
                 .andThen(
                     new InstantCommand(
                         () -> flywheel.toggle(),
-                        flywheel))); // manual override for the flywheel, toggles between high and low
+                        flywheel))); // manual override for the flywheel, toggles between high and
+    // low
     manipXbox
-    .x()
-    .whileTrue(
-        intake.enableIntakeCommand()
-            .andThen(intake.startRollersCommand())
-    ); // Sequenced command to enable intake and then start rollers after intake is ENABLED
-    manipXbox
-        .b()
-        .onTrue(
-            intake.disableIntakeCommand()); // disable the intake on the press of b
+        .x()
+        .whileTrue(
+            intake
+                .enableIntakeCommand()
+                .andThen(
+                    intake.startRollersCommand())); // Sequenced command to enable intake and then
+    // start rollers after intake is ENABLED
+    manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
         .leftTrigger()
         .whileTrue(
@@ -147,9 +147,7 @@ public class RobotContainer {
                     driverXbox.getLeftY())
                 .alongWith(
                     new AlignHoodCommand(
-                        hood,
-                        drivebase,
-                        drivebase.getWaypointManager()))); // Shoots
+                        hood, drivebase, drivebase.getWaypointManager()))); // Shoots
     manipXbox
         .rightTrigger()
         .whileTrue(
