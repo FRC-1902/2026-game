@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -93,7 +94,13 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
 
     // Add a simple auto option to have the robot drive forward for 1 second then stop
-    autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
+    autoChooser.addOption("Simple Shoot & Drive", new AlignToHub(
+                    drivebase,
+                    drivebase.getWaypointManager(),
+                    "HUB",
+                    driverXbox.getLeftX(),
+                    driverXbox.getLeftY()).andThen(Commands.runOnce(() -> flywheel.spinToHighSpeed())).andThen(new WaitUntilCommand(flywheel::isAtTargetSpeed)).andThen(indexer.spinRollerShooterCommand(flywheel
+                )).andThen(drivebase.driveForward().withTimeout(1)));
 
     // Add the options to set which side we are climbing on
     climbSideChooser.addOption("Climb Left", Side.LEFT);
