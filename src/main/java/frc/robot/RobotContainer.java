@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -188,5 +189,16 @@ public class RobotContainer {
 
   public Vision getVision() {
     return vision;
+  }
+
+  public boolean flipForAlliance() {
+    var alliance = DriverStation.getAlliance();
+    Alliance ourAlliance = alliance.get();
+    if (ourAlliance == Alliance.Red) {
+      return true;
+    } else {
+      return false;
+    }
+    
   }
 }
