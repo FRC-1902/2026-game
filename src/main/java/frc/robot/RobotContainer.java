@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.hood.AlignHoodCommand;
-import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
+// import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
@@ -59,7 +59,7 @@ public class RobotContainer {
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  private final SendableChooser<Side> climbSideChooser = new SendableChooser<>();
+  // private final SendableChooser<Side> climbSideChooser = new SendableChooser<>();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
@@ -102,11 +102,12 @@ public class RobotContainer {
                     driverXbox.getLeftY()).andThen(Commands.runOnce(() -> flywheel.spinToHighSpeed())).andThen(new WaitUntilCommand(flywheel::isAtTargetSpeed)).andThen(indexer.spinRollerShooterCommand(flywheel
                 )).andThen(drivebase.driveForward().withTimeout(1)));
 
+    //TODO: fix this and reimplement after orlando
     // Add the options to set which side we are climbing on
-    climbSideChooser.addOption("Climb Left", Side.LEFT);
-    climbSideChooser.addOption("Climb Right", Side.RIGHT);
+    // climbSideChooser.addOption("Climb Left", Side.LEFT);
+    // climbSideChooser.addOption("Climb Right", Side.RIGHT);
 
-    climber.setSide(climbSideChooser.getSelected());
+    // climber.setSide(climbSideChooser.getSelected());
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
