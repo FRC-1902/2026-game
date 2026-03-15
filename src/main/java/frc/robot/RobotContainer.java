@@ -132,12 +132,8 @@ public class RobotContainer {
         .whileTrue(
             Commands.run(() -> flywheel.spinFlywheelBackwards())
                 .alongWith(indexer.outtakeCommand()));
-    manipXbox
-        .x()
-        .whileTrue(
-            intake
-                .enableIntakeCommand());
-    manipXbox.x().whileTrue(intake.startRollersCommand()); 
+    manipXbox.x().whileTrue(intake.enableIntakeCommand());
+    manipXbox.x().whileTrue(intake.startRollersCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
         .leftTrigger()
@@ -156,6 +152,16 @@ public class RobotContainer {
         .whileTrue(
             indexer.spinRollerShooterCommand(
                 flywheel)); // Enables indexer feeding balls into flywheel
+
+    manipXbox
+        .y()
+        .whileTrue(
+            new AlignToHub(
+                drivebase,
+                drivebase.getWaypointManager(),
+                "HUB",
+                manipXbox.getLeftX(),
+                manipXbox.getLeftY()));
   }
 
   /**

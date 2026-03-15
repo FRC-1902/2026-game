@@ -44,7 +44,8 @@ public class AlignToHub extends Command {
   @Override
   public void execute() {
     Pose2d currentPose = swerve.getPose();
-    Rotation2d targetAngle = waypointManager.getAngleToWaypoint(currentPose, waypointName);
+
+    Rotation2d targetAngle = waypointManager.getAngleToWaypoint(currentPose, waypointName, false);
 
     // Check if the waypoint exists
     double rotationOutput = 0;

@@ -40,7 +40,7 @@ public class AlignHoodCommand extends Command {
   }
 
   private void updateHoodAngle() {
-    double distance = waypointManager.getDistanceToWaypoint(swerve.getPose(), "HUB");
+    double distance = waypointManager.getDistanceToWaypoint(swerve.getPose(), "HUB", false);
 
     if (distance < 0) {
       return;
