@@ -60,6 +60,7 @@ public class RobotContainer {
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
   // private final SendableChooser<Side> climbSideChooser = new SendableChooser<>();
 
   /**
@@ -95,15 +96,21 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
 
     // Add a simple auto option to have the robot drive forward for 1 second then stop
-    autoChooser.addOption("Simple Shoot & Drive", new AlignToHub(
-                    drivebase,
-                    drivebase.getWaypointManager(),
-                    "HUB",
-                    driverXbox.getLeftX(),
-                    driverXbox.getLeftY()).andThen(Commands.runOnce(() -> flywheel.spinToHighSpeed())).andThen(new WaitUntilCommand(flywheel::isAtTargetSpeed)).andThen(indexer.spinRollerShooterCommand(flywheel
-                )).andThen(drivebase.driveForward().withTimeout(1)));
+    autoChooser.addOption(
+        "Simple Shoot & Drive",
+        new AlignToHub(
+                drivebase,
+                drivebase.getWaypointManager(),
+                "HUB",
+                driverXbox.getLeftX(),
+                driverXbox.getLeftY(),
+                flipForAlliance())
+            .andThen(Commands.runOnce(() -> flywheel.spinToHighSpeed()))
+            .andThen(new WaitUntilCommand(flywheel::isAtTargetSpeed))
+            .andThen(indexer.spinRollerShooterCommand(flywheel))
+            .andThen(drivebase.driveForward().withTimeout(1)));
 
-    //TODO: fix this and reimplement after orlando
+    // TODO: fix this and reimplement after orlando
     // Add the options to set which side we are climbing on
     // climbSideChooser.addOption("Climb Left", Side.LEFT);
     // climbSideChooser.addOption("Climb Right", Side.RIGHT);
@@ -158,10 +165,14 @@ public class RobotContainer {
                     drivebase.getWaypointManager(),
                     "HUB",
                     driverXbox.getLeftX(),
-                    driverXbox.getLeftY())
+                    driverXbox.getLeftY(),
+                    flipForAlliance())
                 .alongWith(
                     new AlignHoodCommand(
-                        hood, drivebase, drivebase.getWaypointManager()))); // Shoots
+                        hood,
+                        drivebase,
+                        drivebase.getWaypointManager(),
+                        flipForAlliance()))); // Shoots
     manipXbox
         .rightTrigger()
         .whileTrue(
@@ -199,6 +210,5 @@ public class RobotContainer {
     } else {
       return false;
     }
-    
   }
 }

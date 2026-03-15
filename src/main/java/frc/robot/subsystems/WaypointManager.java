@@ -72,8 +72,8 @@ public class WaypointManager {
    * @param offsetMeters Offset in meters
    * @return Waypoint pose with offset applied
    */
-  public Pose2d getWaypointWithOffset(String name, double offsetMeters) {
-    Pose2d waypoint = waypoints.get(name);
+  public Pose2d getWaypointWithOffset(String name, double offsetMeters, boolean flipForAlliance) {
+    Pose2d waypoint = getWaypoint(name, flipForAlliance);
     if (waypoint == null) {
       return null;
     }
@@ -89,8 +89,9 @@ public class WaypointManager {
    * @param waypointName Waypoint name
    * @return Distance in meters, or -1 if waypoint not found
    */
-  public double getDistanceToWaypoint(Pose2d currentPose, String waypointName) {
-    Pose2d waypoint = waypoints.get(waypointName);
+  public double getDistanceToWaypoint(
+      Pose2d currentPose, String waypointName, boolean flipForAlliance) {
+    Pose2d waypoint = getWaypoint(waypointName, flipForAlliance);
     if (waypoint == null) {
       return -1;
     }
@@ -105,8 +106,9 @@ public class WaypointManager {
    * @param waypointName Waypoint name
    * @return Angle to waypoint, or null if waypoint not found
    */
-  public Rotation2d getAngleToWaypoint(Pose2d currentPose, String waypointName) {
-    Pose2d waypoint = waypoints.get(waypointName);
+  public Rotation2d getAngleToWaypoint(
+      Pose2d currentPose, String waypointName, boolean flipForAlliance) {
+    Pose2d waypoint = getWaypoint(waypointName, flipForAlliance);
     if (waypoint == null) {
       return null;
     }

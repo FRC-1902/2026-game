@@ -11,12 +11,17 @@ public class AlignHoodCommand extends Command {
   private final HoodSubsystem hood;
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
+  private boolean flipForAlliance;
 
   public AlignHoodCommand(
-      HoodSubsystem hood, SwerveSubsystem swerve, WaypointManager waypointManager) {
+      HoodSubsystem hood,
+      SwerveSubsystem swerve,
+      WaypointManager waypointManager,
+      boolean flipForAlliance) {
     this.hood = hood;
     this.swerve = swerve;
     this.waypointManager = waypointManager;
+    this.flipForAlliance = flipForAlliance;
 
     addRequirements(hood);
   }
@@ -40,7 +45,8 @@ public class AlignHoodCommand extends Command {
   }
 
   private void updateHoodAngle() {
-    double distance = waypointManager.getDistanceToWaypoint(swerve.getPose(), "HUB");
+    double distance =
+        waypointManager.getDistanceToWaypoint(swerve.getPose(), "HUB", flipForAlliance);
 
     if (distance < 0) {
       return;

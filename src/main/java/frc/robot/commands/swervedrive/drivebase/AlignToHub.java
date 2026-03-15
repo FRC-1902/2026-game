@@ -15,6 +15,7 @@ public class AlignToHub extends Command {
   private final String waypointName;
   private final double translationX;
   private final double translationY;
+  private boolean flipForAlliance;
 
   // TODO: this pid will need to be tuned
   private final PIDController rotController = new PIDController(0, 0, 0);
@@ -24,12 +25,14 @@ public class AlignToHub extends Command {
       WaypointManager waypointManager,
       String waypointName,
       double translationX,
-      double translationY) {
+      double translationY,
+      boolean flipForAlliance) {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
     this.waypointName = waypointName;
     this.translationX = translationX;
     this.translationY = translationY;
+    this.flipForAlliance = flipForAlliance;
 
     // Declare subsystem dependencies
     addRequirements(swerve);
@@ -44,7 +47,8 @@ public class AlignToHub extends Command {
   @Override
   public void execute() {
     Pose2d currentPose = swerve.getPose();
-    Rotation2d targetAngle = waypointManager.getAngleToWaypoint(currentPose, waypointName);
+    Rotation2d targetAngle =
+        waypointManager.getAngleToWaypoint(currentPose, waypointName, flipForAlliance);
 
     // Check if the waypoint exists
     double rotationOutput = 0;
