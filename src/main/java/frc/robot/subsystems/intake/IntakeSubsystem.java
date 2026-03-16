@@ -44,7 +44,7 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
 
     // TODO: clean this up after orlando
-    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.42));
+    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.6));
 
     pivotMotor.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -66,7 +66,7 @@ public class IntakeSubsystem extends SubsystemBase {
     rotations *= IntakeConstants.ENCODER_TO_INTAKE_RATIO;
 
     // TODO: clean this up after orlando
-    rotations -= (60 / 360.0);
+    rotations -= (0.01 / 360.0);
 
     return Rotation2d.fromRotations(rotations);
   }
