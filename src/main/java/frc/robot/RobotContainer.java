@@ -69,7 +69,7 @@ public class RobotContainer {
               drivebase.getSwerveDrive(),
               () -> driverXbox.getLeftY() * -1,
               () -> driverXbox.getLeftX() * -1)
-          .withControllerRotationAxis(driverXbox::getRightX)
+          .withControllerRotationAxis(this::getInvertedRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
@@ -117,23 +117,23 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
+    // flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
     driverXbox
         .y()
         .onTrue(
             new InstantCommand(() -> flywheel.removeDefaultCommand())
                 .andThen(
-                    new InstantCommand(
+                    Commands.runOnce(
                         () -> flywheel.toggle(),
                         flywheel))); // manual override for the flywheel, toggles between high and
     // low
     driverXbox
         .x()
         .whileTrue(
-            Commands.run(() -> flywheel.spinFlywheelBackwards())
+            Commands.run(() -> flywheel.spinFlywheelBackwards(), flywheel)
                 .alongWith(indexer.outtakeCommand()));
     manipXbox.x().whileTrue(intake.enableIntakeCommand());
-    manipXbox.x().whileTrue(intake.startRollersCommand());
+    manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
         .leftTrigger()
@@ -152,7 +152,7 @@ public class RobotContainer {
         .whileTrue(
             indexer.spinRollerShooterCommand(
                 flywheel)); // Enables indexer feeding balls into flywheel
-
+    manipXbox.leftBumper().whileTrue(flywheel.testCommand());
     manipXbox
         .y()
         .whileTrue(
@@ -184,5 +184,9 @@ public class RobotContainer {
 
   public Vision getVision() {
     return vision;
+  }
+
+  public double getInvertedRightX() {
+    return (driverXbox.getRightX() * -1);
   }
 }

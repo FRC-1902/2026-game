@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // Note: We intentionally avoid a hard dependency on SysIdRoutine's constructor here because
@@ -57,6 +58,11 @@ public class FlywheelSubsystem extends SubsystemBase {
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  public void setSpeed(double s) {
+    leftFlywheelMotor.set(s);
+    rightFlywheelMotor.set(s);
+  }
+
   public void setFlywheelSpeed(double rpm) {
     targetRpm = rpm;
   }
@@ -81,6 +87,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public void setFlywheelVoltage(double volatage) {
     rightFlywheelMotor.setVoltage(volatage);
+    leftFlywheelMotor.setVoltage(volatage);
   }
 
   public boolean isAtTargetSpeed() {
@@ -103,9 +110,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     setFlywheelSpeed(-FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
   }
 
+  public Command testCommand() {
+    return startEnd(() -> setSpeed(1), () -> setSpeed(0));
+  }
+
   @Override
   public void periodic() {
-    double output = 0;
+    /* double output = 0;
     if (targetRpm > 0.001 || targetRpm < -0.001) {
       output += feedforward.calculate(targetRpm);
       output += pid.calculate(getFlywheelSpeed(), targetRpm);
@@ -114,7 +125,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     leftFlywheelMotor.setVoltage(output);
-    rightFlywheelMotor.setVoltage(-output);
+    rightFlywheelMotor.setVoltage(-output); */
 
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
