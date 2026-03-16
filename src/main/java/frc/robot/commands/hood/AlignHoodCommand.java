@@ -41,7 +41,7 @@ public class AlignHoodCommand extends Command {
 
   @Override
   public boolean isFinished() {
-    return hood.atSetpoint();
+    return hood.atSetpoint(); // Return whether the hood is at the right position (finished moving)
   }
 
   private void updateHoodAngle() {

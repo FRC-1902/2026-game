@@ -70,7 +70,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   public void spinToHighSpeed() {
     setFlywheelSpeed(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
   }
-
+  // methods for spinning the flywheel up and down
   public void spinToLowSpeed() {
     setFlywheelSpeed(FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
   }
