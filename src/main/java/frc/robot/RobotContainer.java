@@ -202,6 +202,8 @@ public class RobotContainer {
     return vision;
   }
 
+
+
   public boolean flipForAlliance() {
     var alliance = DriverStation.getAlliance();
     Alliance ourAlliance = alliance.get();
@@ -216,3 +218,4 @@ public class RobotContainer {
     return (driverXbox.getRightX() * -1);
   }
 }
+
