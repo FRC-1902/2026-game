@@ -6,8 +6,6 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,18 +20,6 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final SparkMax leftFlywheelMotor;
   private final SparkMax rightFlywheelMotor;
   private boolean toggleState;
-
-  private final PIDController pid =
-      new PIDController(
-          FlywheelConstants.FLYWHEEL_KP,
-          FlywheelConstants.FLYWHEEL_KI,
-          FlywheelConstants.FLYWHEEL_KD);
-
-  private final SimpleMotorFeedforward feedforward =
-      new SimpleMotorFeedforward(
-          FlywheelConstants.FLYWHEEL_KS,
-          FlywheelConstants.FLYWHEEL_KV,
-          FlywheelConstants.FLYWHEEL_KA);
 
   public FlywheelSubsystem() {
     // Initialize motor

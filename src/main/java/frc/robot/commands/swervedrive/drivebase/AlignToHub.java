@@ -7,31 +7,25 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import swervelib.math.SwerveMath;
 
 public class AlignToHub extends Command {
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
   private final String waypointName;
-  private final double translationX;
-  private final double translationY;
   private boolean flipForAlliance;
 
   // TODO: this pid will need to be tuned
-  private final PIDController rotController = new PIDController(0.05, 0, 0);
+  private final PIDController rotController = new PIDController(0.005, 0, 0);
+  private final Translation2d translation = new Translation2d(0, 0);
 
   public AlignToHub(
       SwerveSubsystem swerve,
       WaypointManager waypointManager,
       String waypointName,
-      double translationX,
-      double translationY,
       boolean flipForAlliance) {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
     this.waypointName = waypointName;
-    this.translationX = translationX;
-    this.translationY = translationY;
     this.flipForAlliance = flipForAlliance;
 
     // Declare subsystem dependencies
@@ -62,11 +56,6 @@ public class AlignToHub extends Command {
         rotationOutput = 0;
       }
     }
-
-    double maxVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
-    Translation2d translation =
-        SwerveMath.scaleTranslation(
-            new Translation2d(translationX * maxVelocity, translationY * maxVelocity), 0.8);
 
     swerve.drive(translation, rotationOutput, true);
   }

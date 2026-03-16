@@ -142,8 +142,6 @@ public class RobotContainer {
                     drivebase,
                     drivebase.getWaypointManager(),
                     "HUB",
-                    driverXbox.getLeftX(),
-                    driverXbox.getLeftY(),
                     flipForAlliance())
                 .alongWith(
                     new AlignHoodCommand(
@@ -161,8 +159,6 @@ public class RobotContainer {
                 drivebase,
                 drivebase.getWaypointManager(),
                 "HUB",
-                manipXbox.getLeftX(),
-                manipXbox.getLeftY(),
                 flipForAlliance()));
   }
 
