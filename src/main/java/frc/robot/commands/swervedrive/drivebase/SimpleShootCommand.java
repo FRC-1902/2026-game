@@ -7,15 +7,15 @@ import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class SimpleShootCommand extends ParallelCommandGroup {
-    
-  public SimpleShootCommand(SwerveSubsystem swerve,
+
+  public SimpleShootCommand(
+      SwerveSubsystem swerve,
       WaypointManager waypointManager,
       String waypointName,
-      boolean flipForAlliance, 
+      boolean flipForAlliance,
       HoodSubsystem hood) {
-      addCommands(
+    addCommands(
         new AlignToHub(swerve, waypointManager, "HUB", flipForAlliance),
-        new AlignHoodCommand(hood, swerve, waypointManager)
-        );
-    }
+        new AlignHoodCommand(hood, swerve, waypointManager));
+  }
 }

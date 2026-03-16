@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.hood.AlignHoodCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.commands.swervedrive.drivebase.SimpleShootCommand;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.climb.Climb;
@@ -138,14 +138,12 @@ public class RobotContainer {
     manipXbox
         .leftTrigger()
         .whileTrue(
-            new AlignToHub(
-                    drivebase,
-                    drivebase.getWaypointManager(),
-                    "HUB",
-                    flipForAlliance())
-                .alongWith(
-                    new AlignHoodCommand(
-                        hood, drivebase, drivebase.getWaypointManager()))); // Shoots
+            new SimpleShootCommand(
+                drivebase,
+                drivebase.getWaypointManager(),
+                "HUB",
+                flipForAlliance(),
+                hood)); // Shoots
     manipXbox
         .rightTrigger()
         .whileTrue(
@@ -155,11 +153,7 @@ public class RobotContainer {
     manipXbox
         .y()
         .whileTrue(
-            new AlignToHub(
-                drivebase,
-                drivebase.getWaypointManager(),
-                "HUB",
-                flipForAlliance()));
+            new AlignToHub(drivebase, drivebase.getWaypointManager(), "HUB", flipForAlliance()));
   }
 
   /**
