@@ -72,7 +72,7 @@ public class RobotContainer {
               drivebase.getSwerveDrive(),
               () -> driverXbox.getLeftY() * -1,
               () -> driverXbox.getLeftX() * -1)
-          .withControllerRotationAxis(driverXbox::getRightX)
+          .withControllerRotationAxis(this::getInvertedRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
@@ -202,6 +202,8 @@ public class RobotContainer {
     return vision;
   }
 
+
+
   public boolean flipForAlliance() {
     var alliance = DriverStation.getAlliance();
     Alliance ourAlliance = alliance.get();
@@ -211,4 +213,9 @@ public class RobotContainer {
       return false;
     }
   }
+
+  public double getInvertedRightX() {
+    return (driverXbox.getRightX() * -1);
+  }
 }
+
