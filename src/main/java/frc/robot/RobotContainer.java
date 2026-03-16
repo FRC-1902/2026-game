@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.flywheel.FlywheelCommand;
 import frc.robot.commands.hood.AlignHoodCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
@@ -143,7 +143,8 @@ public class RobotContainer {
                     drivebase.getWaypointManager(),
                     "HUB",
                     driverXbox.getLeftX(),
-                    driverXbox.getLeftY())
+                    driverXbox.getLeftY(),
+                    flipForAlliance())
                 .alongWith(
                     new AlignHoodCommand(
                         hood, drivebase, drivebase.getWaypointManager()))); // Shoots
@@ -161,7 +162,8 @@ public class RobotContainer {
                 drivebase.getWaypointManager(),
                 "HUB",
                 manipXbox.getLeftX(),
-                manipXbox.getLeftY()));
+                manipXbox.getLeftY(),
+                flipForAlliance()));
   }
 
   /**
@@ -188,5 +190,15 @@ public class RobotContainer {
 
   public double getInvertedRightX() {
     return (driverXbox.getRightX() * -1);
+  }
+
+  public boolean flipForAlliance() {
+    var alliance = DriverStation.getAlliance();
+    Alliance ourAlliance = alliance.get();
+    if (ourAlliance == Alliance.Red) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
