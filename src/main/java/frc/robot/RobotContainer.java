@@ -85,6 +85,7 @@ public class RobotContainer {
     intake = new IntakeSubsystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
+    drivebase.zeroGyroWithAlliance();
 
     // Initialize the Climber State
     climber.setState(State.OFF);
@@ -148,7 +149,7 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(
             indexer.spinRollerShooterCommand(
-                flywheel)); // Enables indexer feeding balls into flywheel
+                flywheel).alongWith(intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
     manipXbox.leftBumper().whileTrue(flywheel.testCommand());
     manipXbox
         .y()

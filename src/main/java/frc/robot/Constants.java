@@ -76,7 +76,7 @@ public final class Constants {
 
       // Front Left Camera
       // TODO: Set correct camera name in PhotonVision
-      public static final String FRONT_LEFT_NAME = "ArducamTwo";
+      public static final String FRONT_LEFT_NAME = "ArducamThree";
       // TODO: Measure and set correct transform (rotation) from robot center
       public static final Transform3d FRONT_LEFT_ROBOT_TO_CAM =
           new Transform3d(
@@ -86,8 +86,8 @@ public final class Constants {
                   Units.inchesToMeters(18.970713)),
               new Rotation3d(
                   10, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(40), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(20))); // TODO: Yaw (rotation around Z axis, left+)
+                  Math.toRadians(-22.67), // TODO: Pitch (rotation around Y axis, down+)
+                  Math.toRadians(25.696))); // TODO: Yaw (rotation around Z axis, left+)
 
       // Front Right Camera
       // TODO: Set correct camera name in PhotonVision
@@ -101,12 +101,12 @@ public final class Constants {
                   Units.inchesToMeters(18.936709)), // TODO: Z position from robot center (up+)
               new Rotation3d(
                   10, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-25), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(-15))); // TODO: Yaw (rotation around Z axis, left+)
+                  Math.toRadians(-19.4175), // TODO: Pitch (rotation around Y axis, down+)
+                  Math.toRadians(-18.195))); // TODO: Yaw (rotation around Z axis, left+)
 
       // Back Left Camera
       // TODO: Set correct camera name in PhotonVision
-      public static final String BACK_LEFT_NAME = "arducamThree";
+      public static final String BACK_LEFT_NAME = "arducamTwo";
       // TODO: Measure and set correct transform (rotation) from robot center
       public static final Transform3d BACK_LEFT_ROBOT_TO_CAM =
           new Transform3d(
@@ -116,8 +116,8 @@ public final class Constants {
                   Units.inchesToMeters(6.862401)),
               new Rotation3d(
                   5, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-145), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(-150))); // TODO: Yaw (rotation around Z axis, left+)
+                  Math.toRadians(-166), // TODO: Pitch (rotation around Y axis, down+)
+                  Math.toRadians(158))); // TODO: Yaw (rotation around Z axis, left+)
 
       // Back Right Camera
       // TODO: Set correct camera name in PhotonVision
@@ -131,8 +131,8 @@ public final class Constants {
                   Units.inchesToMeters(6.862401)), // TODO: Z position from robot center (up+)
               new Rotation3d(
                   5, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-145), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(150))); // TODO: Yaw (rotation around Z axis, left+)
+                  Math.toRadians(-166), // TODO: Pitch (rotation around Y axis, down+)
+                  Math.toRadians(-158))); // TODO: Yaw (rotation around Z axis, left+)
     }
   }
 }
