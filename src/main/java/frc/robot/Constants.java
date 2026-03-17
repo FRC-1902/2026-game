@@ -76,7 +76,7 @@ public final class Constants {
 
       // Front Left Camera
       // TODO: Set correct camera name in PhotonVision
-      public static final String FRONT_LEFT_NAME = "ArducamThree";
+      public static final String FRONT_LEFT_NAME = "arducamThree";
       // TODO: Measure and set correct transform (rotation) from robot center
       public static final Transform3d FRONT_LEFT_ROBOT_TO_CAM =
           new Transform3d(
@@ -106,7 +106,7 @@ public final class Constants {
 
       // Back Left Camera
       // TODO: Set correct camera name in PhotonVision
-      public static final String BACK_LEFT_NAME = "arducamTwo";
+      public static final String BACK_LEFT_NAME = "ArducamTwo";
       // TODO: Measure and set correct transform (rotation) from robot center
       public static final Transform3d BACK_LEFT_ROBOT_TO_CAM =
           new Transform3d(

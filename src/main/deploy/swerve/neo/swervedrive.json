@@ -5,7 +5,7 @@
     "id": 47,
     "canbus": "rio"
   },
-  "invertedIMU": true,
+  "invertedIMU": false,
   "modules": [
     "frontleft.json",
     "frontright.json",

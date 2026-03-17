@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -15,7 +16,7 @@ public class AlignToHub extends Command {
   private boolean flipForAlliance;
 
   // TODO: this pid will need to be tuned
-  private final PIDController rotController = new PIDController(0.005, 0, 0);
+  private final PIDController rotController = new PIDController(0.05, 0, 0);
   private final Translation2d translation = new Translation2d(0, 0);
 
   public AlignToHub(
@@ -31,8 +32,7 @@ public class AlignToHub extends Command {
     // Declare subsystem dependencies
     addRequirements(swerve);
 
-    // Tells controller -180 and 180 degrees are the same point
-    rotController.enableContinuousInput(-180, 180);
+    rotController.enableContinuousInput(0, 360);
 
     // Set tolerance: Stop attempting to correct if within 2 degrees
     rotController.setTolerance(2.0);
@@ -50,18 +50,22 @@ public class AlignToHub extends Command {
     if (targetAngle != null) {
       rotationOutput =
           rotController.calculate(currentPose.getRotation().getDegrees(), targetAngle.getDegrees());
-
-      // If within 2 degree tolerance, snap the rotation output to 0
-      if (rotController.atSetpoint()) {
-        rotationOutput = 0;
-      }
     }
 
     swerve.drive(translation, rotationOutput, true);
+
+    SmartDashboard.putNumber("Waypoints/Align To Hub Target Angle", targetAngle.getDegrees());
+    SmartDashboard.putNumber("Waypoints/Align To Hub Current Angle", currentPose.getRotation().getDegrees());
+    SmartDashboard.putNumber("Waypoints/Align To Hub Output", rotationOutput);
   }
 
   @Override
   public void end(boolean interrupted) {
     return;
+  }
+
+  @Override
+  public boolean isFinished() {
+    return rotController.atSetpoint();
   }
 }
