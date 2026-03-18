@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -17,12 +18,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.hood.HoodConstants;
+import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.hood.HoodSubsystem;
-import frc.robot.subsystems.hood.HoodConstants;
-import edu.wpi.first.math.geometry.Rotation2d;
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -103,27 +103,40 @@ public class RobotContainer {
     manipXbox
         .rightBumper()
         .onTrue(
-            Commands.runOnce(() ->flywheel.toggle(), flywheel)); // manual override for the flywheel, toggles between high and
+            Commands.runOnce(
+                () -> flywheel.toggle(),
+                flywheel)); // manual override for the flywheel, toggles between high and
     // low
-  manipXbox.x().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOIT_1))));
-  manipXbox.y().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_2))));
-  manipXbox.a().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_3))));
-  manipXbox.b().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_4))));
     manipXbox
         .povLeft()
+        .onTrue(
+            new InstantCommand(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOIT_1))));
+    manipXbox
+        .povUp()
+        .onTrue(
+            new InstantCommand(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_2))));
+    manipXbox
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_3))));
+    manipXbox
+        .povDown()
+        .onTrue(
+            new InstantCommand(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_4))));
+    manipXbox
+        .b()
         .whileTrue(
             Commands.run(() -> flywheel.spinFlywheelBackwards(), flywheel)
                 .alongWith(indexer.outtakeCommand()));
-    manipXbox.povDown().whileTrue(intake.enableIntakeCommand());
+    manipXbox.x().onTrue(intake.toggleIntakeCommand());
     manipXbox.leftTrigger().whileTrue(intake.startRollersCommand());
-    manipXbox.povUp().onTrue(intake.disableIntakeCommand());
     manipXbox
         .rightTrigger()
-        .whileTrue(
-            indexer
-                .spinRollerShooterCommand()
-                .alongWith(
-                    intake.startRollersCommand()));
+        .whileTrue(indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand()));
   }
 
   /**

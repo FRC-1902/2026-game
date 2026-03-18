@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.subsystems.hood.HoodSubsystem;
 
-public class AlignHoodCommand extends Command{
+public class AlignHoodCommand extends Command {
 
   private final HoodSubsystem hood;
   private final Rotation2d target;
