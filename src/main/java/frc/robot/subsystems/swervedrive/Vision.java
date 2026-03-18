@@ -11,6 +11,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.VisionConstants;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import swervelib.SwerveDrive;
+import org.littletonrobotics.junction.Logger;
 
 public class Vision {
 
@@ -67,6 +69,8 @@ public class Vision {
         // Add vision measurement to the pose estimator with calculated standard deviations
         swerveDrive.addVisionMeasurement(
             pose.estimatedPose.toPose2d(), pose.timestampSeconds, camera.curStdDevs);
+
+        Logger.recordOutput("Camera-based position (FINAL)", pose.estimatedPose.toPose2d());
       }
     }
   }
