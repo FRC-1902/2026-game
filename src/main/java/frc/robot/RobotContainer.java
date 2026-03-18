@@ -137,6 +137,7 @@ public class RobotContainer {
     manipXbox
         .rightTrigger()
         .whileTrue(indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand()));
+    driverXbox.x().onTrue(Commands.runOnce(() -> drivebase.zeroGyroWithAlliance(), drivebase));
   }
 
   /**
