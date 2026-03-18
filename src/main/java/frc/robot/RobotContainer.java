@@ -128,11 +128,12 @@ public class RobotContainer {
             new InstantCommand(
                 () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_4))));
     manipXbox
-        .b()
+        .leftBumper()
         .whileTrue(
             Commands.run(() -> flywheel.spinFlywheelBackwards(), flywheel)
                 .alongWith(indexer.outtakeCommand()));
-    manipXbox.x().onTrue(intake.toggleIntakeCommand());
+    manipXbox.x().onTrue(intake.enableIntakeCommand());
+    manipXbox.b().onTrue(intake.disableIntakeCommand());
     manipXbox.leftTrigger().whileTrue(intake.startRollersCommand());
     manipXbox
         .rightTrigger()
