@@ -1,7 +1,6 @@
 package frc.robot.subsystems.hood;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 /** Constants for the Hood subsystem. */
 public class HoodConstants {
@@ -21,6 +20,11 @@ public class HoodConstants {
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
+  public static final double HOOD_SETPOIT_1 = 10.6375;
+  public static final double HOOD_SETPOINT_2 = 15.125;
+  public static final double HOOD_SETPOINT_3 = 19.6125;
+  public static final double HOOD_SETPOINT_4 = 24.1;
+
   // Gravity feedforward constant (percent output at full gravity)
   public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
 
@@ -31,22 +35,6 @@ public class HoodConstants {
   // Tolerance for reaching target angle (in degrees)
   public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(2.0);
   public static final Rotation2d HOOD_IZONE = Rotation2d.fromDegrees(10.0);
-
-  // Distance to angle interpolation table
-  // Distances in meters, angles in degrees
-  public static final InterpolatingDoubleTreeMap DISTANCE_TO_ANGLE_MAP =
-      new InterpolatingDoubleTreeMap();
-
-  static {
-    // TODO: Fill in with real testing data
-    // Format: DISTANCE_TO_ANGLE_MAP.put(distance_in_meters, angle_in_degrees);
-    DISTANCE_TO_ANGLE_MAP.put(1.0, 30.0);
-    DISTANCE_TO_ANGLE_MAP.put(2.0, 35.0);
-    DISTANCE_TO_ANGLE_MAP.put(3.0, 40.0);
-    DISTANCE_TO_ANGLE_MAP.put(4.0, 45.0);
-    DISTANCE_TO_ANGLE_MAP.put(5.0, 50.0);
-    DISTANCE_TO_ANGLE_MAP.put(6.0, 55.0);
-  }
 
   // Absolute encoder offset (in degrees)
   // This is the angle reading when the hood is at 0 degrees

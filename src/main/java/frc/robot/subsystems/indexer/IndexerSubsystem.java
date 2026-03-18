@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 
 public class IndexerSubsystem extends SubsystemBase {
 
@@ -44,8 +43,7 @@ public class IndexerSubsystem extends SubsystemBase {
         shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public Command spinRollerShooterCommand(FlywheelSubsystem flywheel) { // Runs the shooter indexer
-    if (flywheel.isAtTargetSpeed()) {
+  public Command spinRollerShooterCommand() { // Runs the shooter indexer
       return Commands.startEnd(
           () -> {
             shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
@@ -56,9 +54,6 @@ public class IndexerSubsystem extends SubsystemBase {
             rollerIndexerMotor.set(0);
           },
           this);
-    } else {
-      return Commands.none();
-    }
   }
 
   public Command outtakeCommand() { // Runs the shooter indexer motor backwards

@@ -3,14 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
 
@@ -52,87 +45,5 @@ public final class Constants {
     public static final double LEFT_Y_DEADBAND = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
     public static final double TURN_CONSTANT = 6;
-  }
-
-  public static final class VisionConstants {
-
-    /**
-     * Standard deviations for vision pose estimates when only one AprilTag is visible. Format: [x,
-     * y, theta] in meters and radians.
-     */
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
-
-    /**
-     * Standard deviations for vision pose estimates when multiple AprilTags are visible. Format:
-     * [x, y, theta] in meters and radians.
-     */
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
-
-    /**
-     * Camera configurations for all cameras on the robot. TODO: Update all camera names, positions,
-     * and rotations based on actual robot mounting
-     */
-    public static final class Cameras {
-
-      // Front Left Camera
-      // TODO: Set correct camera name in PhotonVision
-      public static final String FRONT_LEFT_NAME = "arducamThree";
-      // TODO: Measure and set correct transform (rotation) from robot center
-      public static final Transform3d FRONT_LEFT_ROBOT_TO_CAM =
-          new Transform3d(
-              new Translation3d(
-                  Units.inchesToMeters(-8.722503),
-                  Units.inchesToMeters(12.076808),
-                  Units.inchesToMeters(18.970713)),
-              new Rotation3d(
-                  10, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-22.67), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(25.696))); // TODO: Yaw (rotation around Z axis, left+)
-
-      // Front Right Camera
-      // TODO: Set correct camera name in PhotonVision
-      public static final String FRONT_RIGHT_NAME = "ArducamZero";
-      // TODO: Measure and set correct transform (position and rotation) from robot center
-      public static final Transform3d FRONT_RIGHT_ROBOT_TO_CAM =
-          new Transform3d(
-              new Translation3d(
-                  Units.inchesToMeters(-4.697477), // TODO: X position from robot center (forward+)
-                  Units.inchesToMeters(-10.859125), // TODO: Y position from robot center (left+)
-                  Units.inchesToMeters(18.936709)), // TODO: Z position from robot center (up+)
-              new Rotation3d(
-                  10, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-19.4175), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(-18.195))); // TODO: Yaw (rotation around Z axis, left+)
-
-      // Back Left Camera
-      // TODO: Set correct camera name in PhotonVision
-      public static final String BACK_LEFT_NAME = "ArducamTwo";
-      // TODO: Measure and set correct transform (rotation) from robot center
-      public static final Transform3d BACK_LEFT_ROBOT_TO_CAM =
-          new Transform3d(
-              new Translation3d(
-                  Units.inchesToMeters(-13.620134),
-                  Units.inchesToMeters(1.827022),
-                  Units.inchesToMeters(6.862401)),
-              new Rotation3d(
-                  5, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-166), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(158))); // TODO: Yaw (rotation around Z axis, left+)
-
-      // Back Right Camera
-      // TODO: Set correct camera name in PhotonVision
-      public static final String BACK_RIGHT_NAME = "arducamOne";
-      // TODO: Measure and set correct transform (position and rotation) from robot center
-      public static final Transform3d BACK_RIGHT_ROBOT_TO_CAM =
-          new Transform3d(
-              new Translation3d(
-                  Units.inchesToMeters(-13.620134), // TODO: X position from robot center (forward+)
-                  Units.inchesToMeters(-1.827022), // TODO: Y position from robot center (left+)
-                  Units.inchesToMeters(6.862401)), // TODO: Z position from robot center (up+)
-              new Rotation3d(
-                  5, // TODO: Roll (rotation around X axis)
-                  Math.toRadians(-166), // TODO: Pitch (rotation around Y axis, down+)
-                  Math.toRadians(-158))); // TODO: Yaw (rotation around Z axis, left+)
-    }
   }
 }

@@ -57,8 +57,6 @@ public class HoodSubsystem extends SubsystemBase {
     return Rotation2d.fromRotations(hoodRot);
   }
 
-  // Get the current hood angle from the external encoder.
-
   public Rotation2d getTargetAngle() {
     return targetAngle;
   }
@@ -74,16 +72,6 @@ public class HoodSubsystem extends SubsystemBase {
             HoodConstants.HOOD_MIN_ANGLE,
             Math.min(HoodConstants.HOOD_MAX_ANGLE, angle.getDegrees()));
     targetAngle = Rotation2d.fromDegrees(clamped);
-  }
-
-  // Get the interpolated hood angle for a given distance to target.
-  private Rotation2d getAngleForDistance(double distance) {
-    return Rotation2d.fromDegrees(HoodConstants.DISTANCE_TO_ANGLE_MAP.get(distance));
-  }
-
-  // Set the hood angle based on distance to target using the interpolation table.
-  public void setAngleForDistance(double distance) {
-    setAngle(getAngleForDistance(distance));
   }
 
   public boolean atSetpoint() {

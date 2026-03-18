@@ -15,18 +15,14 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.swervedrive.drivebase.AlignForClimb.Side;
-import frc.robot.commands.swervedrive.drivebase.AlignToHub;
-import frc.robot.commands.swervedrive.drivebase.SimpleShootCommand;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.Telemetry;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.Climb.State;
-import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.Vision;
+import frc.robot.subsystems.hood.HoodSubsystem;
+import frc.robot.subsystems.hood.HoodConstants;
+import edu.wpi.first.math.geometry.Rotation2d;
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -48,23 +44,20 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
-  private final Vision vision = new Vision();
   public final Telemetry telemetry = new Telemetry();
   private final FlywheelSubsystem flywheel;
-  private final Climb climber;
   private final IndexerSubsystem indexer;
-  private final HoodSubsystem hood;
+  private final HoodSubsystem hood = new HoodSubsystem();
 
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-  private final SendableChooser<Side> climbSideChooser = new SendableChooser<>();
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
    * velocity.
    */
-  SwerveInputStream driveAngularVelocity =
+  SwerveInputStream driveRobotOriented =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
               () -> driverXbox.getLeftY() * -1,
@@ -72,35 +65,23 @@ public class RobotContainer {
           .withControllerRotationAxis(driverXbox::getRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
-          .allianceRelativeControl(true);
+          .robotRelative(true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     flywheel = new FlywheelSubsystem();
     telemetry.setDrivebase(drivebase);
-    climber = new Climb();
     indexer = new IndexerSubsystem();
-    hood = new HoodSubsystem();
     intake = new IntakeSubsystem();
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
-    drivebase.zeroGyroWithAlliance();
-
-    // Initialize the Climber State
-    climber.setState(State.OFF);
 
     // Set the default auto (do nothing)
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
 
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
-
-    // Add the options to set which side we are climbing on
-    climbSideChooser.addOption("Climb Left", Side.LEFT);
-    climbSideChooser.addOption("Climb Right", Side.RIGHT);
-
-    climber.setSide(climbSideChooser.getSelected());
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -116,45 +97,33 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
-    drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    // flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    driverXbox
-        .y()
+    Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
+
+    drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
+    manipXbox
+        .rightBumper()
         .onTrue(
-            new InstantCommand(() -> flywheel.removeDefaultCommand())
-                .andThen(
-                    Commands.runOnce(
-                        () -> flywheel.toggle(),
-                        flywheel))); // manual override for the flywheel, toggles between high and
+            Commands.runOnce(() ->flywheel.toggle(), flywheel)); // manual override for the flywheel, toggles between high and
     // low
-    driverXbox
-        .x()
+  manipXbox.x().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOIT_1))));
+  manipXbox.y().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_2))));
+  manipXbox.a().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_3))));
+  manipXbox.b().onTrue(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_4))));
+    manipXbox
+        .povLeft()
         .whileTrue(
             Commands.run(() -> flywheel.spinFlywheelBackwards(), flywheel)
                 .alongWith(indexer.outtakeCommand()));
-    manipXbox.x().whileTrue(intake.enableIntakeCommand());
-    manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
-    manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
-    manipXbox
-        .leftTrigger()
-        .whileTrue(
-            new SimpleShootCommand(
-                drivebase,
-                drivebase.getWaypointManager(),
-                "HUB",
-                flipForAlliance(),
-                hood)); // Shoots
+    manipXbox.povDown().whileTrue(intake.enableIntakeCommand());
+    manipXbox.leftTrigger().whileTrue(intake.startRollersCommand());
+    manipXbox.povUp().onTrue(intake.disableIntakeCommand());
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer.spinRollerShooterCommand(
-                flywheel).alongWith(intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
-    manipXbox.leftBumper().whileTrue(flywheel.testCommand());
-    manipXbox
-        .y()
-        .whileTrue(
-            new AlignToHub(drivebase, drivebase.getWaypointManager(), "HUB", flipForAlliance()));
+            indexer
+                .spinRollerShooterCommand()
+                .alongWith(
+                    intake.startRollersCommand()));
   }
 
   /**
@@ -169,14 +138,6 @@ public class RobotContainer {
 
   public void setMotorBrake(boolean brake) {
     drivebase.setMotorBrake(brake);
-  }
-
-  public void updateVision() {
-    vision.updatePoseEstimation(drivebase.getSwerveDrive());
-  }
-
-  public Vision getVision() {
-    return vision;
   }
 
   public boolean flipForAlliance() {

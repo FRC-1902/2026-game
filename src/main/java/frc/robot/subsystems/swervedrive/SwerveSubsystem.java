@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
-import frc.robot.subsystems.WaypointManager;
 import java.io.File;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
@@ -38,15 +37,12 @@ public class SwerveSubsystem extends SubsystemBase {
   /** Swerve drive object. */
   private final SwerveDrive swerveDrive;
 
-  private final WaypointManager waypointManager;
-
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
    * @param directory Directory of swerve drive config files.
    */
   public SwerveSubsystem(File directory) {
-    waypointManager = new WaypointManager();
     boolean blueAlliance = false;
     Pose2d startingPose =
         blueAlliance
@@ -88,7 +84,6 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public SwerveSubsystem(
       SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-    waypointManager = new WaypointManager();
     swerveDrive =
         new SwerveDrive(
             driveCfg,
@@ -473,9 +468,5 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Field2d getField() {
     return swerveDrive.field;
-  }
-
-  public WaypointManager getWaypointManager() {
-    return waypointManager;
   }
 }

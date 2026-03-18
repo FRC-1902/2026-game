@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import org.littletonrobotics.junction.Logger;
 
 public class Telemetry {
   private Alliance turnOrder = null;

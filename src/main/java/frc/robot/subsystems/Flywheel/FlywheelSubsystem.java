@@ -7,12 +7,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-// Note: We intentionally avoid a hard dependency on SysIdRoutine's constructor here because
-// different WPILib versions expose different constructors/factories. The subsystem provides
-// `setVoltage(double)` and `getMeasurement()` which are the required callbacks SysId needs.
 
 public class FlywheelSubsystem extends SubsystemBase {
   double targetRpm;
@@ -20,6 +17,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   private final SparkMax leftFlywheelMotor;
   private final SparkMax rightFlywheelMotor;
   private boolean toggleState;
+  private final PIDController pidController;
 
   public FlywheelSubsystem() {
     // Initialize motor
@@ -42,6 +40,17 @@ public class FlywheelSubsystem extends SubsystemBase {
     config.inverted(false);
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+  pidController =
+    new PIDController(
+      FlywheelConstants.FLYWHEEL_KP,
+      FlywheelConstants.FLYWHEEL_KI,
+      FlywheelConstants.FLYWHEEL_KD);
+
+  double tol = FlywheelConstants.RPM_TOLERANCE;
+  pidController.setTolerance(tol);
+
+  SmartDashboard.putNumber("Flywheel/Setpoint RPM", 0);
   }
 
   public void setSpeed(double s) {
@@ -63,17 +72,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     setFlywheelSpeed(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
   }
 
-  public void spinToLowSpeed() {
-    setFlywheelSpeed(FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
-  }
-
   public void spinDownToZero() {
     setFlywheelSpeed(0);
-  }
-
-  public void setFlywheelVoltage(double volatage) {
-    rightFlywheelMotor.setVoltage(volatage);
-    leftFlywheelMotor.setVoltage(volatage);
   }
 
   public boolean isAtTargetSpeed() {
@@ -84,11 +84,9 @@ public class FlywheelSubsystem extends SubsystemBase {
     toggleState = !toggleState;
 
     if (toggleState) {
-      spinToHighSpeed();
-    } else if (!toggleState) {
-      spinToLowSpeed();
+      setSpeed(1);
     } else {
-      spinDownToZero();
+      setSpeed(0);
     }
   }
 
@@ -102,20 +100,24 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    /* double output = 0;
-    if (targetRpm > 0.001 || targetRpm < -0.001) {
-      output += feedforward.calculate(targetRpm);
-      output += pid.calculate(getFlywheelSpeed(), targetRpm);
-    } else {
-      output = 0;
-    }
+    // double currentRpm = getFlywheelSpeed();
+    // pidController.setP(FlywheelConstants.FLYWHEEL_KP);
+    // pidController.setI(FlywheelConstants.FLYWHEEL_KI);
+    // pidController.setD(FlywheelConstants.FLYWHEEL_KD);
 
-    leftFlywheelMotor.setVoltage(output);
-    rightFlywheelMotor.setVoltage(-output); */
+    // double pidOutput = pidController.calculate(currentRpm, targetRpm);
 
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
+    // pidOutput = Math.max(-1.0, Math.min(1.0, pidOutput));
+    // if (Math.abs(targetRpm) < 1e-6) {
+    //   setSpeed(0);
+    // } else {
+    //   setSpeed(pidOutput);
+    // }
+
+    // Update dashboard
+    // SmartDashboard.putNumber("Flywheel/ Speed", currentRpm);
     SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
+    // SmartDashboard.putNumber("Flywheel/PID Output", pidOutput);
     SmartDashboard.putNumber("Flywheel/ right current draw", rightFlywheelMotor.getOutputCurrent());
     SmartDashboard.putNumber("Flywheel/ left current draw", leftFlywheelMotor.getOutputCurrent());
     SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
