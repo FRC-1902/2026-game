@@ -111,7 +111,7 @@ public class RobotContainer {
         .povLeft()
         .onTrue(
             new InstantCommand(
-                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOIT_1))));
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_1))));
     manipXbox
         .povUp()
         .onTrue(
@@ -138,6 +138,9 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand()));
     driverXbox.x().onTrue(Commands.runOnce(() -> drivebase.zeroGyroWithAlliance(), drivebase));
+
+    manipXbox.y().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
+    manipXbox.a().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));
   }
 
   /**

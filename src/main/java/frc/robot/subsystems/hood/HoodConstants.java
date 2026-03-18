@@ -20,7 +20,7 @@ public class HoodConstants {
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
-  public static final double HOOD_SETPOIT_1 = 10.6375;
+  public static final double HOOD_SETPOINT_1 = 10.6375;
   public static final double HOOD_SETPOINT_2 = 15.125;
   public static final double HOOD_SETPOINT_3 = 19.6125;
   public static final double HOOD_SETPOINT_4 = 24.1;

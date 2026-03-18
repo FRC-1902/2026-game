@@ -78,6 +78,14 @@ public class HoodSubsystem extends SubsystemBase {
     return pid.atSetpoint();
   }
 
+  public Rotation2d upOneDegree() {
+    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(20));
+  }
+
+  public Rotation2d downOneDegree() {
+    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(20));
+  }
+
   @Override
   public void periodic() {
     // External PID control loop
