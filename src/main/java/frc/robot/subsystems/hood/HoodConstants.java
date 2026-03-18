@@ -16,7 +16,7 @@ public class HoodConstants {
   public static final double ENCODER_TO_HOOD_RATIO = 0.5; // 2:1
 
   // PID
-  public static final double HOOD_KP = 0.005; // TODO: Tune PID (or basically just P)
+  public static final double HOOD_KP = 0.01; // TODO: Tune PID (or basically just P)
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
