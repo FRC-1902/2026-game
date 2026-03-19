@@ -83,6 +83,8 @@ public class RobotContainer {
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
+    autoChooser.addOption("try to shoot preload", new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(15.125))).alongWith(flywheel.spinFlywheel()));
+
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -100,13 +102,11 @@ public class RobotContainer {
     Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
 
     drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
+    manipXbox.leftBumper().whileTrue(indexer.outtakeCommand());
     manipXbox
         .rightBumper()
-        .onTrue(
-            Commands.runOnce(
-                () -> flywheel.toggle(),
-                flywheel)); // manual override for the flywheel, toggles between high and
-    // low
+        .whileTrue(
+            flywheel.spinFlywheel());
     manipXbox
         .povLeft()
         .onTrue(
@@ -127,11 +127,6 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                 () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_SETPOINT_4))));
-    manipXbox
-        .leftBumper()
-        .whileTrue(
-            Commands.run(() -> flywheel.spinFlywheelBackwards(), flywheel)
-                .alongWith(indexer.outtakeCommand()));
     manipXbox.x().onTrue(intake.enableIntakeCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand());
     manipXbox.leftTrigger().whileTrue(intake.startRollersCommand());

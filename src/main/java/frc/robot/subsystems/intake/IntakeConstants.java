@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(168);
+  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(158);
   public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(66);
 
   // CAN IDs
@@ -20,7 +20,7 @@ public class IntakeConstants {
   // PID
 
   // TODO: tune PID values
-  public static final double INTAKE_KP = 0.016;
+  public static final double INTAKE_KP = 0.004;
   public static final double INTAKE_KI = 0.0;
   public static final double INTAKE_KD = 0.0;
 
@@ -33,7 +33,7 @@ public class IntakeConstants {
 
   // Motors
 
-  public static final double ROLLERMOTOR_SPEED = 1.0; // TODO: tune
+  public static final double ROLLERMOTOR_SPEED = 0.75; // TODO: tune
 
   public static final int ROLLERMOTOR_CURRENTLIMIT = 40;
   public static final int PIVOTMOTOR_CURRENTLIMIT = 40;
