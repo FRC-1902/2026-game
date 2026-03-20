@@ -23,6 +23,7 @@ import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import java.io.File;
 import swervelib.SwerveInputStream;
 
@@ -39,6 +40,8 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandXboxController manipXbox = new CommandXboxController(1);
+
+  private final VisionSubsystem vision = new VisionSubsystem();
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
@@ -83,7 +86,15 @@ public class RobotContainer {
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
-    autoChooser.addOption("try to shoot preload", new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(15.125))).alongWith(flywheel.spinFlywheel()));
+    autoChooser.addOption(
+        "try to shoot preload",
+        Commands.runOnce(() -> drivebase.zeroGyroWithAlliance(), drivebase)
+            .andThen(
+                new InstantCommand(
+                        () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE)),
+                        hood)
+                    .alongWith(flywheel.spinFlywheel(), indexer.spinRollerShooterCommand())
+                    .repeatedly()));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -103,10 +114,7 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
     manipXbox.leftBumper().whileTrue(indexer.outtakeCommand());
-    manipXbox
-        .rightBumper()
-        .whileTrue(
-            flywheel.spinFlywheel());
+    manipXbox.rightBumper().onTrue(Commands.runOnce(() -> flywheel.toggle(), flywheel));
     manipXbox
         .povLeft()
         .onTrue(
@@ -134,6 +142,10 @@ public class RobotContainer {
         .rightTrigger()
         .whileTrue(indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand()));
     driverXbox.x().onTrue(Commands.runOnce(() -> drivebase.zeroGyroWithAlliance(), drivebase));
+
+    driverXbox
+        .y()
+        .whileTrue(Commands.run(() -> vision.processClosestAprilTagAndSetHood(hood), hood));
 
     manipXbox.y().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.upOneDegree())));
     manipXbox.a().whileTrue(Commands.runOnce(() -> hood.setAngle(hood.downOneDegree())));

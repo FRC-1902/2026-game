@@ -1,6 +1,8 @@
 package frc.robot.subsystems.hood;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /** Constants for the Hood subsystem. */
 public class HoodConstants {
@@ -39,4 +41,15 @@ public class HoodConstants {
   // Absolute encoder offset (in degrees)
   // This is the angle reading when the hood is at 0 degrees
   public static final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.0); // TODO: setup
+
+  public static final NavigableMap<Double, Double> DISTANCE_TO_ANGLE_MAP = new TreeMap<>();
+
+  static {
+    DISTANCE_TO_ANGLE_MAP.put(1.0, 30.0);
+    DISTANCE_TO_ANGLE_MAP.put(2.0, 35.0);
+    DISTANCE_TO_ANGLE_MAP.put(3.0, 40.0);
+    DISTANCE_TO_ANGLE_MAP.put(4.0, 45.0);
+    DISTANCE_TO_ANGLE_MAP.put(5.0, 50.0);
+    DISTANCE_TO_ANGLE_MAP.put(6.0, 55.0);
+  }
 }

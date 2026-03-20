@@ -74,6 +74,36 @@ public class HoodSubsystem extends SubsystemBase {
     targetAngle = Rotation2d.fromDegrees(clamped);
   }
 
+  private double getAngleForDistance(double distance) {
+    var map = HoodConstants.DISTANCE_TO_ANGLE_MAP;
+    if (map.containsKey(distance)) {
+      return map.get(distance);
+    }
+
+    var lower = map.floorEntry(distance);
+    var higher = map.ceilingEntry(distance);
+
+    if (lower == null && higher == null) {
+      return HoodConstants.HOOD_MIN_ANGLE;
+    } else if (lower == null) {
+      return higher.getValue();
+    } else if (higher == null) {
+      return lower.getValue();
+    } else {
+      double x0 = lower.getKey();
+      double y0 = lower.getValue();
+      double x1 = higher.getKey();
+      double y1 = higher.getValue();
+      double t = (distance - x0) / (x1 - x0);
+      return y0 + t * (y1 - y0);
+    }
+  }
+
+  public void setAngleForDistance(double distance) {
+    double angleDeg = getAngleForDistance(distance);
+    setAngle(Rotation2d.fromDegrees(angleDeg));
+  }
+
   public boolean atSetpoint() {
     return pid.atSetpoint();
   }

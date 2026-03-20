@@ -63,9 +63,9 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public Command spinFlywheel() {
-        return Commands.startEnd(
+    return Commands.startEnd(
         () -> {
-              setSpeed(1);
+          setSpeed(1);
         },
         () -> {
           setSpeed(0);
