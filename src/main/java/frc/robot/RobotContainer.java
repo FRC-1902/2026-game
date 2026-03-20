@@ -25,6 +25,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.io.File;
+
 import swervelib.SwerveInputStream;
 
 /**
@@ -65,10 +66,20 @@ public class RobotContainer {
               drivebase.getSwerveDrive(),
               () -> driverXbox.getLeftY() * -1,
               () -> driverXbox.getLeftX() * -1)
-          .withControllerRotationAxis(driverXbox::getRightX)
+          .withControllerRotationAxis(this::getInvertedRightX)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .robotRelative(true);
+
+  SwerveInputStream driveAngularVelocity =
+      SwerveInputStream.of(
+              drivebase.getSwerveDrive(),
+              () -> driverXbox.getLeftY() * -1,
+              () -> driverXbox.getLeftX() * -1)
+          .withControllerRotationAxis(this::getInvertedRightX)
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -110,11 +121,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
+    // Command driveRobotOrientedAngularVelocity = drivebase.driveFieldOriented(driveRobotOriented);
 
-    drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
+    // drivebase.setDefaultCommand(driveRobotOrientedAngularVelocity);
+
+    Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+    drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
     manipXbox.leftBumper().whileTrue(indexer.outtakeCommand());
-    manipXbox.rightBumper().onTrue(Commands.runOnce(() -> flywheel.toggle(), flywheel));
+    manipXbox.rightBumper().onTrue(Commands.runOnce(() -> flywheel.toggle(), flywheel).alongWith(vibrateController(1).withTimeout(1)));
     manipXbox
         .povLeft()
         .onTrue(
@@ -140,7 +154,7 @@ public class RobotContainer {
     manipXbox.leftTrigger().whileTrue(intake.startRollersCommand());
     manipXbox
         .rightTrigger()
-        .whileTrue(indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand()));
+      .whileTrue(indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand()));
     driverXbox.x().onTrue(Commands.runOnce(() -> drivebase.zeroGyroWithAlliance(), drivebase));
 
     driverXbox
@@ -174,4 +188,12 @@ public class RobotContainer {
       return false;
     }
   }
+
+  public double getInvertedRightX() {
+    return driverXbox.getRightX() * -1;
+  }
+
+public Command vibrateController(double intensity) {
+  return Commands.startEnd(() -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity), () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
+}
 }
