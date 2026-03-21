@@ -19,7 +19,7 @@ public class IntakeConstants {
 
   // PID
 
-  public static final double INTAKE_KP = 0.004;
+  public static final double INTAKE_KP = 0.007;
   public static final double INTAKE_KI = 0.0;
   public static final double INTAKE_KD = 0.0;
 

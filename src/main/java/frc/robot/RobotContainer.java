@@ -28,6 +28,7 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import java.io.File;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import swervelib.SwerveInputStream;
 
@@ -114,7 +115,7 @@ public class RobotContainer {
                       flywheel.runOnce(
                           () -> flywheel.setTargetRpm(FlywheelConstants.DESIRED_FLYWHEEL_RPM))
                           // wait until flywheel reports at-target
-                          .andThen(new edu.wpi.first.wpilibj2.command.WaitUntilCommand(flywheel::isAtTarget))
+                          .andThen(new WaitUntilCommand(flywheel::isAtTarget))
                           // then run the indexer while flywheel remains spinning
                           .andThen(indexer.spinRollerShooterCommand().withTimeout(10.0)))));
 
