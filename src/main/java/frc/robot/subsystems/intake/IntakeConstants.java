@@ -9,8 +9,8 @@ public class IntakeConstants {
 
   // CAN IDs
 
-  public static final int ROLLERMOTOR_ID = 1; // TODO: set correct port
-  public static final int PIVOTMOTOR_ID = 4; // TODO: set correct port
+  public static final int ROLLERMOTOR_ID = 1;
+  public static final int PIVOTMOTOR_ID = 4;
 
   // Encoder
 
@@ -19,21 +19,22 @@ public class IntakeConstants {
 
   // PID
 
-  // TODO: tune PID values
   public static final double INTAKE_KP = 0.004;
   public static final double INTAKE_KI = 0.0;
   public static final double INTAKE_KD = 0.0;
+
+  public static final double INTAKE_OSCILLATING_KP = 0.01;
 
   public static final Rotation2d PID_TOLERANCE = Rotation2d.fromDegrees(2.0);
   public static final Rotation2d PID_IZONE = Rotation2d.fromDegrees(10.0);
 
   // FF
 
-  public static final double INTAKE_KG = 0.04; // TODO: get real value
+  public static final double INTAKE_KG = 0.04;
 
   // Motors
 
-  public static final double ROLLERMOTOR_SPEED = 0.75; // TODO: tune
+  public static final double ROLLERMOTOR_SPEED = 0.75;
 
   public static final int ROLLERMOTOR_CURRENTLIMIT = 40;
   public static final int PIVOTMOTOR_CURRENTLIMIT = 40;

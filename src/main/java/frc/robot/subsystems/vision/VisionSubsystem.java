@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import java.util.List;
@@ -133,5 +135,9 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       SmartDashboard.putString("Vision/ClosestCamera", "none");
     }
+  }
+
+  public Command processClosestTagCommand(HoodSubsystem hood) {
+    return Commands.run(() -> processClosestAprilTagAndSetHood(hood), this, hood);
   }
 }

@@ -18,7 +18,7 @@ public class HoodConstants {
   public static final double ENCODER_TO_HOOD_RATIO = 0.5; // 2:1
 
   // PID
-  public static final double HOOD_KP = 0.01; // TODO: Tune PID (or basically just P)
+  public static final double HOOD_KP = 0.01;
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
@@ -28,7 +28,7 @@ public class HoodConstants {
   public static final double HOOD_SETPOINT_4 = 24.1;
 
   // Gravity feedforward constant (percent output at full gravity)
-  public static final double HOOD_KCOS = 0.0; // TODO: Tune this value
+  public static final double HOOD_KCOS = 0.0;
 
   // Soft limits (in degrees)
   public static final double HOOD_MIN_ANGLE = 6.15;
@@ -40,7 +40,7 @@ public class HoodConstants {
 
   // Absolute encoder offset (in degrees)
   // This is the angle reading when the hood is at 0 degrees
-  public static final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.0); // TODO: setup
+  public static final Rotation2d ENCODER_OFFSET = Rotation2d.fromRotations(0.0);
 
   public static final NavigableMap<Double, Double> DISTANCE_TO_ANGLE_MAP = new TreeMap<>();
 

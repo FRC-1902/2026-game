@@ -7,12 +7,16 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class FlywheelSubsystem extends SubsystemBase {
   double targetRpm;
+
+  private final BangBangController bangBangController;
+  private double toleranceRpm = 10.0;
 
   private final SparkMax leftFlywheelMotor;
   private final SparkMax rightFlywheelMotor;
@@ -39,6 +43,8 @@ public class FlywheelSubsystem extends SubsystemBase {
     config.inverted(false);
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+  bangBangController = new BangBangController();
   }
 
   public void setSpeed(double s) {
@@ -52,25 +58,46 @@ public class FlywheelSubsystem extends SubsystemBase {
         * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
   }
 
+  public void setTargetRpm(double rpm) {
+    targetRpm = rpm;
+  }
+
+  public void stop() {
+    targetRpm = 0;
+    setSpeed(0);
+  }
+
+  public boolean isAtTarget() {
+    if (targetRpm <= 0) {
+      return false;
+    }
+    return Math.abs(getFlywheelSpeed() - targetRpm) <= toleranceRpm;
+  }
+
+  public boolean isEnabled() {
+    return toggleState;
+  }
+
+  public boolean isStopped() {
+    return Math.abs(getFlywheelSpeed()) <= toleranceRpm;
+  }
+
   public void toggle() {
     toggleState = !toggleState;
 
     if (toggleState) {
-      setSpeed(1);
+      setTargetRpm(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
     } else {
-      setSpeed(0);
+      stop();
     }
   }
 
   public Command spinFlywheel() {
-    return Commands.startEnd(
-        () -> {
-          setSpeed(1);
-        },
-        () -> {
-          setSpeed(0);
-        },
-        this);
+    return Commands.startEnd(() -> setSpeed(1), () -> setSpeed(0), this);
+  }
+
+  public Command spinFlywheelToRpm(double rpm) {
+    return Commands.startEnd(() -> setTargetRpm(rpm), this::stop, this);
   }
 
   @Override
@@ -78,5 +105,13 @@ public class FlywheelSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
     SmartDashboard.putNumber("Flywheel/ right current draw", rightFlywheelMotor.getOutputCurrent());
     SmartDashboard.putNumber("Flywheel/ left current draw", leftFlywheelMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Flywheel/ RPM", getFlywheelSpeed());
+
+    if (targetRpm > 0) {
+      double output = bangBangController.calculate(getFlywheelSpeed(), targetRpm);
+      setSpeed(output);
+      SmartDashboard.putNumber("Flywheel/Output", output);
+      SmartDashboard.putBoolean("Flywheel/AtTarget", isAtTarget());
+    }
   }
 }
