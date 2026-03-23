@@ -68,9 +68,7 @@ public final class Constants {
      */
     public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
 
-    /**
-     * Camera configurations for all cameras on the robot.
-     */
+    /** Camera configurations for all cameras on the robot. */
     public static final class Cameras {
 
       // Front Left Camera
@@ -81,10 +79,7 @@ public final class Constants {
                   Units.inchesToMeters(-8.722503),
                   Units.inchesToMeters(12.076808),
                   Units.inchesToMeters(18.970713)),
-              new Rotation3d(
-                  10,
-                  Math.toRadians(-22.67),
-                  Math.toRadians(25.696)));
+              new Rotation3d(10, Math.toRadians(-22.67), Math.toRadians(25.696)));
 
       // Front Right Camera
       public static final String FRONT_RIGHT_NAME = "ArducamZero";
@@ -94,10 +89,7 @@ public final class Constants {
                   Units.inchesToMeters(-4.697477),
                   Units.inchesToMeters(-10.859125),
                   Units.inchesToMeters(18.936709)),
-              new Rotation3d(
-                  10,
-                  Math.toRadians(-19.4175),
-                  Math.toRadians(-18.195)));
+              new Rotation3d(10, Math.toRadians(-19.4175), Math.toRadians(-18.195)));
       // Back Left Camera
       public static final String BACK_LEFT_NAME = "ArducamTwo";
       public static final Transform3d BACK_LEFT_ROBOT_TO_CAM =
@@ -106,10 +98,7 @@ public final class Constants {
                   Units.inchesToMeters(-13.620134),
                   Units.inchesToMeters(1.827022),
                   Units.inchesToMeters(6.862401)),
-              new Rotation3d(
-                  5,
-                  Math.toRadians(-166),
-                  Math.toRadians(158)));
+              new Rotation3d(5, Math.toRadians(-166), Math.toRadians(158)));
 
       // Back Right Camera
       public static final String BACK_RIGHT_NAME = "arducamOne";
@@ -119,10 +108,7 @@ public final class Constants {
                   Units.inchesToMeters(-13.620134),
                   Units.inchesToMeters(-1.827022),
                   Units.inchesToMeters(6.862401)),
-              new Rotation3d(
-                  5,
-                  Math.toRadians(-166),
-                  Math.toRadians(-158)));
+              new Rotation3d(5, Math.toRadians(-166), Math.toRadians(-158)));
     }
   }
 }

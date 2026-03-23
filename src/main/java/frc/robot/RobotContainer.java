@@ -92,7 +92,7 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     // flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
-    
+
   }
 
   /**
@@ -128,13 +128,11 @@ public class RobotContainer {
   }
 
   public Command vibrateController(double intensity, double seconds) {
-  return Commands.startEnd(
-          () ->
-              manipXbox.setRumble(
-                  edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-          () ->
-              manipXbox.setRumble(
-                  edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
-      .withTimeout(seconds);
-}
+    return Commands.startEnd(
+            () ->
+                manipXbox.setRumble(
+                    edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
+            () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
+        .withTimeout(seconds);
+  }
 }
