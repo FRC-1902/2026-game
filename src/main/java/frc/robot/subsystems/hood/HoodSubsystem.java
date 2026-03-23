@@ -109,11 +109,11 @@ public class HoodSubsystem extends SubsystemBase {
   }
 
   public Rotation2d upOneDegree() {
-    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(20));
+    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(7));
   }
 
   public Rotation2d downOneDegree() {
-    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(20));
+    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(7));
   }
 
   @Override

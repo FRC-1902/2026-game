@@ -1,26 +1,55 @@
 package frc.robot.subsystems.Flywheel;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+// Note: We intentionally avoid a hard dependency on SysIdRoutine's constructor here because
+// different WPILib versions expose different constructors/factories. The subsystem provides
+// `setVoltage(double)` and `getMeasurement()` which are the required callbacks SysId needs.
 
 public class FlywheelSubsystem extends SubsystemBase {
   double targetRpm;
 
-  private final BangBangController bangBangController;
-  private double toleranceRpm = 10.0;
-
   private final SparkMax leftFlywheelMotor;
   private final SparkMax rightFlywheelMotor;
   private boolean toggleState;
+
+  private final PIDController pid =
+      new PIDController(
+          FlywheelConstants.FLYWHEEL_KP,
+          FlywheelConstants.FLYWHEEL_KI,
+          FlywheelConstants.FLYWHEEL_KD);
+
+  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+  private final MutAngularVelocity m_velocity = RadiansPerSecond.mutable(0);
+
+  private final SysIdRoutine m_sysIdRoutine;
+
+  private final SimpleMotorFeedforward feedforward =
+      new SimpleMotorFeedforward(
+          FlywheelConstants.FLYWHEEL_KS,
+          FlywheelConstants.FLYWHEEL_KV,
+          FlywheelConstants.FLYWHEEL_KA);
 
   public FlywheelSubsystem() {
     // Initialize motor
@@ -34,22 +63,47 @@ public class FlywheelSubsystem extends SubsystemBase {
     // Configure motor
     SparkMaxConfig config = new SparkMaxConfig();
     config.idleMode(SparkBaseConfig.IdleMode.kCoast);
-    config.inverted(true);
-    config.smartCurrentLimit(50);
 
     rightFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    config.inverted(false);
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-  bangBangController = new BangBangController();
+    // TODO: get sysid constants and then remove in final code
+    m_sysIdRoutine =
+        new SysIdRoutine(
+            // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                // Tell SysId how to plumb the driving voltage to the motor(s).
+                this::setVoltage,
+                // Tell SysId how to record a frame of data for each motor on the mechanism being
+                // characterized.
+                log -> {
+                  // Record a frame for the shooter motor.
+                  log.motor("shooter-wheel")
+                      .voltage(
+                          m_appliedVoltage.mut_replace(
+                              rightFlywheelMotor.get() * RobotController.getBatteryVoltage(),
+                              Volts))
+                      .angularVelocity(
+                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond));
+                },
+                // Tell SysId to make generated commands require this subsystem, suffix test state
+                // in
+                // WPILog with this subsystem's name ("shooter")
+                this));
   }
 
-  public void setSpeed(double s) {
-    leftFlywheelMotor.set(s);
-    rightFlywheelMotor.set(s);
+  // Create a new SysId routine for characterizing the flywheel.
+
+  private void setVoltage(Voltage v) {
+    leftFlywheelMotor.setVoltage(v);
+    rightFlywheelMotor.setVoltage(v);
+  }
+
+  public void setFlywheelSpeed(double rpm) {
+    targetRpm = rpm;
   }
 
   public double getFlywheelSpeed() {
@@ -58,60 +112,70 @@ public class FlywheelSubsystem extends SubsystemBase {
         * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
   }
 
-  public void setTargetRpm(double rpm) {
-    targetRpm = rpm;
+  public void spinUpToSpeed() {
+    setFlywheelSpeed(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
   }
 
-  public void stop() {
-    targetRpm = 0;
-    setSpeed(0);
+  public void spinDownToLowSpeed() {
+    setFlywheelSpeed(FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
   }
 
-  public boolean isAtTarget() {
-    if (targetRpm <= 0) {
-      return false;
-    }
-    return Math.abs(getFlywheelSpeed() - targetRpm) <= toleranceRpm;
+  public void spinDownToZero() {
+    setFlywheelSpeed(0);
   }
 
-  public boolean isEnabled() {
-    return toggleState;
+  public void setFlywheelVoltage(double volatage) {
+    rightFlywheelMotor.setVoltage(volatage);
   }
 
-  public boolean isStopped() {
-    return Math.abs(getFlywheelSpeed()) <= toleranceRpm;
+  public boolean isAtTargetSpeed() {
+    return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
 
   public void toggle() {
     toggleState = !toggleState;
 
     if (toggleState) {
-      setTargetRpm(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
+      spinUpToSpeed();
+    } else if (!toggleState) {
+      spinDownToLowSpeed();
     } else {
-      stop();
+      spinDownToZero();
     }
   }
 
-  public Command spinFlywheel() {
-    return Commands.startEnd(() -> setSpeed(1), () -> setSpeed(0), this);
+  /**
+   * Returns a command that will execute a quasistatic test in the given direction.
+   *
+   * @param direction The direction (forward or reverse) to run the test in
+   */
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
   }
 
-  public Command spinFlywheelToRpm(double rpm) {
-    return Commands.startEnd(() -> setTargetRpm(rpm), this::stop, this);
+  /**
+   * Returns a command that will execute a dynamic test in the given direction.
+   *
+   * @param direction The direction (forward or reverse) to run the test in
+   */
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
-    SmartDashboard.putNumber("Flywheel/ right current draw", rightFlywheelMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Flywheel/ left current draw", leftFlywheelMotor.getOutputCurrent());
-    SmartDashboard.putNumber("Flywheel/ RPM", getFlywheelSpeed());
-
-    if (targetRpm > 0) {
-      double output = bangBangController.calculate(getFlywheelSpeed(), targetRpm);
-      setSpeed(output);
-      SmartDashboard.putNumber("Flywheel/Output", output);
-      SmartDashboard.putBoolean("Flywheel/AtTarget", isAtTarget());
+    double output = 0;
+    if (targetRpm > 0.001 || targetRpm < -0.001) {
+      output += feedforward.calculate(targetRpm);
+      output += pid.calculate(getFlywheelSpeed(), targetRpm);
+    } else {
+      output = 0;
     }
+    leftFlywheelMotor.setVoltage(output);
+    rightFlywheelMotor.setVoltage(-output);
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
+    SmartDashboard.putNumber("Flywheel/Target RPM", FlywheelConstants.DESIRED_FLYWHEEL_RPM);
+    SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
   }
 }

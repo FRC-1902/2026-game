@@ -111,18 +111,6 @@ public class IntakeSubsystem extends SubsystemBase {
     return this.startEnd(() -> startRollers(), () -> stopRollers());
   }
 
-  public Command startRollersOscillatingCommand() {
-    return this.startEnd(
-        () -> {
-          pid.setP(IntakeConstants.INTAKE_OSCILLATING_KP);
-          startRollers();
-        },
-        () -> {
-          stopRollers();
-          pid.setP(IntakeConstants.INTAKE_KP);
-        });
-  }
-
   public Command toggleIntakeCommand() {
     intakeToggle = !intakeToggle;
     if (intakeToggle) {
