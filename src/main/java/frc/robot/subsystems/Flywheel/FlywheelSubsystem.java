@@ -95,8 +95,6 @@ public class FlywheelSubsystem extends SubsystemBase {
                 this));
   }
 
-  // Create a new SysId routine for characterizing the flywheel.
-
   private void setVoltage(Voltage v) {
     leftFlywheelMotor.setVoltage(v);
     rightFlywheelMotor.setVoltage(v);
@@ -126,6 +124,19 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public void setFlywheelVoltage(double volatage) {
     rightFlywheelMotor.setVoltage(volatage);
+    leftFlywheelMotor.setVoltage(volatage);
+  }
+
+  public void spinToHighSpeed() {
+    setFlywheelSpeed(FlywheelConstants.DESIRED_FLYWHEEL_RPM);
+  }
+
+  public void spinToLowSpeed() {
+    setFlywheelSpeed(FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
+  }
+
+  public void spinFlywheelBackwards() {
+    setFlywheelSpeed(-FlywheelConstants.DESIRED_LOW_FLYWHEEL_RPM);
   }
 
   public boolean isAtTargetSpeed() {
