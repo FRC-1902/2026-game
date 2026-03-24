@@ -85,6 +85,9 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    
+    // Update vision measurements for pose estimation (critical for vision/gyro fusion)
+    m_robotContainer.updateVision();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -108,6 +111,11 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.setMotorBrake(true);
+    
+    // Reset gyro/odometry for autonomous to ensure correct starting orientation
+    // This prevents drift from robotInit and ensures vision fusion starts from correct pose
+    m_robotContainer.getDrivebase().zeroGyroWithAlliance();
+    
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // Print the selected autonomous command upon autonomous init

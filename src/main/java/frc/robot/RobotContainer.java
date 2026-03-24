@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -69,11 +71,20 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
     drivebase.zeroGyroWithAlliance();
 
+    // Configure PathPlanner AutoBuilder for path following
+    drivebase.configurePathPlanner();
+
     // Set the default auto (do nothing)
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
 
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
+
+    // Add PathPlanner autos if AutoBuilder is configured
+    if (AutoBuilder.isConfigured()) {
+      autoChooser.addOption("Sample Path", new PathPlannerAuto("SamplePath"));
+      autoChooser.addOption("New Path", new PathPlannerAuto("New Path"));
+    }
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -115,6 +126,10 @@ public class RobotContainer {
 
   public Vision getVision() {
     return vision;
+  }
+
+  public SwerveSubsystem getDrivebase() {
+    return drivebase;
   }
 
   public boolean flipForAlliance() {

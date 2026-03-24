@@ -60,13 +60,13 @@ public final class Constants {
      * Standard deviations for vision pose estimates when only one AprilTag is visible. Format: [x,
      * y, theta] in meters and radians.
      */
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 0.5);
 
     /**
      * Standard deviations for vision pose estimates when multiple AprilTags are visible. Format:
      * [x, y, theta] in meters and radians.
      */
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.2);
 
     /** Camera configurations for all cameras on the robot. */
     public static final class Cameras {

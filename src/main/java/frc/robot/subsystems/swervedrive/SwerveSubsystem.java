@@ -6,6 +6,10 @@ package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -43,7 +47,8 @@ public class SwerveSubsystem extends SubsystemBase {
    * @param directory Directory of swerve drive config files.
    */
   public SwerveSubsystem(File directory) {
-    boolean blueAlliance = false;
+    var alliance = DriverStation.getAlliance();
+    boolean blueAlliance = alliance.isEmpty() ? false : alliance.get() == DriverStation.Alliance.Blue;
     Pose2d startingPose =
         blueAlliance
             ? new Pose2d(new Translation2d(Meter.of(1), Meter.of(4)), Rotation2d.fromDegrees(0))
@@ -468,5 +473,37 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Field2d getField() {
     return swerveDrive.field;
+  }
+
+  /**
+   * Configure PathPlanner's AutoBuilder for autonomous path following.
+   * This sets up the holonomic drive controller and robot configuration.
+   */
+  public void configurePathPlanner() {
+    try {
+      // Create robot config for PathPlanner (mass, MOI, module config)
+      RobotConfig config = RobotConfig.fromGUISettings();
+      
+      // Configure AutoBuilder with holonomic drive controller
+      AutoBuilder.configure(
+          this::getPose, // Pose supplier
+          this::resetOdometry, // Pose reset consumer
+          this::getRobotVelocity, // ChassisSpeeds supplier (current)
+          (speeds, feedforwards) -> setChassisSpeeds(speeds), // ChassisSpeeds consumer
+          new PPHolonomicDriveController(
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID
+              new PIDConstants(5.0, 0.0, 0.0)  // Rotation PID
+          ),
+          config, // Robot configuration
+          () -> {
+            // Alliance flipping for path mirroring (red vs blue)
+            var alliance = DriverStation.getAlliance();
+            return alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red;
+          },
+          this // Subsystem requirement
+      );
+    } catch (Exception e) {
+      DriverStation.reportError("Failed to configure PathPlanner: " + e.getMessage(), e.getStackTrace());
+    }
   }
 }
