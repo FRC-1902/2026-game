@@ -55,7 +55,7 @@ public class Robot extends LoggedRobot {
     Logger.recordMetadata("Project-Name", "2026-game");
 
     if (isReal()) {
-      Logger.addDataReceiver(new WPILOGWriter("fstab_usb/logs"));
+      Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/fstab_usb"));
       Logger.addDataReceiver(new NT4Publisher());
     } else {
       setUseTiming(false);
