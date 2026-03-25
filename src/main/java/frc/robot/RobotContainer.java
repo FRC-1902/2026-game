@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -112,10 +113,13 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     // flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
 
-    driverXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
-    driverXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
-    driverXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
-    driverXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
+    // driverXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
+    // driverXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
+    // driverXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
+    // driverXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
+
+    driverXbox.a().onTrue(new InstantCommand(() -> flywheel.toggle()));
+
   }
 
   /**

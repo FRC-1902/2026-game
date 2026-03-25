@@ -96,10 +96,10 @@ public class FlywheelSubsystem extends SubsystemBase {
                   log.motor("shooter-wheel")
                       .voltage(
                           m_appliedVoltage.mut_replace(
-                              rightFlywheelMotor.get() * RobotController.getBatteryVoltage(),
+                              rightFlywheelMotor.getAppliedOutput() * rightFlywheelMotor.getBusVoltage(),
                               Volts))
                       .angularVelocity(
-                          m_velocity.mut_replace(getFlywheelSpeed(), RotationsPerSecond)
+                          m_velocity.mut_replace(getMotorSpeed() / 60, RotationsPerSecond)
                       )
                       .angularPosition(m_position.mut_replace(rightFlywheelMotor.getEncoder().getPosition(), Rotations));
                 },
@@ -118,10 +118,9 @@ public class FlywheelSubsystem extends SubsystemBase {
     targetRpm = rpm;
   }
 
-  public double getFlywheelSpeed() {
+  public double getMotorSpeed() {
     // Uses the right side as a reference;
-    return (rightFlywheelMotor.getEncoder().getVelocity())
-        * FlywheelConstants.MOTOR_TO_FLYWHEEL_RATIO;
+    return rightFlywheelMotor.getEncoder().getVelocity();
   }
 
   public void spinToHighSpeed() {
@@ -141,7 +140,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public boolean isAtTargetSpeed() {
-    return Math.abs(getFlywheelSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
+    return Math.abs(getMotorSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
 
   public void toggle() {
@@ -178,15 +177,18 @@ public class FlywheelSubsystem extends SubsystemBase {
   public void periodic() {
     double output = 0;
     if (targetRpm > 0.001 || targetRpm < -0.001) {
-      output += feedforward.calculate(targetRpm);
-      output += pid.calculate(getFlywheelSpeed(), targetRpm);
+      output += feedforward.calculate(targetRpm / 60);
+      output += pid.calculate(getMotorSpeed(), targetRpm);
     } else {
       output = 0;
     }
+
     leftFlywheelMotor.setVoltage(output);
     rightFlywheelMotor.setVoltage(-output);
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Flywheel/ Speed", getFlywheelSpeed());
+    SmartDashboard.putNumber("Flywheel/ Applied Output", rightFlywheelMotor.getAppliedOutput() * rightFlywheelMotor.getBusVoltage());
+    SmartDashboard.putNumber("Flywheel/ Speed", getMotorSpeed());
+    SmartDashboard.putNumber("Flywheel/ Output", output);
     SmartDashboard.putNumber("Flywheel/Target RPM", FlywheelConstants.DESIRED_FLYWHEEL_RPM);
     SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
   }
