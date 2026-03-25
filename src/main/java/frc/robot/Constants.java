@@ -90,8 +90,9 @@ public final class Constants {
                   Units.inchesToMeters(-4.697477),
                   Units.inchesToMeters(-10.859125),
                   Units.inchesToMeters(18.936709)),
-              new Rotation3d(Math.toRadians(10), Math.toRadians(-19.4175), Math.toRadians(-18.195)));
-      
+              new Rotation3d(
+                  Math.toRadians(10), Math.toRadians(-19.4175), Math.toRadians(-18.195)));
+
       // Back Left Camera
       // XXX: confirm pitch values from cad, this was determined experimentally unlike the rest
       public static final String BACK_LEFT_NAME = "ArducamTwo";
@@ -112,7 +113,8 @@ public final class Constants {
                   Units.inchesToMeters(-13.620134),
                   Units.inchesToMeters(-1.827022),
                   Units.inchesToMeters(6.862401)),
-              new Rotation3d(Math.toRadians(-2.95), Math.toRadians(-11.5), Math.toRadians(204.083)));
+              new Rotation3d(
+                  Math.toRadians(-2.95), Math.toRadians(-11.5), Math.toRadians(204.083)));
     }
   }
 }

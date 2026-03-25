@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.Telemetry;
 import frc.robot.subsystems.hood.HoodSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
@@ -38,6 +38,7 @@ public class RobotContainer {
   public IntakeSubsystem intake;
   private FlywheelSubsystem flywheel;
   private HoodSubsystem hood;
+  private IndexerSubsystem indexer;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -73,7 +74,12 @@ public class RobotContainer {
     // Configure the trigger bindings
     telemetry.setDrivebase(drivebase);
     intake = new IntakeSubsystem();
-    flywheel = new FlywheelSubsystem();
+    indexer = new IndexerSubsystem();
+    flywheel =
+        new FlywheelSubsystem(
+            () -> {
+              return 0;
+            }); // TODO: pass in distance
     hood = new HoodSubsystem();
 
     configureBindings();
@@ -118,8 +124,10 @@ public class RobotContainer {
     // driverXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
     // driverXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
 
-    driverXbox.a().onTrue(new InstantCommand(() -> flywheel.toggle()));
-
+    driverXbox.b().onTrue(new InstantCommand(() -> flywheel.toggle()));
+    driverXbox.x().whileTrue(indexer.spinRollerShooterCommand());
+    driverXbox.y().onTrue(hood.runOnce(() -> hood.setAngle(hood.upOneDegree())));
+    driverXbox.a().onTrue(hood.runOnce(() -> hood.setAngle(hood.downOneDegree())));
   }
 
   /**
