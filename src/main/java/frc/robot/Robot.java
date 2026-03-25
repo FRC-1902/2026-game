@@ -69,6 +69,8 @@ public class Robot extends LoggedRobot {
     if (isSimulation()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
+
+    m_robotContainer.getDrivebase().zeroGyroWithAlliance();
   }
 
   /**

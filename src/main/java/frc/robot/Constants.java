@@ -71,6 +71,7 @@ public final class Constants {
     /** Camera configurations for all cameras on the robot. */
     public static final class Cameras {
 
+      // TODO: confirm front camera translations and rotations
       // Front Left Camera
       public static final String FRONT_LEFT_NAME = "arducamThree";
       public static final Transform3d FRONT_LEFT_ROBOT_TO_CAM =
@@ -90,7 +91,9 @@ public final class Constants {
                   Units.inchesToMeters(-10.859125),
                   Units.inchesToMeters(18.936709)),
               new Rotation3d(Math.toRadians(10), Math.toRadians(-19.4175), Math.toRadians(-18.195)));
+      
       // Back Left Camera
+      // XXX: confirm pitch values from cad, this was determined experimentally unlike the rest
       public static final String BACK_LEFT_NAME = "ArducamTwo";
       public static final Transform3d BACK_LEFT_ROBOT_TO_CAM =
           new Transform3d(
@@ -98,9 +101,10 @@ public final class Constants {
                   Units.inchesToMeters(-13.635),
                   Units.inchesToMeters(2.078),
                   Units.inchesToMeters(6.725)),
-              new Rotation3d(Math.toRadians(5), Math.toRadians(-166), Math.toRadians(158)));
+              new Rotation3d(Math.toRadians(2.95), Math.toRadians(-11.5), Math.toRadians(155.917)));
 
       // Back Right Camera
+      // XXX: confirm pitch values from cad, this was determined experimentally unlike the rest
       public static final String BACK_RIGHT_NAME = "arducamOne";
       public static final Transform3d BACK_RIGHT_ROBOT_TO_CAM =
           new Transform3d(
@@ -108,7 +112,7 @@ public final class Constants {
                   Units.inchesToMeters(-13.620134),
                   Units.inchesToMeters(-1.827022),
                   Units.inchesToMeters(6.862401)),
-              new Rotation3d(Math.toRadians(5), Math.toRadians(-166), Math.toRadians(-158)));
+              new Rotation3d(Math.toRadians(-2.95), Math.toRadians(-11.5), Math.toRadians(204.083)));
     }
   }
 }
