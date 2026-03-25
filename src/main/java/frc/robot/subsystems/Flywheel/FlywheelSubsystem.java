@@ -135,10 +135,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     setFlywheelSpeed(0);
   }
 
-  public void setFlywheelVoltage(double volatage) {
-    rightFlywheelMotor.setVoltage(volatage);
-  }
-
   public boolean isAtTargetSpeed() {
     return Math.abs(getMotorSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
@@ -183,8 +179,7 @@ public class FlywheelSubsystem extends SubsystemBase {
       output = 0;
     }
 
-    leftFlywheelMotor.setVoltage(output);
-    rightFlywheelMotor.setVoltage(-output);
+    setVoltage(Volts.of(output));
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Flywheel/ Applied Output", rightFlywheelMotor.getAppliedOutput() * rightFlywheelMotor.getBusVoltage());
     SmartDashboard.putNumber("Flywheel/ Speed", getMotorSpeed());
