@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,11 +58,13 @@ public class Robot extends LoggedRobot {
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/fstab_usb"));
       Logger.addDataReceiver(new NT4Publisher());
+      DataLogManager.start("/home/lvuser/fstab_usb");
     } else {
       setUseTiming(false);
       String logPath = LogFileUtil.findReplayLog();
       Logger.setReplaySource((new WPILOGReader(logPath)));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+      DataLogManager.start(logPath);
     }
 
     Logger.start();

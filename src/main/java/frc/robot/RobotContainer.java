@@ -15,8 +15,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Telemetry;
+import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
@@ -32,6 +35,8 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
 
   public IntakeSubsystem intake;
+  private FlywheelSubsystem flywheel;
+  private HoodSubsystem hood;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -67,6 +72,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     telemetry.setDrivebase(drivebase);
     intake = new IntakeSubsystem();
+    flywheel = new FlywheelSubsystem();
+    hood = new HoodSubsystem();
+
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     drivebase.zeroGyroWithAlliance();
@@ -104,6 +112,10 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     // flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
 
+    driverXbox.a().whileTrue(flywheel.sysIdDynamic(Direction.kForward));
+    driverXbox.b().whileTrue(flywheel.sysIdDynamic(Direction.kReverse));
+    driverXbox.x().whileTrue(flywheel.sysIdQuasistatic(Direction.kForward));
+    driverXbox.y().whileTrue(flywheel.sysIdQuasistatic(Direction.kReverse));
   }
 
   /**
