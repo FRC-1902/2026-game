@@ -25,6 +25,7 @@ import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.commands.hood.AlignHoodCommand;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,10 +35,11 @@ import frc.robot.commands.hood.AlignHoodCommand;
  */
 public class RobotContainer {
 
-  public IntakeSubsystem intake;
-  private FlywheelSubsystem flywheel;
-  private HoodSubsystem hood;
-  private WaypointManager waypointManager = new WaypointManager();
+  private final IntakeSubsystem intake;
+  private final FlywheelSubsystem flywheel;
+  private final HoodSubsystem hood;
+  private final WaypointManager waypointManager = new WaypointManager();
+  private final IndexerSubsystem indexer;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -70,6 +72,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     intake = new IntakeSubsystem();
+    indexer = new IndexerSubsystem();
+    flywheel = new FlywheelSubsystem();
+    hood = new HoodSubsystem();
+
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     drivebase.zeroGyroWithAlliance();
@@ -135,11 +141,10 @@ public class RobotContainer {
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer.spinRollerShooterCommand(
-                flywheel)); // Enables indexer feeding balls into flywheel
+            indexer.spinRollerShooterCommand()); // Enables indexer feeding balls into flywheel
   }
 
-  }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -181,4 +186,5 @@ public class RobotContainer {
             () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
         .withTimeout(seconds);
   }
+}
 
