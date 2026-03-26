@@ -142,12 +142,14 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public Command spinUpCommand() {
-    return new InstantCommand(() -> setState(true)); // TODO: make command that spins up and waits until you hit target
+    return new InstantCommand(
+        () -> setState(true)); // TODO: make command that spins up and waits until you hit target
     // speed until it ends
   }
 
   public Command spinDownCommand() {
-    return new InstantCommand(() -> setState(false)); // TODO: make command that spins up and waits until you hit target
+    return new InstantCommand(
+        () -> setState(false)); // TODO: make command that spins up and waits until you hit target
     // speed until it ends
   }
 
@@ -168,7 +170,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }
- 
+
   private double getRpmForDistance(double distance) {
     var map = FlywheelConstants.DISTANCE_TO_RPM_MAP;
     if (map.containsKey(distance)) {

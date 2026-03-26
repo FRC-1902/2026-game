@@ -25,8 +25,8 @@ import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
-import swervelib.SwerveInputStream;
 import java.util.function.DoubleSupplier;
+import swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -41,7 +41,7 @@ public class RobotContainer {
   private final HoodSubsystem hood;
   private final WaypointManager waypointManager = new WaypointManager();
   private final IndexerSubsystem indexer;
-  
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandXboxController manipXbox = new CommandXboxController(1);
@@ -75,7 +75,8 @@ public class RobotContainer {
     intake = new IntakeSubsystem();
     indexer = new IndexerSubsystem();
     hood = new HoodSubsystem();
-    DoubleSupplier distanceToHubSupplier = () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
+    DoubleSupplier distanceToHubSupplier =
+        () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     configureBindings();
@@ -112,8 +113,10 @@ public class RobotContainer {
                     new InstantCommand(
                         () -> flywheel.toggle(),
                         flywheel))); // manual override for the flywheel, toggles between high and
-    //low
-    manipXbox.leftBumper().whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
+    // low
+    manipXbox
+        .leftBumper()
+        .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
     manipXbox
         .x()
         .whileTrue(
