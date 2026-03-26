@@ -91,7 +91,51 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    // flywheel.setDefaultCommand(new FlywheelCommand(flywheel));
+    driverXbox
+        .y()
+        .onTrue(
+            new InstantCommand(() -> flywheel.removeDefaultCommand())
+                .andThen(
+                    new InstantCommand(
+                        () -> flywheel.toggle(),
+                        flywheel))); // manual override for the flywheel, toggles between high and
+    // low
+    driverXbox
+        .x()
+        .whileTrue(
+            Commands.run(() -> flywheel.spinFlywheelBackwards())
+                .alongWith(indexer.outtakeCommand()));
+    manipXbox
+        .x()
+        .whileTrue(
+            intake
+                .enableIntakeCommand()
+                .andThen(
+                    intake.startRollersCommand())); // Sequenced command to enable intake and then
+    // start rollers after intake is ENABLED
+    manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
+    manipXbox
+        .leftTrigger()
+        .whileTrue(
+            new AlignToHub(
+                    drivebase,
+                    drivebase.getWaypointManager(),
+                    "HUB",
+                    driverXbox.getLeftX(),
+                    driverXbox.getLeftY(),
+                    flipForAlliance())
+                .alongWith(
+                    new AlignHoodCommand(
+                        hood,
+                        drivebase,
+                        drivebase.getWaypointManager(),
+                        flipForAlliance()))); // Shoots
+    manipXbox
+        .rightTrigger()
+        .whileTrue(
+            indexer.spinRollerShooterCommand(
+                flywheel)); // Enables indexer feeding balls into flywheel
+  }
 
   }
 
