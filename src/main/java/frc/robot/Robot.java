@@ -134,14 +134,10 @@ public class Robot extends LoggedRobot {
     } else {
       CommandScheduler.getInstance().cancelAll();
     }
-    m_robotContainer.telemetry.onTeleopInit();
   }
 
   @Override
-  public void teleopPeriodic() {
-    m_robotContainer.telemetry.checkAndLogTurnOrder();
-    m_robotContainer.telemetry.update();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
