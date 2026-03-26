@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -105,15 +104,6 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    driverXbox
-        .y()
-        .onTrue(
-            new InstantCommand(() -> flywheel.removeDefaultCommand())
-                .andThen(
-                    new InstantCommand(
-                        () -> flywheel.toggle(),
-                        flywheel))); // manual override for the flywheel, toggles between high and
-    // low
     manipXbox
         .leftBumper()
         .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
@@ -125,6 +115,7 @@ public class RobotContainer {
                 .andThen(
                     intake.startRollersCommand())); // Sequenced command to enable intake and then
     // start rollers after intake is ENABLED
+    manipXbox.x().onTrue(intake.enableIntakeCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
         .leftTrigger()
@@ -135,7 +126,7 @@ public class RobotContainer {
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer.spinRollerShooterCommand()); // Enables indexer feeding balls into flywheel
+            indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
   }
 
   /**
