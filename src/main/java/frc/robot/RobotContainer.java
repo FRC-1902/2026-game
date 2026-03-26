@@ -26,6 +26,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import swervelib.SwerveInputStream;
+import java.util.function.DoubleSupplier;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -40,7 +41,7 @@ public class RobotContainer {
   private final HoodSubsystem hood;
   private final WaypointManager waypointManager = new WaypointManager();
   private final IndexerSubsystem indexer;
-
+  
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
   final CommandXboxController manipXbox = new CommandXboxController(1);
@@ -73,8 +74,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     intake = new IntakeSubsystem();
     indexer = new IndexerSubsystem();
-    flywheel = new FlywheelSubsystem();
     hood = new HoodSubsystem();
+     DoubleSupplier distanceToHubSupplier = () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
+     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -111,18 +113,13 @@ public class RobotContainer {
                         () -> flywheel.toggle(),
                         flywheel))); // manual override for the flywheel, toggles between high and
     // low
-    driverXbox
-        .x()
-        .whileTrue(
-            Commands.run(() -> flywheel.spinFlywheelBackwards())
-                .alongWith(indexer.outtakeCommand()));
-    manipXbox
-        .x()
-        .whileTrue(
-            intake
-                .enableIntakeCommand()
-                .andThen(
-                    intake.startRollersCommand())); // Sequenced command to enable intake and then
+    // manipXbox
+    //     .x()
+    //     .whileTrue(
+    //         intake
+    //             .enableIntakeCommand()
+    //             .andThen(
+    //                 intake.startRollersCommand())); // Sequenced command to enable intake and then
     // start rollers after intake is ENABLED
     manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox

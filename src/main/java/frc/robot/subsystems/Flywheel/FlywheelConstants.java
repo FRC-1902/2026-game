@@ -1,5 +1,8 @@
 package frc.robot.subsystems.Flywheel;
 
+import java.util.NavigableMap;
+import java.util.TreeMap;
+
 /** Constants for the Hood subsystem. */
 public class FlywheelConstants {
   // Motor CAN ID
@@ -7,7 +10,8 @@ public class FlywheelConstants {
   public static final int LEFT_FLYWHEEL_MOTOR_ID = 39;
 
   // PID
-  public static final double FLYWHEEL_KP = 0.1; // TODO: Tune PID
+  public static final double FLYWHEEL_KP =
+      0.0; // TODO: after bayou, add in a pid to make spin up faster
   public static final double FLYWHEEL_KI = 0.0;
   public static final double FLYWHEEL_KD = 0.0;
 
@@ -17,12 +21,25 @@ public class FlywheelConstants {
 
   // Desired flywheel RPM for shooting. This is the target speed we want the flywheel to reach when
   // shooting.
-  public static final double DESIRED_FLYWHEEL_RPM = 2500.0;
+  public static final double DESIRED_FLYWHEEL_RPM = 4000.0;
   public static final double DESIRED_LOW_FLYWHEEL_RPM =
-      250.0; // TODO: Set the correct low RPM for the flywheel when not shooting.
-  public static final double RPM_TOLERANCE = 50.0;
+      0.0; // TODO: Set the correct low RPM for the flywheel when not shooting.
+  public static final double RPM_TOLERANCE = 100.0;
 
-  public static final double FLYWHEEL_KS = 0.0;
-  public static final double FLYWHEEL_KV = 0.0;
-  public static final double FLYWHEEL_KA = 0.0;
+  public static final double FLYWHEEL_KS = 0.284;
+  public static final double FLYWHEEL_KV = 0.12516;
+  public static final double FLYWHEEL_KA = 0.01736;
+
+  public static final NavigableMap<Double, Double> DISTANCE_TO_RPM_MAP = new TreeMap<>();
+
+  static {
+    DISTANCE_TO_RPM_MAP.put(1.0, 30.0);
+    DISTANCE_TO_RPM_MAP.put(2.0, 35.0);
+    DISTANCE_TO_RPM_MAP.put(3.0, 40.0);
+    DISTANCE_TO_RPM_MAP.put(4.0, 45.0);
+    DISTANCE_TO_RPM_MAP.put(5.0, 50.0);
+    DISTANCE_TO_RPM_MAP.put(6.0, 55.0);
+  }
+
+  public static double LOWEST_RPM = 30.0;
 }
