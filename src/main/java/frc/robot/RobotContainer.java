@@ -19,6 +19,12 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import swervelib.SwerveInputStream;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.hood.HoodSubsystem;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.subsystems.WaypointManager;
+import frc.robot.commands.hood.AlignHoodCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,6 +35,9 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
 
   public IntakeSubsystem intake;
+  private FlywheelSubsystem flywheel;
+  private HoodSubsystem hood;
+  private WaypointManager waypointManager = new WaypointManager();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -115,17 +124,14 @@ public class RobotContainer {
         .whileTrue(
             new AlignToHub(
                     drivebase,
-                    drivebase.getWaypointManager(),
+                    waypointManager,
                     "HUB",
-                    driverXbox.getLeftX(),
-                    driverXbox.getLeftY(),
                     flipForAlliance())
                 .alongWith(
                     new AlignHoodCommand(
                         hood,
                         drivebase,
-                        drivebase.getWaypointManager(),
-                        flipForAlliance()))); // Shoots
+                        waypointManager))); // Shoots
     manipXbox
         .rightTrigger()
         .whileTrue(
@@ -175,4 +181,4 @@ public class RobotContainer {
             () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
         .withTimeout(seconds);
   }
-}
+
