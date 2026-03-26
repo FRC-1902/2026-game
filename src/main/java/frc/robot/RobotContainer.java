@@ -11,21 +11,21 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.hood.AlignHoodCommand;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.WaypointManager;
+import frc.robot.subsystems.hood.HoodSubsystem;
+import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
-import frc.robot.subsystems.hood.HoodSubsystem;
-import frc.robot.commands.swervedrive.drivebase.AlignToHub;
-import frc.robot.subsystems.WaypointManager;
-import frc.robot.commands.hood.AlignHoodCommand;
-import frc.robot.subsystems.indexer.IndexerSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -128,23 +128,13 @@ public class RobotContainer {
     manipXbox
         .leftTrigger()
         .whileTrue(
-            new AlignToHub(
-                    drivebase,
-                    waypointManager,
-                    "HUB",
-                    flipForAlliance())
-                .alongWith(
-                    new AlignHoodCommand(
-                        hood,
-                        drivebase,
-                        waypointManager))); // Shoots
+            new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance())
+                .alongWith(new AlignHoodCommand(hood, drivebase, waypointManager))); // Shoots
     manipXbox
         .rightTrigger()
         .whileTrue(
             indexer.spinRollerShooterCommand()); // Enables indexer feeding balls into flywheel
   }
-
-  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -187,4 +177,3 @@ public class RobotContainer {
         .withTimeout(seconds);
   }
 }
-
