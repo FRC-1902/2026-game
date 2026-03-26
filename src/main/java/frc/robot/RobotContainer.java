@@ -75,8 +75,8 @@ public class RobotContainer {
     intake = new IntakeSubsystem();
     indexer = new IndexerSubsystem();
     hood = new HoodSubsystem();
-     DoubleSupplier distanceToHubSupplier = () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
-     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
+    DoubleSupplier distanceToHubSupplier = () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
+    flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -112,14 +112,15 @@ public class RobotContainer {
                     new InstantCommand(
                         () -> flywheel.toggle(),
                         flywheel))); // manual override for the flywheel, toggles between high and
-    // low
-    // manipXbox
-    //     .x()
-    //     .whileTrue(
-    //         intake
-    //             .enableIntakeCommand()
-    //             .andThen(
-    //                 intake.startRollersCommand())); // Sequenced command to enable intake and then
+    //low
+    manipXbox.leftBumper().whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
+    manipXbox
+        .x()
+        .whileTrue(
+            intake
+                .enableIntakeCommand()
+                .andThen(
+                    intake.startRollersCommand())); // Sequenced command to enable intake and then
     // start rollers after intake is ENABLED
     manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
     manipXbox
@@ -127,6 +128,7 @@ public class RobotContainer {
         .whileTrue(
             new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance())
                 .alongWith(new AlignHoodCommand(hood, drivebase, waypointManager))); // Shoots
+    manipXbox.leftTrigger().onTrue(flywheel.spinUpCommand());
     manipXbox
         .rightTrigger()
         .whileTrue(

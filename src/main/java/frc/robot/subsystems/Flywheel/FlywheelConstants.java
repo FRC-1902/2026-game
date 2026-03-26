@@ -33,12 +33,11 @@ public class FlywheelConstants {
   public static final NavigableMap<Double, Double> DISTANCE_TO_RPM_MAP = new TreeMap<>();
 
   static {
-    DISTANCE_TO_RPM_MAP.put(1.0, 30.0);
-    DISTANCE_TO_RPM_MAP.put(2.0, 35.0);
-    DISTANCE_TO_RPM_MAP.put(3.0, 40.0);
-    DISTANCE_TO_RPM_MAP.put(4.0, 45.0);
-    DISTANCE_TO_RPM_MAP.put(5.0, 50.0);
-    DISTANCE_TO_RPM_MAP.put(6.0, 55.0);
+    DISTANCE_TO_RPM_MAP.put(53.8100505, 4000.0);
+    DISTANCE_TO_RPM_MAP.put(62.0600505, 4000.0);
+    DISTANCE_TO_RPM_MAP.put(83.3100505, 4500.0);
+    DISTANCE_TO_RPM_MAP.put(109.8100505, 5000.0);
+    DISTANCE_TO_RPM_MAP.put(114.8100505, 5250.0);
   }
 
   public static double LOWEST_RPM = 30.0;

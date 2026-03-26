@@ -20,11 +20,7 @@ public class FlywheelCommand extends Command {
   public void execute() {}
 
   @Override
-  public void end(boolean interrupted) {
-    if (interrupted) {
-      flywheelSubsystem.spinDownToZero();
-    }
-  }
+  public void end(boolean interrupted) {}
 
   @Override
   public boolean isFinished() {

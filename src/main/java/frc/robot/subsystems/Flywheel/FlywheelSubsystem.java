@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.hood.HoodConstants;
 import java.util.function.DoubleSupplier;
 
 // Note: We intentionally avoid a hard dependency on SysIdRoutine's constructor here because
@@ -115,7 +114,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     rightFlywheelMotor.setVoltage(v);
   }
 
-  public void turnOn(boolean on) {
+  public void setState(boolean on) {
     this.on = on;
   }
 
@@ -138,13 +137,17 @@ public class FlywheelSubsystem extends SubsystemBase {
     this.on = !this.on;
   }
 
+  public Command spinFlywheelBackwards() {
+    return startEnd(() -> setVoltage(Volts.of(4)), () -> spinDownCommand());
+  }
+
   public Command spinUpCommand() {
-    return new InstantCommand(); // TODO: make command that spins up and waits until you hit target
+    return new InstantCommand(() -> setState(true)); // TODO: make command that spins up and waits until you hit target
     // speed until it ends
   }
 
   public Command spinDownCommand() {
-    return new InstantCommand(); // TODO: make command that spins up and waits until you hit target
+    return new InstantCommand(() -> setState(false)); // TODO: make command that spins up and waits until you hit target
     // speed until it ends
   }
 
@@ -165,7 +168,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }
-
+ 
   private double getRpmForDistance(double distance) {
     var map = FlywheelConstants.DISTANCE_TO_RPM_MAP;
     if (map.containsKey(distance)) {
