@@ -26,6 +26,7 @@ import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -88,8 +89,9 @@ public class RobotContainer {
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
-    autoChooser.addOption(
-        "new experimental auto", flywheel.spinUpCommand().andThen(indexer.outtakeCommand()));
+    autoChooser.addOption("new experimental auto", new SequentialCommandGroup(new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance()), 
+    flywheel.spinUpCommand(),
+    indexer.spinRollerShooterCommand()));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -129,10 +131,7 @@ public class RobotContainer {
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer
-                .spinRollerShooterCommand()
-                .alongWith(
-                    intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
+            indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
   }
 
   /**
