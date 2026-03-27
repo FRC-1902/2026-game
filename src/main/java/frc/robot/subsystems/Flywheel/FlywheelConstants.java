@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Flywheel;
 
+import edu.wpi.first.math.util.Units;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -33,12 +34,12 @@ public class FlywheelConstants {
   public static final NavigableMap<Double, Double> DISTANCE_TO_RPM_MAP = new TreeMap<>();
 
   static {
-    DISTANCE_TO_RPM_MAP.put(53.8100505, 4000.0);
-    DISTANCE_TO_RPM_MAP.put(62.0600505, 4000.0);
-    DISTANCE_TO_RPM_MAP.put(83.3100505, 4500.0);
-    DISTANCE_TO_RPM_MAP.put(109.8100505, 5000.0);
-    DISTANCE_TO_RPM_MAP.put(114.8100505, 5250.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(53.8100505), 4000.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(62.0600505), 4000.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(83.3100505), 4500.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(109.8100505), 5000.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(114.8100505), 5250.0);
   }
 
-  public static double LOWEST_RPM = 30.0;
+  public static final double LOWEST_RPM = 4000.0;
 }

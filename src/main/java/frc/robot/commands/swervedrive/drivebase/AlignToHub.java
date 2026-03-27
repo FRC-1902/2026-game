@@ -8,12 +8,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import java.util.function.BooleanSupplier;
 
 public class AlignToHub extends Command {
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
   private final String waypointName;
-  private boolean flipForAlliance;
+  private final BooleanSupplier flipForAllianceSupplier;
 
   // TODO: this pid will need to be tuned
   private final PIDController rotController = new PIDController(0.05, 0, 0);
@@ -24,10 +25,18 @@ public class AlignToHub extends Command {
       WaypointManager waypointManager,
       String waypointName,
       boolean flipForAlliance) {
+    this(swerve, waypointManager, waypointName, () -> flipForAlliance);
+  }
+
+  public AlignToHub(
+      SwerveSubsystem swerve,
+      WaypointManager waypointManager,
+      String waypointName,
+      BooleanSupplier flipForAllianceSupplier) {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
     this.waypointName = waypointName;
-    this.flipForAlliance = flipForAlliance;
+    this.flipForAllianceSupplier = flipForAllianceSupplier;
 
     // Declare subsystem dependencies
     addRequirements(swerve);
@@ -43,7 +52,8 @@ public class AlignToHub extends Command {
     Pose2d currentPose = swerve.getPose();
 
     Rotation2d targetAngle =
-        waypointManager.getAngleToWaypoint(currentPose, waypointName, flipForAlliance);
+        waypointManager.getAngleToWaypoint(
+            currentPose, waypointName, flipForAllianceSupplier.getAsBoolean());
 
     // Check if the waypoint exists
     double rotationOutput = 0;

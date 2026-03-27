@@ -1,6 +1,7 @@
 package frc.robot.subsystems.hood;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -22,11 +23,6 @@ public class HoodConstants {
   public static final double HOOD_KI = 0.0;
   public static final double HOOD_KD = 0.0;
 
-  public static final double HOOD_SETPOINT_1 = 10.6375;
-  public static final double HOOD_SETPOINT_2 = 15.125;
-  public static final double HOOD_SETPOINT_3 = 19.6125;
-  public static final double HOOD_SETPOINT_4 = 24.1;
-
   // Gravity feedforward constant (percent output at full gravity)
   public static final double HOOD_KCOS = 0.0;
 
@@ -45,11 +41,10 @@ public class HoodConstants {
   public static final NavigableMap<Double, Double> DISTANCE_TO_ANGLE_MAP = new TreeMap<>();
 
   static {
-    DISTANCE_TO_ANGLE_MAP.put(1.0, 30.0);
-    DISTANCE_TO_ANGLE_MAP.put(2.0, 35.0);
-    DISTANCE_TO_ANGLE_MAP.put(3.0, 40.0);
-    DISTANCE_TO_ANGLE_MAP.put(4.0, 45.0);
-    DISTANCE_TO_ANGLE_MAP.put(5.0, 50.0);
-    DISTANCE_TO_ANGLE_MAP.put(6.0, 55.0);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(53.8100505), HOOD_MIN_ANGLE);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(62.0600505), HOOD_MIN_ANGLE);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(83.3100505), HOOD_MIN_ANGLE);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(109.8100505), HOOD_MIN_ANGLE);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(114.8100505), HOOD_MIN_ANGLE);
   }
 }
