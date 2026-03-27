@@ -88,6 +88,9 @@ public class RobotContainer {
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
+    autoChooser.addOption(
+        "new experimental auto", flywheel.spinUpCommand().andThen(indexer.outtakeCommand()));
+
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
@@ -126,7 +129,10 @@ public class RobotContainer {
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
+            indexer
+                .spinRollerShooterCommand()
+                .alongWith(
+                    intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
   }
 
   /**
