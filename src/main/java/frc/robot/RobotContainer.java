@@ -12,11 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.hood.AlignHoodCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.WaypointManager;
@@ -93,7 +92,7 @@ public class RobotContainer {
     autoChooser.addOption(
         "new experimental auto",
         new SequentialCommandGroup(
-            new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance()),
+            new AlignToHub(drivebase, waypointManager, "HUB", this::flipForAlliance),
             flywheel.spinUpCommand(),
             indexer.spinRollerShooterCommand()));
 
@@ -116,34 +115,24 @@ public class RobotContainer {
     manipXbox
         .leftBumper()
         .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
-    manipXbox
-        .x()
-        .whileTrue(
-            intake
-                .enableIntakeCommand()
-                .andThen(
-                    intake.startRollersCommand())); // Sequenced command to enable intake and then
-    // start rollers after intake is ENABLED
+
     manipXbox.x().onTrue(intake.enableIntakeCommand());
-    manipXbox.b().onTrue(intake.disableIntakeCommand()); // disable the intake on the press of b
+    manipXbox.b().onTrue(intake.disableIntakeCommand());
+
     manipXbox
         .leftTrigger()
         .whileTrue(
-            new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance())
-                .alongWith(new AlignHoodCommand(hood, drivebase, waypointManager))); // Shoots
-    manipXbox.leftTrigger().onTrue(flywheel.spinUpCommand());
-    manipXbox
-        .leftTrigger()
-        .whileTrue(
-            new WaitUntilCommand(flywheel::isAtTargetSpeed)
-                .andThen(vibrateControllerIndefinitely(1)));
-    manipXbox
-        .rightTrigger()
-        .whileTrue(
-            indexer
-                .spinRollerShooterCommand()
-                .alongWith(
-                    intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
+            new ShootCommand(
+                drivebase,
+                waypointManager,
+                hood,
+                flywheel,
+                indexer,
+                manipXbox,
+                this::flipForAlliance));
+    manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
+
+    manipXbox.rightTrigger().whileTrue(intake.startRollersCommand());
   }
 
   /*
@@ -170,12 +159,7 @@ public class RobotContainer {
 
   public boolean flipForAlliance() {
     var alliance = DriverStation.getAlliance();
-    Alliance ourAlliance = alliance.get();
-    if (ourAlliance == Alliance.Red) {
-      return true;
-    } else {
-      return false;
-    }
+    return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
   public Command vibrateController(double intensity, double seconds) {
