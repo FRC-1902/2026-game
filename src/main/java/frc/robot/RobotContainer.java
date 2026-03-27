@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -26,8 +28,6 @@ import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -90,9 +90,12 @@ public class RobotContainer {
     // Add a simple auto option to have the robot drive forward for 1 second then stop
     autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
 
-    autoChooser.addOption("new experimental auto", new SequentialCommandGroup(new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance()), 
-    flywheel.spinUpCommand(),
-    indexer.spinRollerShooterCommand()));
+    autoChooser.addOption(
+        "new experimental auto",
+        new SequentialCommandGroup(
+            new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance()),
+            flywheel.spinUpCommand(),
+            indexer.spinRollerShooterCommand()));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -129,14 +132,21 @@ public class RobotContainer {
             new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance())
                 .alongWith(new AlignHoodCommand(hood, drivebase, waypointManager))); // Shoots
     manipXbox.leftTrigger().onTrue(flywheel.spinUpCommand());
-    manipXbox.leftTrigger().whileTrue(new WaitUntilCommand(flywheel::isAtTargetSpeed).andThen(vibrateControllerIndefinitely(1)));
+    manipXbox
+        .leftTrigger()
+        .whileTrue(
+            new WaitUntilCommand(flywheel::isAtTargetSpeed)
+                .andThen(vibrateControllerIndefinitely(1)));
     manipXbox
         .rightTrigger()
         .whileTrue(
-            indexer.spinRollerShooterCommand().alongWith(intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
+            indexer
+                .spinRollerShooterCommand()
+                .alongWith(
+                    intake.startRollersCommand())); // Enables indexer feeding balls into flywheel
   }
 
-  /**
+  /*
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
@@ -179,9 +189,8 @@ public class RobotContainer {
 
   public Command vibrateControllerIndefinitely(double intensity) {
     return Commands.startEnd(
-            () ->
-                manipXbox.setRumble(
-                    edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-            () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
+        () ->
+            manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
+        () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
   }
 }
