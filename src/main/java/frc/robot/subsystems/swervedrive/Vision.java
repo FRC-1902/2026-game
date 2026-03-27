@@ -8,16 +8,18 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import frc.robot.Constants.VisionConstants;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import swervelib.SwerveDrive;
@@ -60,15 +62,94 @@ public class Vision {
    * should be called periodically (every robot loop).
    */
   public void updatePoseEstimation(SwerveDrive swerveDrive) {
-    for (Camera camera : cameras) {
+    // Lists for logging all camera observations combined
+    List<Pose3d> allRobotPoses = new ArrayList<>();
+    List<Pose3d> allRobotPosesAccepted = new ArrayList<>();
+    List<Pose3d> allRobotPosesRejected = new ArrayList<>();
+
+    for (int i = 0; i < cameras.length; i++) {
+      Camera camera = cameras[i];
+
+      // Lists for logging individual camera observations
+      List<Pose3d> cameraRobotPoses = new ArrayList<>();
+      List<Pose3d> cameraRobotPosesAccepted = new ArrayList<>();
+      List<Pose3d> cameraRobotPosesRejected = new ArrayList<>();
+      List<Pose3d> tagPoses = new ArrayList<>();
+
+      // Log camera connection status
+      boolean isConnected = camera.camera.isConnected();
+      Logger.recordOutput("Vision/Camera" + i + "/Connected", isConnected);
+
       Optional<EstimatedRobotPose> poseEst = camera.getEstimatedGlobalPose();
       if (poseEst.isPresent()) {
         var pose = poseEst.get();
-        // Add vision measurement to the pose estimator with calculated standard deviations
-        swerveDrive.addVisionMeasurement(
-            pose.estimatedPose.toPose2d(), pose.timestampSeconds, camera.curStdDevs);
+
+        // Log the raw camera pose
+        cameraRobotPoses.add(pose.estimatedPose);
+
+        // Check if pose was accepted (has valid std devs)
+        boolean isAccepted = camera.curStdDevs.get(0, 0) < Double.MAX_VALUE;
+
+        if (isAccepted) {
+          cameraRobotPosesAccepted.add(pose.estimatedPose);
+
+          // Add vision measurement to the pose estimator with calculated standard deviations
+          swerveDrive.addVisionMeasurement(
+              pose.estimatedPose.toPose2d(), pose.timestampSeconds, camera.curStdDevs);
+
+          // Log the AprilTag poses that were used
+          for (var target : pose.targetsUsed) {
+            var tagPose = fieldLayout.getTagPose(target.getFiducialId());
+            if (tagPose.isPresent()) {
+              tagPoses.add(tagPose.get());
+            }
+          }
+
+          // Log standard deviations used
+          Logger.recordOutput(
+              "Vision/Camera" + i + "/StdDevs",
+              new double[] {
+                camera.curStdDevs.get(0, 0),
+                camera.curStdDevs.get(1, 0),
+                camera.curStdDevs.get(2, 0)
+              });
+
+          // Log number of tags and average distance
+          Logger.recordOutput("Vision/Camera" + i + "/TagCount", pose.targetsUsed.size());
+          Logger.recordOutput("Vision/Camera" + i + "/AvgDistance", camera.lastAvgDistance);
+          Logger.recordOutput("Vision/Camera" + i + "/Timestamp", pose.timestampSeconds);
+
+        } else {
+          cameraRobotPosesRejected.add(pose.estimatedPose);
+        }
       }
+
+      // Log individual camera data
+      Logger.recordOutput(
+          "Vision/Camera" + i + "/RobotPoses", cameraRobotPoses.toArray(new Pose3d[0]));
+      Logger.recordOutput(
+          "Vision/Camera" + i + "/RobotPosesAccepted",
+          cameraRobotPosesAccepted.toArray(new Pose3d[0]));
+      Logger.recordOutput(
+          "Vision/Camera" + i + "/RobotPosesRejected",
+          cameraRobotPosesRejected.toArray(new Pose3d[0]));
+      Logger.recordOutput("Vision/Camera" + i + "/TagPoses", tagPoses.toArray(new Pose3d[0]));
+
+      // Add to combined lists
+      allRobotPoses.addAll(cameraRobotPoses);
+      allRobotPosesAccepted.addAll(cameraRobotPosesAccepted);
+      allRobotPosesRejected.addAll(cameraRobotPosesRejected);
     }
+
+    // Log summary data (all cameras combined)
+    Logger.recordOutput("Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[0]));
+    Logger.recordOutput(
+        "Vision/Summary/RobotPosesAccepted", allRobotPosesAccepted.toArray(new Pose3d[0]));
+    Logger.recordOutput(
+        "Vision/Summary/RobotPosesRejected", allRobotPosesRejected.toArray(new Pose3d[0]));
+
+    // Log the current robot pose from the pose estimator (fused gyro + vision)
+    Logger.recordOutput("Vision/FusedRobotPose", swerveDrive.getPose());
   }
 
   private class Camera {
@@ -83,6 +164,8 @@ public class Vision {
 
     public Matrix<N3, N1> curStdDevs;
 
+    public double lastAvgDistance = 0.0;
+
     Camera(
         String name,
         Transform3d robotToCamTransform,
@@ -90,12 +173,7 @@ public class Vision {
         Matrix<N3, N1> multiTagStdDevs) {
       camera = new PhotonCamera(name);
 
-      // Use MULTI_TAG_PNP_ON_COPROCESSOR for best accuracy
-      poseEstimator =
-          new PhotonPoseEstimator(
-              Vision.fieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCamTransform);
-      // Fall back to LOWEST_AMBIGUITY if multi-tag fails
-      poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+      poseEstimator = new PhotonPoseEstimator(Vision.fieldLayout, robotToCamTransform);
 
       this.singleTagStdDevs = singleTagStdDevs;
       this.multiTagStdDevs = multiTagStdDevs;
@@ -122,11 +200,14 @@ public class Vision {
           continue;
         }
 
-        Optional<EstimatedRobotPose> poseOpt = poseEstimator.update(result);
+        Optional<EstimatedRobotPose> poseOpt = poseEstimator.estimateCoprocMultiTagPose(result);
+        if (poseOpt.isEmpty()) {
+          poseOpt = poseEstimator.estimateLowestAmbiguityPose(result);
+        }
+
         if (poseOpt.isEmpty()) {
           continue;
         }
-
         var pose = poseOpt.get().estimatedPose;
         double x = pose.getX();
         double y = pose.getY();
@@ -157,6 +238,7 @@ public class Vision {
         Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
       if (estimatedPose.isEmpty()) {
         curStdDevs = singleTagStdDevs;
+        lastAvgDistance = 0.0;
         return;
       }
 
@@ -181,8 +263,10 @@ public class Vision {
 
       if (numTags == 0) {
         curStdDevs = singleTagStdDevs;
+        lastAvgDistance = 0.0;
       } else {
         avgDist /= numTags;
+        lastAvgDistance = avgDist;
 
         // Use multi-tag std devs if multiple tags visible (more accurate)
         if (numTags > 1) {

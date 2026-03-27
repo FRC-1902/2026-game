@@ -60,17 +60,18 @@ public final class Constants {
      * Standard deviations for vision pose estimates when only one AprilTag is visible. Format: [x,
      * y, theta] in meters and radians.
      */
-    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(4, 4, 8);
+    public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.3, 0.3, 0.5);
 
     /**
      * Standard deviations for vision pose estimates when multiple AprilTags are visible. Format:
      * [x, y, theta] in meters and radians.
      */
-    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.2);
 
     /** Camera configurations for all cameras on the robot. */
     public static final class Cameras {
 
+      // TODO: confirm front camera translations and rotations
       // Front Left Camera
       public static final String FRONT_LEFT_NAME = "arducamThree";
       public static final Transform3d FRONT_LEFT_ROBOT_TO_CAM =
@@ -79,7 +80,7 @@ public final class Constants {
                   Units.inchesToMeters(-8.722503),
                   Units.inchesToMeters(12.076808),
                   Units.inchesToMeters(18.970713)),
-              new Rotation3d(10, Math.toRadians(-22.67), Math.toRadians(25.696)));
+              new Rotation3d(Math.toRadians(-10), Math.toRadians(-22.67), Math.toRadians(25.696)));
 
       // Front Right Camera
       public static final String FRONT_RIGHT_NAME = "ArducamZero";
@@ -89,18 +90,22 @@ public final class Constants {
                   Units.inchesToMeters(-4.697477),
                   Units.inchesToMeters(-10.859125),
                   Units.inchesToMeters(18.936709)),
-              new Rotation3d(10, Math.toRadians(-19.4175), Math.toRadians(-18.195)));
+              new Rotation3d(
+                  Math.toRadians(10), Math.toRadians(-19.4175), Math.toRadians(-18.195)));
+
       // Back Left Camera
+      // XXX: confirm pitch values from cad, this was determined experimentally unlike the rest
       public static final String BACK_LEFT_NAME = "ArducamTwo";
       public static final Transform3d BACK_LEFT_ROBOT_TO_CAM =
           new Transform3d(
               new Translation3d(
-                  Units.inchesToMeters(-13.620134),
-                  Units.inchesToMeters(1.827022),
-                  Units.inchesToMeters(6.862401)),
-              new Rotation3d(5, Math.toRadians(-166), Math.toRadians(158)));
+                  Units.inchesToMeters(-13.635),
+                  Units.inchesToMeters(2.078),
+                  Units.inchesToMeters(6.725)),
+              new Rotation3d(Math.toRadians(2.95), Math.toRadians(-11.5), Math.toRadians(155.917)));
 
       // Back Right Camera
+      // XXX: confirm pitch values from cad, this was determined experimentally unlike the rest
       public static final String BACK_RIGHT_NAME = "arducamOne";
       public static final Transform3d BACK_RIGHT_ROBOT_TO_CAM =
           new Transform3d(
@@ -108,7 +113,8 @@ public final class Constants {
                   Units.inchesToMeters(-13.620134),
                   Units.inchesToMeters(-1.827022),
                   Units.inchesToMeters(6.862401)),
-              new Rotation3d(5, Math.toRadians(-166), Math.toRadians(-158)));
+              new Rotation3d(
+                  Math.toRadians(-2.95), Math.toRadians(-11.5), Math.toRadians(204.083)));
     }
   }
 }
