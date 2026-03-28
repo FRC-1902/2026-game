@@ -111,6 +111,14 @@ public class IntakeSubsystem extends SubsystemBase {
     return this.startEnd(() -> startRollers(), () -> stopRollers());
   }
 
+  public Command toggleRollersOnCommand() {
+    return this.run(() -> startRollers());
+  }
+
+  public Command toggleRollersOffCommand() {
+    return this.run(() -> stopRollers());
+  }
+
   public Command toggleIntakeCommand() {
     intakeToggle = !intakeToggle;
     if (intakeToggle) {

@@ -26,6 +26,8 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import swervelib.SwerveInputStream;
 
 /**
@@ -78,6 +80,11 @@ public class RobotContainer {
     DoubleSupplier distanceToHubSupplier =
         () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
+
+    NamedCommands.registerCommand("Enable Intake", intake.enableIntakeCommand());
+    NamedCommands.registerCommand("start intake rollers", intake.toggleRollersOnCommand());
+    NamedCommands.registerCommand("stop intake rollers", intake.toggleRollersOffCommand());
+    NamedCommands.registerCommand("Align to Hub", new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance()));
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
