@@ -136,7 +136,7 @@ public class IntakeSubsystem extends SubsystemBase {
     double pidoutput = pid.calculate(measurement.getDegrees(), setpoint);
     double ff = calculateGravityFeedforward(measurement);
     double output = pidoutput + ff;
-    output = Math.max(-1.0, Math.min(1.0, output));
+    output = Math.max(-0.2, Math.min(0.4, output));
     pivotMotor.set(output);
 
     // add all values to network table

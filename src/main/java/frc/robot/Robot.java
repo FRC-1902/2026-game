@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -57,11 +58,13 @@ public class Robot extends LoggedRobot {
     if (isReal()) {
       Logger.addDataReceiver(new WPILOGWriter("/home/lvuser/fstab_usb"));
       Logger.addDataReceiver(new NT4Publisher());
+      DataLogManager.start("/home/lvuser/fstab_usb");
     } else {
       setUseTiming(false);
       String logPath = LogFileUtil.findReplayLog();
       Logger.setReplaySource((new WPILOGReader(logPath)));
       Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+      DataLogManager.start(logPath);
     }
 
     Logger.start();
@@ -69,6 +72,7 @@ public class Robot extends LoggedRobot {
     if (isSimulation()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
+
   }
 
   /**
@@ -85,6 +89,9 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    // Update vision measurements for pose estimation (critical for vision/gyro fusion)
+    m_robotContainer.updateVision();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -108,6 +115,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     m_robotContainer.setMotorBrake(true);
+
+    // Reset gyro/odometry for autonomous to ensure correct starting orientation
+    // This prevents drift from robotInit and ensures vision fusion starts from correct pose
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // Print the selected autonomous command upon autonomous init
@@ -115,7 +126,7 @@ public class Robot extends LoggedRobot {
 
     // schedule the autonomous command selected in the autoChooser
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
   }
 

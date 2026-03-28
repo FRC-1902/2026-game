@@ -23,12 +23,6 @@ public class WaypointManager {
   // ASSUME BLUE ALLIANCE FOR ALL ADDED WAYPOINTS, FLIP USING getWaypoint(name, true)
   private void initializeWaypoints() {
     waypoints.put("HUB", new Pose2d(4.624, 4.035, Rotation2d.fromDegrees(180)));
-    // Ladder waypoints are based on the DRIVER STATION PERSPECTIVE.
-    waypoints.put("LADDER_LEFT", new Pose2d(1.069, 4.503, Rotation2d.fromDegrees(0)));
-    waypoints.put("LADDER_RIGHT", new Pose2d(1.069, 2.972, Rotation2d.fromDegrees(180)));
-
-    waypoints.put("LADDER_LEFT_PREPARE", new Pose2d(1.069, 4.003, Rotation2d.fromDegrees(0)));
-    waypoints.put("LADDER_RIGHT_PREPARE", new Pose2d(1.069, 2.472, Rotation2d.fromDegrees(180)));
   }
 
   /**

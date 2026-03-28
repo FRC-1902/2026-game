@@ -4,8 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(158);
-  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(66);
+  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(160);
+  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(68);
 
   // CAN IDs
 
@@ -19,11 +19,9 @@ public class IntakeConstants {
 
   // PID
 
-  public static final double INTAKE_KP = 0.007;
+  public static final double INTAKE_KP = 0.008;
   public static final double INTAKE_KI = 0.0;
   public static final double INTAKE_KD = 0.0;
-
-  public static final double INTAKE_OSCILLATING_KP = 0.01;
 
   public static final Rotation2d PID_TOLERANCE = Rotation2d.fromDegrees(2.0);
   public static final Rotation2d PID_IZONE = Rotation2d.fromDegrees(10.0);

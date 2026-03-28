@@ -139,7 +139,8 @@ public class RobotContainer {
                 this::flipForAlliance));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
-    manipXbox.rightTrigger().whileTrue(intake.startRollersCommand());
+    manipXbox.y().whileTrue(intake.startRollersCommand());
+    manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
   }
 
   /*
