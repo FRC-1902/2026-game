@@ -6,6 +6,10 @@ package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import java.io.File;
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import swervelib.SwerveController;
@@ -468,5 +473,24 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public Field2d getField() {
     return swerveDrive.field;
+  }
+
+  public void configurePathPlanner(BooleanSupplier shouldFlipPath) {
+    try {
+      RobotConfig config = RobotConfig.fromGUISettings();
+
+      AutoBuilder.configure(
+          this::getPose,
+          this::resetOdometry,
+          this::getRobotVelocity,
+          this::setChassisSpeeds,
+          new PPHolonomicDriveController(
+              new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+          config,
+          shouldFlipPath,
+          this);
+    } catch (Exception e) {
+      DriverStation.reportError("Failed to configure PathPlanner: " + e.getMessage(), false);
+    }
   }
 }

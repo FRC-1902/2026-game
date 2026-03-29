@@ -20,7 +20,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax pivotMotor;
   private final SparkAbsoluteEncoder pivotEncoder;
   private final PIDController pid;
-  private boolean intakeToggle;
 
   private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
@@ -56,8 +55,6 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerConfig.voltageCompensation(IntakeConstants.ROLLERMOTOR_VOLTAGECOMPENSATION);
     rollerMotor.configure(
         rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    intakeToggle = false;
   }
 
   private double calculateGravityFeedforward(Rotation2d angle) {
@@ -117,15 +114,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command toggleRollersOffCommand() {
     return this.run(() -> stopRollers());
-  }
-
-  public Command toggleIntakeCommand() {
-    intakeToggle = !intakeToggle;
-    if (intakeToggle) {
-      return enableIntakeCommand();
-    } else {
-      return disableIntakeCommand();
-    }
   }
 
   @Override

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -11,12 +13,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ShootCommand;
-import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.commands.PrepForShotCommand;
+import frc.robot.commands.autonomous.AutoShoot;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.hood.HoodSubsystem;
@@ -26,8 +27,6 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
 import java.util.function.DoubleSupplier;
-import com.pathplanner.lib.auto.NamedCommands;
-
 import swervelib.SwerveInputStream;
 
 /**
@@ -55,7 +54,7 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final SendableChooser<Command> autoChooser;
 
   /**
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular
@@ -81,27 +80,18 @@ public class RobotContainer {
         () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
-    NamedCommands.registerCommand("Enable Intake", intake.enableIntakeCommand());
-    NamedCommands.registerCommand("start intake rollers", intake.toggleRollersOnCommand());
-    NamedCommands.registerCommand("stop intake rollers", intake.toggleRollersOffCommand());
-    NamedCommands.registerCommand("Align to Hub", new AlignToHub(drivebase, waypointManager, "HUB", flipForAlliance()));
+    registerPathPlannerNamedCommands();
+    drivebase.configurePathPlanner(this::flipForAlliance);
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     drivebase.zeroGyroWithAlliance();
 
-    // Set the default auto (do nothing)
+    autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
-
-    // Add a simple auto option to have the robot drive forward for 1 second then stop
-    autoChooser.addOption("Drive Forward", drivebase.driveForward().withTimeout(1));
-
     autoChooser.addOption(
-        "new experimental auto",
-        new SequentialCommandGroup(
-            new AlignToHub(drivebase, waypointManager, "HUB", this::flipForAlliance),
-            flywheel.spinUpCommand(),
-            indexer.spinRollerShooterCommand()));
+        "Shoot Preload",
+        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, this::flipForAlliance));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -129,7 +119,7 @@ public class RobotContainer {
     manipXbox
         .leftTrigger()
         .whileTrue(
-            new ShootCommand(
+            new PrepForShotCommand(
                 drivebase,
                 waypointManager,
                 hood,
@@ -151,6 +141,14 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Pass in the selected auto from the SmartDashboard as our desired autnomous commmand
     return autoChooser.getSelected();
+  }
+
+  private void registerPathPlannerNamedCommands() {
+    NamedCommands.registerCommand("enable rollers", Commands.runOnce(intake::startRollers, intake));
+    NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
+    NamedCommands.registerCommand(
+        "shoot",
+        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, this::flipForAlliance));
   }
 
   public void setMotorBrake(boolean brake) {

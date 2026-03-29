@@ -72,7 +72,6 @@ public class Robot extends LoggedRobot {
     if (isSimulation()) {
       DriverStation.silenceJoystickConnectionWarning(true);
     }
-
   }
 
   /**

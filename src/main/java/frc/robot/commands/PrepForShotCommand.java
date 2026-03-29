@@ -14,13 +14,10 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.BooleanSupplier;
 
-/**
- * Aligns robot + hood, spins flywheel to interpolation target, rumbles when ready, then feeds via
- * indexer.
- */
-public class ShootCommand extends SequentialCommandGroup {
+/** Aligns robot + hood, spins flywheel to interpolation target and rumbles when ready. */
+public class PrepForShotCommand extends SequentialCommandGroup {
 
-  public ShootCommand(
+  public PrepForShotCommand(
       SwerveSubsystem drivebase,
       WaypointManager waypointManager,
       HoodSubsystem hood,
@@ -33,7 +30,7 @@ public class ShootCommand extends SequentialCommandGroup {
         Commands.startEnd(
                 () -> manipController.setRumble(GenericHID.RumbleType.kBothRumble, 1.0),
                 () -> manipController.setRumble(GenericHID.RumbleType.kBothRumble, 0.0))
-            .withTimeout(0.2);
+            .withTimeout(1);
 
     addCommands(
         flywheel.spinUpCommand(),
@@ -41,7 +38,6 @@ public class ShootCommand extends SequentialCommandGroup {
             new AlignToHub(drivebase, waypointManager, "HUB", flipForAllianceSupplier),
             new AlignHoodCommand(hood, drivebase, waypointManager, flipForAllianceSupplier)),
         Commands.waitUntil(flywheel::isAtTargetSpeed),
-        readyRumble,
-        indexer.spinRollerShooterCommand());
+        readyRumble);
   }
 }

@@ -1,10 +1,5 @@
 package frc.robot.subsystems.Flywheel;
 
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.revrobotics.PersistMode;
@@ -15,15 +10,11 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.units.measure.MutAngle;
-import edu.wpi.first.units.measure.MutAngularVelocity;
-import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import java.util.function.DoubleSupplier;
 
 // Note: We intentionally avoid a hard dependency on SysIdRoutine's constructor here because
@@ -41,14 +32,6 @@ public class FlywheelSubsystem extends SubsystemBase {
           FlywheelConstants.FLYWHEEL_KP,
           FlywheelConstants.FLYWHEEL_KI,
           FlywheelConstants.FLYWHEEL_KD);
-
-  // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
-  // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
-  private final MutAngularVelocity m_velocity = RadiansPerSecond.mutable(0);
-  private final MutAngle m_position = Radians.mutable(0);
-
-  private final SysIdRoutine m_sysIdRoutine;
 
   private final SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
@@ -79,34 +62,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     config.inverted(false);
     leftFlywheelMotor.configure(
         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    m_sysIdRoutine =
-        new SysIdRoutine(
-            // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-            new SysIdRoutine.Config(Volts.of(1).per(Second), Volts.of(7), Second.of(15)),
-            new SysIdRoutine.Mechanism(
-                // Tell SysId how to plumb the driving voltage to the motor(s).
-                this::setVoltage,
-                // Tell SysId how to record a frame of data for each motor on the mechanism being
-                // characterized.
-                log -> {
-                  // Record a frame for the shooter motor.
-                  log.motor("shooter-wheel")
-                      .voltage(
-                          m_appliedVoltage.mut_replace(
-                              rightFlywheelMotor.getAppliedOutput()
-                                  * rightFlywheelMotor.getBusVoltage(),
-                              Volts))
-                      .angularVelocity(
-                          m_velocity.mut_replace(getMotorSpeed() / 60, RotationsPerSecond))
-                      .angularPosition(
-                          m_position.mut_replace(
-                              rightFlywheelMotor.getEncoder().getPosition(), Rotations));
-                },
-                // Tell SysId to make generated commands require this subsystem, suffix test state
-                // in
-                // WPILog with this subsystem's name ("shooter")
-                this));
   }
 
   private void setVoltage(Voltage v) {
@@ -142,33 +97,11 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public Command spinUpCommand() {
-    return new InstantCommand(
-        () -> setState(true)); // TODO: make command that spins up and waits until you hit target
-    // speed until it ends
+    return new InstantCommand(() -> setState(true));
   }
 
   public Command spinDownCommand() {
-    return new InstantCommand(
-        () -> setState(false)); // TODO: make command that spins up and waits until you hit target
-    // speed until it ends
-  }
-
-  /**
-   * Returns a command that will execute a quasistatic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  /**
-   * Returns a command that will execute a dynamic test in the given direction.
-   *
-   * @param direction The direction (forward or reverse) to run the test in
-   */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
+    return new InstantCommand(() -> setState(false));
   }
 
   private double getRpmForDistance(double distance) {
@@ -213,7 +146,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     }
 
     setVoltage(Volts.of(output));
-    // This method will be called once per scheduler run
+
     SmartDashboard.putNumber(
         "Flywheel/ Applied Output",
         rightFlywheelMotor.getAppliedOutput() * rightFlywheelMotor.getBusVoltage());
