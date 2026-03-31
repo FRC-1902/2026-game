@@ -1,0 +1,133 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.606267909696406,
+        "y": 4.011482245198265
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.622935879918282,
+        "y": 4.894469114931736
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.174005673017348,
+        "y": 4.9895491596964066
+      },
+      "prevControl": {
+        "x": 2.141956580803262,
+        "y": 4.99952746981915
+      },
+      "nextControl": {
+        "x": 0.42453642929058233,
+        "y": 4.981823110285006
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5705387914343247,
+        "y": 6.885190568850682
+      },
+      "prevControl": {
+        "x": 0.032630450356257557,
+        "y": 7.0114817611524165
+      },
+      "nextControl": {
+        "x": 1.9784366365955144,
+        "y": 6.8516944860044156
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1101311764250306,
+        "y": 6.885190568850682
+      },
+      "prevControl": {
+        "x": 1.862585875054199,
+        "y": 6.920138011807561
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.75,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 0.9966293715373957,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.9,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Enable Rollers",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Enable Rollers"
+        }
+      }
+    },
+    {
+      "name": "Disable Rollers",
+      "waypointRelativePos": 1.9,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Disable Rollers"
+        }
+      }
+    },
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 3.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Shoot"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
