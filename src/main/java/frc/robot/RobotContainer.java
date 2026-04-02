@@ -109,9 +109,7 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    manipXbox
-        .y()
-        .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
+    manipXbox.y().whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
 
     manipXbox.x().onTrue(intake.enableIntakeCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand());
@@ -134,7 +132,12 @@ public class RobotContainer {
     manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
 
-    driverXbox.x().onTrue(drivebase.runOnce(drivebase::zeroGyroWithAlliance).alongWith(vibrateController(1, 1, driverXbox)));
+    driverXbox
+        .x()
+        .onTrue(
+            drivebase
+                .runOnce(drivebase::zeroGyroWithAlliance)
+                .alongWith(vibrateController(1, 1, driverXbox)));
   }
 
   /*
@@ -150,9 +153,7 @@ public class RobotContainer {
   private void registerPathPlannerNamedCommands() {
     NamedCommands.registerCommand("enable rollers", Commands.runOnce(intake::startRollers, intake));
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
-    NamedCommands.registerCommand(
-        "shoot",
-        flywheel.spinUpCommand());
+    NamedCommands.registerCommand("shoot", flywheel.spinUpCommand());
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
     NamedCommands.registerCommand("index", indexer.waitAndIndexCommand());
   }
@@ -174,7 +175,8 @@ public class RobotContainer {
     return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
-  public Command vibrateController(double intensity, double seconds, CommandXboxController controller) {
+  public Command vibrateController(
+      double intensity, double seconds, CommandXboxController controller) {
     return Commands.startEnd(
             () ->
                 controller.setRumble(
@@ -186,7 +188,8 @@ public class RobotContainer {
   public Command vibrateControllerIndefinitely(double intensity, CommandXboxController controller) {
     return Commands.startEnd(
         () ->
-            controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
+            controller.setRumble(
+                edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
         () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
   }
 }

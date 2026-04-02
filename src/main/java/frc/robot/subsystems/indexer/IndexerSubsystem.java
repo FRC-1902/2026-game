@@ -54,12 +54,11 @@ public class IndexerSubsystem extends SubsystemBase {
           rollerIndexerMotor.set(0);
         },
         this);
-
   }
 
   public Command waitAndIndexCommand() {
     return Commands.run(
-      () -> {
+        () -> {
           shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
           rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
         });

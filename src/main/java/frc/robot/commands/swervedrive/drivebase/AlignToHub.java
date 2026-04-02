@@ -16,7 +16,7 @@ public class AlignToHub extends Command {
   private final BooleanSupplier flipForAllianceSupplier;
 
   // TODO: this pid will need to be tuned
-  private final PIDController rotController = new PIDController(0.05, 0, 0);
+  private final PIDController rotController = new PIDController(0.08, 0, 0);
   private final Translation2d translation = new Translation2d(0, 0);
 
   public AlignToHub(
@@ -50,8 +50,7 @@ public class AlignToHub extends Command {
     Pose2d currentPose = swerve.getPose();
 
     Rotation2d targetAngle =
-        waypointManager.getAngleToHub(
-            currentPose, flipForAllianceSupplier.getAsBoolean());
+        waypointManager.getAngleToHub(currentPose, flipForAllianceSupplier.getAsBoolean());
 
     // Check if the waypoint exists
     double rotationOutput = 0;
