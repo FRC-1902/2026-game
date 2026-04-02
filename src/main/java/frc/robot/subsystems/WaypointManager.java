@@ -94,6 +94,25 @@ public class WaypointManager {
     return currentPose.getTranslation().getDistance(waypoint.getTranslation());
   }
 
+  public double getDistanceToHub(
+      Pose2d currentPose, boolean flipForAlliance) {
+      String waypointName;
+
+    if (flipForAlliance == true) {
+      waypointName = "RED-HUB";
+    } else {
+      waypointName = "BLUE-HUB";
+    }
+    
+    Pose2d waypoint = getWaypoint(waypointName, flipForAlliance);
+    if (waypoint == null) {
+      return -1;
+    }
+
+    return currentPose.getTranslation().getDistance(waypoint.getTranslation());
+  }
+
+
   /**
    * Calculate angle from current pose to waypoint
    *

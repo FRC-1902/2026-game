@@ -13,7 +13,7 @@ public class FlywheelConstants {
   // PID
   public static final double FLYWHEEL_KP =
       0.0; // TODO: after bayou, add in a pid to make spin up faster
-  public static final double FLYWHEEL_KI = 0.0;
+  public static final double FLYWHEEL_KI = 0.01;
   public static final double FLYWHEEL_KD = 0.0;
 
   // Gear ratio for the motor to the flywheel. This is used to convert between motor RPM and

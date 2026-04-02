@@ -27,8 +27,8 @@ public class AutoShoot extends SequentialCommandGroup {
 
     DoubleSupplier distanceToHubSupplier =
         () ->
-            waypointManager.getDistanceToWaypoint(
-                drivebase.getPose(), "HUB", flipForAllianceSupplier.getAsBoolean());
+            waypointManager.getDistanceToHub(
+                drivebase.getPose(), flipForAllianceSupplier.getAsBoolean());
 
     addCommands(
         Commands.runOnce(

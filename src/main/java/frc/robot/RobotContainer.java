@@ -77,7 +77,7 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
     hood = new HoodSubsystem();
     DoubleSupplier distanceToHubSupplier =
-        () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
+        () -> waypointManager.getDistanceToHub(drivebase.getPose(), flipForAlliance());
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     registerPathPlannerNamedCommands();
@@ -110,13 +110,13 @@ public class RobotContainer {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
     manipXbox
-        .leftBumper()
+        .y()
         .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
 
     manipXbox.x().onTrue(intake.enableIntakeCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand());
-    manipXbox.y().whileTrue(flywheel.spinUpCommand());
-    manipXbox.y().onFalse(flywheel.spinDownCommand());
+    manipXbox.leftBumper().whileTrue(flywheel.spinUpCommand());
+    manipXbox.leftBumper().onFalse(flywheel.spinDownCommand());
 
     manipXbox
         .leftTrigger()
