@@ -129,8 +129,10 @@ public class RobotContainer {
                 this::flipForAlliance));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
-    manipXbox.y().whileTrue(intake.startRollersCommand());
+    manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
+
+    driverXbox.x().onTrue(drivebase.runOnce(drivebase::zeroGyroWithAlliance).alongWith(vibrateController(1, 1, driverXbox)));
   }
 
   /*
@@ -168,19 +170,19 @@ public class RobotContainer {
     return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
-  public Command vibrateController(double intensity, double seconds) {
+  public Command vibrateController(double intensity, double seconds, CommandXboxController controller) {
     return Commands.startEnd(
             () ->
-                manipXbox.setRumble(
+                controller.setRumble(
                     edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-            () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
+            () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
         .withTimeout(seconds);
   }
 
-  public Command vibrateControllerIndefinitely(double intensity) {
+  public Command vibrateControllerIndefinitely(double intensity, CommandXboxController controller) {
     return Commands.startEnd(
         () ->
-            manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-        () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
+            controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
+        () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
   }
 }

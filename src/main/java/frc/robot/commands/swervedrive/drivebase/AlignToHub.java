@@ -43,8 +43,8 @@ public class AlignToHub extends Command {
 
     rotController.enableContinuousInput(0, 360);
 
-    // Set tolerance: Stop attempting to correct if within 2 degrees
-    rotController.setTolerance(2.0);
+    // Set tolerance: Stop attempting to correct if within X degrees
+    rotController.setTolerance(0.0);
   }
 
   @Override
