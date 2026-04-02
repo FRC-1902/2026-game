@@ -152,7 +152,7 @@ public class FlywheelSubsystem extends SubsystemBase {
         rightFlywheelMotor.getAppliedOutput() * rightFlywheelMotor.getBusVoltage());
     SmartDashboard.putNumber("Flywheel/ Speed", getMotorSpeed());
     SmartDashboard.putNumber("Flywheel/ Output", output);
-    SmartDashboard.putNumber("Flywheel/Target RPM", FlywheelConstants.DESIRED_FLYWHEEL_RPM);
+    SmartDashboard.putNumber("Flywheel/Target RPM", targetRpm);
     SmartDashboard.putBoolean("Flywheel/At Target Speed", isAtTargetSpeed());
   }
 }

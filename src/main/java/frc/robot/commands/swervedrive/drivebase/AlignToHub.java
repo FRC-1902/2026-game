@@ -13,7 +13,6 @@ import java.util.function.BooleanSupplier;
 public class AlignToHub extends Command {
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
-  private final String waypointName;
   private final BooleanSupplier flipForAllianceSupplier;
 
   // TODO: this pid will need to be tuned
@@ -35,7 +34,6 @@ public class AlignToHub extends Command {
       BooleanSupplier flipForAllianceSupplier) {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
-    this.waypointName = waypointName;
     this.flipForAllianceSupplier = flipForAllianceSupplier;
 
     // Declare subsystem dependencies
@@ -52,8 +50,8 @@ public class AlignToHub extends Command {
     Pose2d currentPose = swerve.getPose();
 
     Rotation2d targetAngle =
-        waypointManager.getAngleToWaypoint(
-            currentPose, waypointName, flipForAllianceSupplier.getAsBoolean());
+        waypointManager.getAngleToHub(
+            currentPose, flipForAllianceSupplier.getAsBoolean());
 
     // Check if the waypoint exists
     double rotationOutput = 0;

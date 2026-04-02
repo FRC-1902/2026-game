@@ -36,7 +36,7 @@
         "y": 6.885190568850682
       },
       "prevControl": {
-        "x": 0.032630450356257557,
+        "x": 0.032630450356257334,
         "y": 7.0114817611524165
       },
       "nextControl": {
@@ -75,38 +75,71 @@
     }
   ],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.624,
+        "y": 4.035
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 3.0,
+      "maxWaypointRelativePos": 3.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
     {
-      "name": "Enable Rollers",
-      "waypointRelativePos": 1.0,
+      "name": "Enable Intake",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Enable Rollers"
+          "name": "enable intake"
         }
       }
     },
     {
-      "name": "Disable Rollers",
-      "waypointRelativePos": 1.9,
+      "name": "Enable Rollers",
+      "waypointRelativePos": 1.004273504273512,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Disable Rollers"
+          "name": "enable rollers"
         }
       }
     },
     {
       "name": "Shoot",
+      "waypointRelativePos": 1.8589743589743597,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    },
+    {
+      "name": "Disable Rollers",
+      "waypointRelativePos": 1.893162393162394,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "disable rollers"
+        }
+      }
+    },
+    {
+      "name": "Index",
       "waypointRelativePos": 3.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Shoot"
+          "name": "index"
         }
       }
     }
@@ -121,7 +154,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -45.93869950232256
   },
   "reversed": false,
   "folder": null,

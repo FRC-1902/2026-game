@@ -37,7 +37,7 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  private final IntakeSubsystem intake;
+  public final IntakeSubsystem intake;
   private final FlywheelSubsystem flywheel;
   private final HoodSubsystem hood;
   private final WaypointManager waypointManager = new WaypointManager();
@@ -115,6 +115,8 @@ public class RobotContainer {
 
     manipXbox.x().onTrue(intake.enableIntakeCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand());
+    manipXbox.y().whileTrue(flywheel.spinUpCommand());
+    manipXbox.y().onFalse(flywheel.spinDownCommand());
 
     manipXbox
         .leftTrigger()
@@ -150,7 +152,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
     NamedCommands.registerCommand(
         "shoot",
-        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, this::flipForAlliance));
+        flywheel.spinUpCommand());
+    NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
+    NamedCommands.registerCommand("index", indexer.waitAndIndexCommand());
   }
 
   public void setMotorBrake(boolean brake) {
