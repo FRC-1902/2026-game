@@ -103,7 +103,7 @@ public class WaypointManager {
       waypointName = "BLUE-HUB";
     }
 
-    Pose2d waypoint = getWaypoint(waypointName, flipForAlliance);
+    Pose2d waypoint = getWaypoint(waypointName, false);
     if (waypoint == null) {
       return -1;
     }
@@ -137,7 +137,7 @@ public class WaypointManager {
     } else {
       waypointName = "BLUE-HUB";
     }
-    Pose2d waypoint = getWaypoint(waypointName);
+    Pose2d waypoint = getWaypoint(waypointName, false);
     if (waypoint == null) {
       return null;
     }

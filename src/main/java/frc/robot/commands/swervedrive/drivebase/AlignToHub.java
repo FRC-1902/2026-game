@@ -49,19 +49,21 @@ public class AlignToHub extends Command {
   public void execute() {
     Pose2d currentPose = swerve.getPose();
 
-    Rotation2d targetAngle =
-        waypointManager.getAngleToHub(currentPose, flipForAllianceSupplier.getAsBoolean());
+    Rotation2d targetDelta =
+        waypointManager.getAngleToHub(currentPose, flipForAllianceSupplier.getAsBoolean());  // Delta
+
+    Rotation2d desiredAbsoluteAngle = currentPose.getRotation().plus(targetDelta);
 
     // Check if the waypoint exists
     double rotationOutput = 0;
-    if (targetAngle != null) {
+    if (targetDelta != null) {
       rotationOutput =
-          rotController.calculate(currentPose.getRotation().getDegrees(), targetAngle.getDegrees());
+          rotController.calculate(currentPose.getRotation().getDegrees(), desiredAbsoluteAngle.getDegrees());
     }
 
     swerve.drive(translation, rotationOutput, true);
 
-    SmartDashboard.putNumber("Waypoints/Align To Hub Target Angle", targetAngle.getDegrees());
+    SmartDashboard.putNumber("Waypoints/Align To Hub Target Angle", targetDelta.getDegrees());
     SmartDashboard.putNumber(
         "Waypoints/Align To Hub Current Angle", currentPose.getRotation().getDegrees());
     SmartDashboard.putNumber("Waypoints/Align To Hub Output", rotationOutput);
