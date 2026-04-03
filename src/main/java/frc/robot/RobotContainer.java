@@ -23,6 +23,7 @@ import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.swervedrive.RotationSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import java.io.File;
@@ -36,7 +37,6 @@ import swervelib.SwerveInputStream;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-
   public final IntakeSubsystem intake;
   public final FlywheelSubsystem flywheel;
   private final HoodSubsystem hood;
@@ -48,8 +48,9 @@ public class RobotContainer {
   final CommandXboxController manipXbox = new CommandXboxController(1);
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase =
+  public final SwerveSubsystem drivebase =
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
+  public final RotationSubsystem rotSubsystem = new RotationSubsystem();
 
   private final Vision vision = new Vision();
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
@@ -65,7 +66,7 @@ public class RobotContainer {
               drivebase.getSwerveDrive(),
               () -> driverXbox.getLeftY() * -1,
               () -> driverXbox.getLeftX() * -1)
-          .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
+          .withControllerRotationAxis(() -> rotSubsystem.getCurrentDeltaScaled(drivebase.getHeading()))
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
@@ -132,8 +133,6 @@ public class RobotContainer {
     manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
 
-    manipXbox.leftTrigger().whileTrue(vibrateIfInRange());
-
     driverXbox
         .x()
         .onTrue(
@@ -179,14 +178,6 @@ public class RobotContainer {
 
   public boolean dontFlipForAlliance() {
     return false;
-  }
-
-  public Command vibrateIfInRange() {
-    if (flywheel.isInRange()) {
-      return vibrateControllerIndefinitely(1, manipXbox);
-    } else {
-      return Commands.none();
-    }
   }
 
   public Command vibrateController(

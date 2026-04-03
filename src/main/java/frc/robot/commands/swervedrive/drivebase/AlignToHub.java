@@ -1,11 +1,10 @@
 package frc.robot.commands.swervedrive.drivebase;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.function.BooleanSupplier;
@@ -14,10 +13,6 @@ public class AlignToHub extends Command {
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
   private final BooleanSupplier flipForAllianceSupplier;
-
-  // TODO: this pid will need to be tuned
-  private final PIDController rotController = new PIDController(0.08, 0, 0);
-  private final Translation2d translation = new Translation2d(0, 0);
 
   public AlignToHub(
       SwerveSubsystem swerve,
@@ -35,14 +30,6 @@ public class AlignToHub extends Command {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
     this.flipForAllianceSupplier = flipForAllianceSupplier;
-
-    // Declare subsystem dependencies
-    addRequirements(swerve);
-
-    rotController.enableContinuousInput(0, 360);
-
-    // Set tolerance: Stop attempting to correct if within X degrees
-    rotController.setTolerance(0.0);
   }
 
   @Override
@@ -57,12 +44,8 @@ public class AlignToHub extends Command {
     // Check if the waypoint exists
     double rotationOutput = 0;
     if (targetDelta != null) {
-      rotationOutput =
-          rotController.calculate(
-              currentPose.getRotation().getDegrees(), desiredAbsoluteAngle.getDegrees());
+      Robot.getInstance().m_robotContainer.rotSubsystem.setDesiredAngle(desiredAbsoluteAngle);
     }
-
-    swerve.drive(translation, rotationOutput, true);
 
     SmartDashboard.putNumber("Waypoints/Align To Hub Target Angle", targetDelta.getDegrees());
     SmartDashboard.putNumber(
@@ -77,6 +60,6 @@ public class AlignToHub extends Command {
 
   @Override
   public boolean isFinished() {
-    return rotController.atSetpoint();
+    return false;
   }
 }

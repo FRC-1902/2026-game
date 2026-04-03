@@ -27,7 +27,7 @@ public class Robot extends LoggedRobot {
   private static Robot instance;
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  public RobotContainer m_robotContainer;
 
   private Timer disabledTimer;
 
@@ -147,10 +147,18 @@ public class Robot extends LoggedRobot {
 
     m_robotContainer.indexer.stopRollers();
     m_robotContainer.flywheel.setState(false);
+
+    m_robotContainer.rotSubsystem.setDesiredAngle(
+      m_robotContainer.drivebase.getHeading()
+    );
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if (Math.abs(m_robotContainer.driverXbox.getRightX()) > 0.1) {
+      m_robotContainer.rotSubsystem.incrementDesiredAngle(m_robotContainer.driverXbox.getRightX() * -1);
+    }
+  }
 
   @Override
   public void testInit() {

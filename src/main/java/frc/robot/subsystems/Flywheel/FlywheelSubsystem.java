@@ -89,14 +89,6 @@ public class FlywheelSubsystem extends SubsystemBase {
     return Math.abs(getMotorSpeed() - targetRpm) <= FlywheelConstants.RPM_TOLERANCE;
   }
 
-  public boolean isInRange() {
-    if (distanceToHub.getAsDouble() <= 2.921) {
-        return true;
-    } else {
-      return false;
-    }
-  }
-
   public void toggle() {
     this.on = !this.on;
   }
