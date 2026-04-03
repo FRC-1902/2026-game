@@ -50,7 +50,7 @@ public class AlignToHub extends Command {
     Pose2d currentPose = swerve.getPose();
 
     Rotation2d targetDelta =
-        waypointManager.getAngleToHub(currentPose, flipForAllianceSupplier.getAsBoolean());  // Delta
+        waypointManager.getAngleToHub(currentPose, flipForAllianceSupplier.getAsBoolean()); // Delta
 
     Rotation2d desiredAbsoluteAngle = currentPose.getRotation().plus(targetDelta);
 
@@ -58,7 +58,8 @@ public class AlignToHub extends Command {
     double rotationOutput = 0;
     if (targetDelta != null) {
       rotationOutput =
-          rotController.calculate(currentPose.getRotation().getDegrees(), desiredAbsoluteAngle.getDegrees());
+          rotController.calculate(
+              currentPose.getRotation().getDegrees(), desiredAbsoluteAngle.getDegrees());
     }
 
     swerve.drive(translation, rotationOutput, true);

@@ -38,10 +38,10 @@ import swervelib.SwerveInputStream;
 public class RobotContainer {
 
   public final IntakeSubsystem intake;
-  private final FlywheelSubsystem flywheel;
+  public final FlywheelSubsystem flywheel;
   private final HoodSubsystem hood;
   private final WaypointManager waypointManager = new WaypointManager();
-  private final IndexerSubsystem indexer;
+  public final IndexerSubsystem indexer;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -81,7 +81,7 @@ public class RobotContainer {
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     registerPathPlannerNamedCommands();
-    drivebase.configurePathPlanner(this::flipForAlliance);
+    drivebase.configurePathPlanner(this::dontFlipForAlliance);
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -132,6 +132,8 @@ public class RobotContainer {
     manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
 
+    manipXbox.leftTrigger().whileTrue(vibrateIfInRange());
+
     driverXbox
         .x()
         .onTrue(
@@ -173,6 +175,18 @@ public class RobotContainer {
   public boolean flipForAlliance() {
     var alliance = DriverStation.getAlliance();
     return alliance.isPresent() && alliance.get() == Alliance.Red;
+  }
+
+  public boolean dontFlipForAlliance() {
+    return false;
+  }
+
+  public Command vibrateIfInRange() {
+    if (flywheel.isInRange()) {
+      return vibrateControllerIndefinitely(1, manipXbox);
+    } else {
+      return Commands.none();
+    }
   }
 
   public Command vibrateController(

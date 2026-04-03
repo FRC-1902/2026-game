@@ -1,7 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,18 +24,10 @@ public class PrepForShotCommand extends SequentialCommandGroup {
       CommandXboxController manipController,
       BooleanSupplier flipForAllianceSupplier) {
 
-    Command readyRumble =
-        Commands.startEnd(
-                () -> manipController.setRumble(GenericHID.RumbleType.kBothRumble, 1.0),
-                () -> manipController.setRumble(GenericHID.RumbleType.kBothRumble, 0.0))
-            .withTimeout(1);
-
     addCommands(
         flywheel.spinUpCommand(),
         Commands.parallel(
             new AlignToHub(drivebase, waypointManager, "HUB", flipForAllianceSupplier),
-            new AlignHoodCommand(hood, drivebase, waypointManager, flipForAllianceSupplier)),
-        Commands.waitUntil(flywheel::isAtTargetSpeed),
-        readyRumble);
+            new AlignHoodCommand(hood, drivebase, waypointManager, flipForAllianceSupplier)));
   }
 }

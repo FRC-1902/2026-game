@@ -126,7 +126,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "enable intake"
+          "name": "enable rollers"
         }
       }
     },

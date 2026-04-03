@@ -81,6 +81,10 @@ public class Vision {
       Logger.recordOutput("Vision/Camera" + i + "/Connected", isConnected);
 
       Optional<EstimatedRobotPose> poseEst = camera.getEstimatedGlobalPose();
+
+      Logger.recordOutput("Vision/Camera" + i + "/poseEstIsPresent", poseEst.isPresent());
+
+
       if (poseEst.isPresent()) {
         var pose = poseEst.get();
 
@@ -208,6 +212,7 @@ public class Vision {
         if (poseOpt.isEmpty()) {
           continue;
         }
+        
         var pose = poseOpt.get().estimatedPose;
         double x = pose.getX();
         double y = pose.getY();

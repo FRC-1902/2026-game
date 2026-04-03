@@ -144,6 +144,9 @@ public class Robot extends LoggedRobot {
     } else {
       CommandScheduler.getInstance().cancelAll();
     }
+
+    m_robotContainer.indexer.stopRollers();
+    m_robotContainer.flywheel.setState(false);
   }
 
   @Override

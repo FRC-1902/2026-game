@@ -56,6 +56,11 @@ public class IndexerSubsystem extends SubsystemBase {
         this);
   }
 
+  public void stopRollers() {
+    shooterIndexerMotor.set(0);
+    rollerIndexerMotor.set(0);
+  }
+
   public Command autoIndexCommand() {
     return Commands.run(
             () -> {
