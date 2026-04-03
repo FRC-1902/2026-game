@@ -55,6 +55,22 @@
         "x": 13.537318775419056,
         "y": 2.101320476061804
       },
+      "nextControl": {
+        "x": 13.100288198713532,
+        "y": 2.344228431930764
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 13.078386524822696,
+        "y": 3.2791666666666672
+      },
+      "prevControl": {
+        "x": 13.089337361768113,
+        "y": 2.8116975492987155
+      },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
@@ -79,8 +95,30 @@
     }
   ],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 11.919,
+        "y": 4.035
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 3.2169811320754653,
+      "maxWaypointRelativePos": 4.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
+    {
+      "name": "Enable Intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable intake"
+        }
+      }
+    },
     {
       "name": "Enable Rollers",
       "waypointRelativePos": 1.0,
@@ -88,7 +126,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "Enable Rollers"
+          "name": "enable intake"
         }
       }
     },
@@ -99,18 +137,29 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "Disable Rollers"
+          "name": "disable rollers"
         }
       }
     },
     {
       "name": "Shoot",
-      "waypointRelativePos": 3.0,
+      "waypointRelativePos": 3.7971698113207606,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Shoot"
+          "name": "shoot"
+        }
+      }
+    },
+    {
+      "name": "Index",
+      "waypointRelativePos": 4.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "index"
         }
       }
     }
@@ -125,7 +174,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 148.39249775375126
   },
   "reversed": false,
   "folder": null,

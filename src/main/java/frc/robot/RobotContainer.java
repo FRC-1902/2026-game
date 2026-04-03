@@ -155,7 +155,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
     NamedCommands.registerCommand("shoot", flywheel.spinUpCommand());
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
-    NamedCommands.registerCommand("index", indexer.waitAndIndexCommand());
+    NamedCommands.registerCommand("index", indexer.autoIndexCommand());
   }
 
   public void setMotorBrake(boolean brake) {

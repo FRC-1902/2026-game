@@ -36,7 +36,7 @@
         "y": 6.885190568850682
       },
       "prevControl": {
-        "x": 0.032630450356257334,
+        "x": 0.03263045035625711,
         "y": 7.0114817611524165
       },
       "nextControl": {
@@ -54,6 +54,22 @@
       "prevControl": {
         "x": 1.862585875054199,
         "y": 6.920138011807561
+      },
+      "nextControl": {
+        "x": 2.357676477795862,
+        "y": 6.850243125893803
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.043492907801418,
+        "y": 5.892420212765958
+      },
+      "prevControl": {
+        "x": 2.7970740545007677,
+        "y": 6.218556846634845
       },
       "nextControl": null,
       "isLocked": false,
@@ -82,8 +98,8 @@
         "y": 4.035
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 3.0,
-      "maxWaypointRelativePos": 3.0,
+      "minWaypointRelativePos": 3.415094339622647,
+      "maxWaypointRelativePos": 4.0,
       "name": "Point Towards Zone"
     }
   ],
@@ -111,17 +127,6 @@
       }
     },
     {
-      "name": "Shoot",
-      "waypointRelativePos": 1.8589743589743597,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "shoot"
-        }
-      }
-    },
-    {
       "name": "Disable Rollers",
       "waypointRelativePos": 1.893162393162394,
       "endWaypointRelativePos": null,
@@ -133,8 +138,19 @@
       }
     },
     {
+      "name": "Shoot",
+      "waypointRelativePos": 3.8537735849056576,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    },
+    {
       "name": "Index",
-      "waypointRelativePos": 3.0,
+      "waypointRelativePos": 4.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -154,7 +170,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -45.93869950232256
+    "rotation": -44.99999999999996
   },
   "reversed": false,
   "folder": null,
