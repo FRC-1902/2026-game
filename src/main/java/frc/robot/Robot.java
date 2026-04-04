@@ -156,7 +156,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {
     if (Math.abs(m_robotContainer.driverXbox.getRightX()) > 0.1) {
-      m_robotContainer.rotSubsystem.incrementDesiredAngle(m_robotContainer.driverXbox.getRightX() * -1);
+      m_robotContainer.rotSubsystem.incrementDesiredAngle(m_robotContainer.driverXbox.getRightX() * -4);
     }
   }
 
