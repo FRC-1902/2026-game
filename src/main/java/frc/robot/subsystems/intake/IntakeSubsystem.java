@@ -44,7 +44,6 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
 
-    // TODO: clean this up after orlando
     pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.6));
 
     pivotMotor.configure(
@@ -66,7 +65,6 @@ public class IntakeSubsystem extends SubsystemBase {
     double rotations = pivotEncoder.getPosition();
     rotations *= IntakeConstants.ENCODER_TO_INTAKE_RATIO;
 
-    // TODO: clean this up after orlando
     rotations -= (0.01 / 360.0);
 
     return Rotation2d.fromRotations(rotations);

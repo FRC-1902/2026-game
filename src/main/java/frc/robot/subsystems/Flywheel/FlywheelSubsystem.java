@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import java.util.function.DoubleSupplier;
 
 // Note: We intentionally avoid a hard dependency on SysIdRoutine's constructor here because
@@ -91,7 +90,7 @@ public class FlywheelSubsystem extends SubsystemBase {
 
   public boolean isInRange() {
     if (distanceToHub.getAsDouble() <= 2.921) {
-        return true;
+      return true;
     } else {
       return false;
     }

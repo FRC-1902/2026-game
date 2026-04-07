@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +17,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.PrepForShotCommand;
 import frc.robot.commands.autonomous.AutoShoot;
+import frc.robot.subsystems.ControllerSubsystem;
+import frc.robot.subsystems.ControllerSubsystem.ControllerName;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.hood.HoodSubsystem;
@@ -25,6 +26,7 @@ import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
+import frc.robot.systems.field.AllianceFlipUtil;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
@@ -42,10 +44,10 @@ public class RobotContainer {
   private final HoodSubsystem hood;
   private final WaypointManager waypointManager = new WaypointManager();
   public final IndexerSubsystem indexer;
+  private final ControllerSubsystem controllers = ControllerSubsystem.getInstance();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  final CommandXboxController driverXbox = new CommandXboxController(0);
-  final CommandXboxController manipXbox = new CommandXboxController(1);
+  final CommandXboxController driverXbox = controllers.getCommandController(ControllerName.DRIVE);
+  final CommandXboxController manipXbox = controllers.getCommandController(ControllerName.MANIP);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem drivebase =
@@ -77,11 +79,13 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
     hood = new HoodSubsystem();
     DoubleSupplier distanceToHubSupplier =
-        () -> waypointManager.getDistanceToHub(drivebase.getPose(), flipForAlliance());
+        () ->
+            waypointManager.getDistanceToWaypoint(
+                drivebase.getPose(), WaypointManager.HUB_WAYPOINT, true);
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     registerPathPlannerNamedCommands();
-    drivebase.configurePathPlanner(this::dontFlipForAlliance);
+    drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -91,7 +95,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption(
         "Shoot Preload",
-        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, this::flipForAlliance));
+        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, driveAngularVelocity));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -120,26 +124,27 @@ public class RobotContainer {
         .leftTrigger()
         .whileTrue(
             new PrepForShotCommand(
-                drivebase,
-                waypointManager,
-                hood,
-                flywheel,
-                indexer,
-                manipXbox,
-                this::flipForAlliance));
+                drivebase, waypointManager, hood, flywheel, driveAngularVelocity));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
     manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
 
-    manipXbox.leftTrigger().whileTrue(vibrateIfInRange());
+    manipXbox
+        .leftTrigger()
+        .and(new Trigger(flywheel::isInRange))
+        .whileTrue(
+            Commands.startEnd(
+                () -> controllers.setRumble(ControllerName.MANIP, 1.0),
+                () -> controllers.setRumble(ControllerName.MANIP, 0.0)));
 
     driverXbox
         .x()
         .onTrue(
             drivebase
                 .runOnce(drivebase::zeroGyroWithAlliance)
-                .alongWith(vibrateController(1, 1, driverXbox)));
+                .alongWith(
+                    Commands.runOnce(() -> controllers.vibrate(ControllerName.DRIVE, 1000, 1.0))));
   }
 
   /*
@@ -170,40 +175,5 @@ public class RobotContainer {
 
   public Vision getVision() {
     return vision;
-  }
-
-  public boolean flipForAlliance() {
-    var alliance = DriverStation.getAlliance();
-    return alliance.isPresent() && alliance.get() == Alliance.Red;
-  }
-
-  public boolean dontFlipForAlliance() {
-    return false;
-  }
-
-  public Command vibrateIfInRange() {
-    if (flywheel.isInRange()) {
-      return vibrateControllerIndefinitely(1, manipXbox);
-    } else {
-      return Commands.none();
-    }
-  }
-
-  public Command vibrateController(
-      double intensity, double seconds, CommandXboxController controller) {
-    return Commands.startEnd(
-            () ->
-                controller.setRumble(
-                    edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-            () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
-        .withTimeout(seconds);
-  }
-
-  public Command vibrateControllerIndefinitely(double intensity, CommandXboxController controller) {
-    return Commands.startEnd(
-        () ->
-            controller.setRumble(
-                edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-        () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
   }
 }

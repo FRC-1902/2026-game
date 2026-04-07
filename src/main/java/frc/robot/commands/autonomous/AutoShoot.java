@@ -3,13 +3,15 @@ package frc.robot.commands.autonomous;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.hood.AlignHoodCommand;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import swervelib.SwerveInputStream;
 
 /**
  * Autonomous shooting routine that calculates distance to the hub, aligns hood/flywheel setpoints,
@@ -23,12 +25,12 @@ public class AutoShoot extends SequentialCommandGroup {
       HoodSubsystem hood,
       FlywheelSubsystem flywheel,
       IndexerSubsystem indexer,
-      BooleanSupplier flipForAllianceSupplier) {
+      SwerveInputStream driveStream) {
 
     DoubleSupplier distanceToHubSupplier =
         () ->
-            waypointManager.getDistanceToHub(
-                drivebase.getPose(), flipForAllianceSupplier.getAsBoolean());
+            waypointManager.getDistanceToWaypoint(
+                drivebase.getPose(), WaypointManager.HUB_WAYPOINT, true);
 
     addCommands(
         Commands.runOnce(
@@ -37,8 +39,12 @@ public class AutoShoot extends SequentialCommandGroup {
               SmartDashboard.putNumber("Auto/Distance To Hub", distance);
             }),
         flywheel.spinUpCommand(),
-        Commands.waitUntil(flywheel::isAtTargetSpeed),
-        indexer.spinRollerShooterCommand(),
+        Commands.parallel(
+                new AlignToHub(drivebase, driveStream),
+                new AlignHoodCommand(hood, drivebase, waypointManager),
+                Commands.waitUntil(flywheel::isAtTargetSpeed))
+            .withTimeout(2.0),
+        indexer.spinRollerShooterCommand().withTimeout(1.0),
         flywheel.spinDownCommand());
   }
 }

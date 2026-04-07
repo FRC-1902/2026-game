@@ -3,15 +3,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.swervedrive.Vision;
+import frc.robot.systems.field.AllianceFlipUtil;
+import frc.robot.systems.field.FieldConstants;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /** Manages waypoints */
 public class WaypointManager {
+
+  public static final String HUB_WAYPOINT = "HUB";
 
   private final Map<String, Pose2d> waypoints = new HashMap<>();
 
@@ -19,11 +19,9 @@ public class WaypointManager {
     initializeWaypoints();
   }
 
-  // TODO: Check these waypoints, specifically the rotation2ds.
   // ASSUME BLUE ALLIANCE FOR ALL ADDED WAYPOINTS, FLIP USING getWaypoint(name, true)
   private void initializeWaypoints() {
-    waypoints.put("BLUE-HUB", new Pose2d(4.624, 4.035, Rotation2d.fromDegrees(180)));
-    waypoints.put("RED-HUB", new Pose2d(11.919, 4.035, Rotation2d.fromDegrees(0)));
+    waypoints.put(HUB_WAYPOINT, new Pose2d(FieldConstants.Hub.BLUE_HUB_POSITION, Rotation2d.kZero));
   }
 
   /**
@@ -48,14 +46,8 @@ public class WaypointManager {
     if (waypoint == null || !flipForAlliance) {
       return waypoint;
     }
-    Optional<Alliance> alliance = DriverStation.getAlliance();
-    if (alliance.isPresent() && alliance.get() == Alliance.Red) {
-      double fieldLength = Vision.fieldLayout.getFieldLength();
-      double fieldWidth = Vision.fieldLayout.getFieldWidth();
-      return new Pose2d(
-          fieldWidth - waypoint.getX(),
-          fieldLength - waypoint.getY(),
-          waypoint.getRotation().plus(Rotation2d.fromDegrees(180)));
+    if (AllianceFlipUtil.shouldFlip()) {
+      return AllianceFlipUtil.apply(waypoint);
     }
     return waypoint;
   }
@@ -94,23 +86,6 @@ public class WaypointManager {
     return currentPose.getTranslation().getDistance(waypoint.getTranslation());
   }
 
-  public double getDistanceToHub(Pose2d currentPose, boolean flipForAlliance) {
-    String waypointName;
-
-    if (flipForAlliance == true) {
-      waypointName = "RED-HUB";
-    } else {
-      waypointName = "BLUE-HUB";
-    }
-
-    Pose2d waypoint = getWaypoint(waypointName, false);
-    if (waypoint == null) {
-      return -1;
-    }
-
-    return currentPose.getTranslation().getDistance(waypoint.getTranslation());
-  }
-
   /**
    * Calculate angle from current pose to waypoint
    *
@@ -121,23 +96,6 @@ public class WaypointManager {
   public Rotation2d getAngleToWaypoint(
       Pose2d currentPose, String waypointName, boolean flipForAlliance) {
     Pose2d waypoint = getWaypoint(waypointName, flipForAlliance);
-    if (waypoint == null) {
-      return null;
-    }
-
-    Translation2d delta = waypoint.getTranslation().minus(currentPose.getTranslation());
-    Rotation2d fieldBearing = new Rotation2d(delta.getX(), delta.getY());
-    return fieldBearing.minus(currentPose.getRotation());
-  }
-
-  public Rotation2d getAngleToHub(Pose2d currentPose, boolean flipForAlliance) {
-    String waypointName;
-    if (flipForAlliance == true) {
-      waypointName = "RED-HUB";
-    } else {
-      waypointName = "BLUE-HUB";
-    }
-    Pose2d waypoint = getWaypoint(waypointName, false);
     if (waypoint == null) {
       return null;
     }

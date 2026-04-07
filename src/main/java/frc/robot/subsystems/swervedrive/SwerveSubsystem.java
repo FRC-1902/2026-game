@@ -250,6 +250,10 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.driveFieldOriented(velocity);
   }
 
+  public void driveFieldOrientedSetpoint(ChassisSpeeds velocity) {
+    swerveDrive.driveFieldOriented(velocity);
+  }
+
   /**
    * Drive the robot given a chassis field oriented velocity.
    *

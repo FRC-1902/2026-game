@@ -84,7 +84,6 @@ public class Vision {
 
       Logger.recordOutput("Vision/Camera" + i + "/poseEstIsPresent", poseEst.isPresent());
 
-
       if (poseEst.isPresent()) {
         var pose = poseEst.get();
 
@@ -212,7 +211,7 @@ public class Vision {
         if (poseOpt.isEmpty()) {
           continue;
         }
-        
+
         var pose = poseOpt.get().estimatedPose;
         double x = pose.getX();
         double y = pose.getY();
@@ -279,12 +278,10 @@ public class Vision {
         }
 
         // Reject single tag estimates that are too far away (> 4 meters)
-        // TODO: Tune this distance threshold based on camera quality
         if (numTags == 1 && avgDist > 4) {
           estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
         } else {
           // Scale std devs by distance squared (farther = less trust)
-          // TODO: Tune this scaling factor (currently 1/30)
           estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
         }
         curStdDevs = estStdDevs;

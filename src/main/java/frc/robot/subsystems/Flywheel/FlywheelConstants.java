@@ -12,7 +12,7 @@ public class FlywheelConstants {
 
   // PID
   public static final double FLYWHEEL_KP =
-      0.0; // TODO: after bayou, add in a pid to make spin up faster
+      0.0;
   public static final double FLYWHEEL_KI = 0.0;
   public static final double FLYWHEEL_KD = 0.0;
 
@@ -24,7 +24,7 @@ public class FlywheelConstants {
   // shooting.
   public static final double DESIRED_FLYWHEEL_RPM = 4000.0;
   public static final double DESIRED_LOW_FLYWHEEL_RPM =
-      0.0; // TODO: Set the correct low RPM for the flywheel when not shooting.
+      0.0;
   public static final double RPM_TOLERANCE = 100.0;
 
   public static final double FLYWHEEL_KS = 0.284;
