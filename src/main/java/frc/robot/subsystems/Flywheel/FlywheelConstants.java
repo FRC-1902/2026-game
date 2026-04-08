@@ -11,8 +11,7 @@ public class FlywheelConstants {
   public static final int LEFT_FLYWHEEL_MOTOR_ID = 39;
 
   // PID
-  public static final double FLYWHEEL_KP =
-      0.0;
+  public static final double FLYWHEEL_KP = 0.0;
   public static final double FLYWHEEL_KI = 0.0;
   public static final double FLYWHEEL_KD = 0.0;
 
@@ -23,8 +22,7 @@ public class FlywheelConstants {
   // Desired flywheel RPM for shooting. This is the target speed we want the flywheel to reach when
   // shooting.
   public static final double DESIRED_FLYWHEEL_RPM = 4000.0;
-  public static final double DESIRED_LOW_FLYWHEEL_RPM =
-      0.0;
+  public static final double DESIRED_LOW_FLYWHEEL_RPM = 0.0;
   public static final double RPM_TOLERANCE = 100.0;
 
   public static final double FLYWHEEL_KS = 0.284;

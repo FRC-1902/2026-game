@@ -2,6 +2,7 @@ package frc.robot.commands.swervedrive.drivebase;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.systems.field.AllianceFlipUtil;
@@ -14,7 +15,7 @@ public class AlignToHub extends Command {
 
   public AlignToHub(SwerveSubsystem swerveSubsystem, SwerveInputStream swerveInputStream) {
     this.swerveSubsystem = swerveSubsystem;
-    this.swerveInputStream = swerveInputStream.copy();
+    this.swerveInputStream = swerveInputStream.copy().aimLookahead(Units.Milliseconds.of(100));
     addRequirements(this.swerveSubsystem);
   }
 
@@ -25,7 +26,7 @@ public class AlignToHub extends Command {
             AllianceFlipUtil.apply(
                 new Pose2d(Hub.topCenterPoint.toTranslation2d(), Rotation2d.kZero)))
         .aimWhile(true)
-        .scaleTranslation(0.3);
+        .scaleTranslation(0.7);
   }
 
   @Override
