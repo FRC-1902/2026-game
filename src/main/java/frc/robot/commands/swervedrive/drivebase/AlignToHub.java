@@ -15,7 +15,7 @@ public class AlignToHub extends Command {
 
   public AlignToHub(SwerveSubsystem swerveSubsystem, SwerveInputStream swerveInputStream) {
     this.swerveSubsystem = swerveSubsystem;
-    this.swerveInputStream = swerveInputStream.copy().aimLookahead(Units.Milliseconds.of(100));
+    this.swerveInputStream = swerveInputStream.copy();
     addRequirements(this.swerveSubsystem);
   }
 
@@ -26,7 +26,8 @@ public class AlignToHub extends Command {
             AllianceFlipUtil.apply(
                 new Pose2d(Hub.topCenterPoint.toTranslation2d(), Rotation2d.kZero)))
         .aimWhile(true)
-        .scaleTranslation(0.7);
+        .scaleTranslation(0.7)
+        .aimLookahead(Units.Milliseconds.of(100));
   }
 
   @Override
