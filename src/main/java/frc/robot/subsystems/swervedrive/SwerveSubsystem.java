@@ -71,9 +71,11 @@ public class SwerveSubsystem extends SubsystemBase {
         false); // !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for
     // simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(
-        true, true,
-        0.1); // Correct for skew that gets worse as angular velocity increases. Start with a
-    // coefficient of 0.1.
+    true, false,
+    0.025); // Correct for skew that gets worse as angular velocity increases with gentle
+  // compensation for smoother drivability.
+  swerveDrive.setChassisDiscretization(
+    true, 0.02); // Discretize chassis outputs at 20 ms to reduce jitter.
     swerveDrive.setModuleEncoderAutoSynchronize(
         false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders
     // periodically when they are not moving.
@@ -170,13 +172,14 @@ public class SwerveSubsystem extends SubsystemBase {
       DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier angularRotationX) {
     return run(
         () -> {
+          Translation2d cubedInputs =
+              SwerveMath.cubeTranslation(
+                      new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()))
+                  .times(swerveDrive.getMaximumChassisVelocity());
+
           // Make the robot move
           swerveDrive.drive(
-              SwerveMath.scaleTranslation(
-                  new Translation2d(
-                      translationX.getAsDouble() * swerveDrive.getMaximumChassisVelocity(),
-                      translationY.getAsDouble() * swerveDrive.getMaximumChassisVelocity()),
-                  0.8),
+              cubedInputs,
               Math.pow(angularRotationX.getAsDouble(), 3)
                   * swerveDrive.getMaximumChassisAngularVelocity(),
               true,
@@ -203,8 +206,8 @@ public class SwerveSubsystem extends SubsystemBase {
     return run(
         () -> {
           Translation2d scaledInputs =
-              SwerveMath.scaleTranslation(
-                  new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), 0.8);
+              SwerveMath.cubeTranslation(
+                  new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()));
 
           // Make the robot move
           driveFieldOriented(
@@ -347,10 +350,10 @@ public class SwerveSubsystem extends SubsystemBase {
   public void zeroGyroWithAlliance() {
     if (isRedAlliance()) {
       zeroGyro();
-      // Set the pose 180 degrees
-      resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
     } else {
       zeroGyro();
+      // Set the pose 180 degrees
+      resetOdometry(new Pose2d(getPose().getTranslation(), Rotation2d.fromDegrees(180)));
     }
   }
 
