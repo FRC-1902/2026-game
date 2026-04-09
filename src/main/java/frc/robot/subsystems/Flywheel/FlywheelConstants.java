@@ -23,7 +23,7 @@ public class FlywheelConstants {
   // shooting.
   public static final double DESIRED_FLYWHEEL_RPM = 4000.0;
   public static final double DESIRED_LOW_FLYWHEEL_RPM = 0.0;
-  public static final double RPM_TOLERANCE = 100.0;
+  public static final double RPM_TOLERANCE = 200.0;
 
   public static final double FLYWHEEL_KS = 0.284;
   public static final double FLYWHEEL_KV = 0.12516;

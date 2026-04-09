@@ -160,7 +160,9 @@ public class RobotContainer {
   private void registerPathPlannerNamedCommands() {
     NamedCommands.registerCommand("enable rollers", Commands.runOnce(intake::startRollers, intake));
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
-    NamedCommands.registerCommand("shoot", new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, driveAngularVelocity));
+    NamedCommands.registerCommand(
+        "shoot",
+        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, driveAngularVelocity));
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
   }
 
