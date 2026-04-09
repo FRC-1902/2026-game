@@ -18,6 +18,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.PrepForShotCommand;
 import frc.robot.commands.autonomous.AutoShoot;
 import frc.robot.subsystems.ControllerSubsystem;
+import frc.robot.subsystems.ControllerSubsystem.Button;
 import frc.robot.subsystems.ControllerSubsystem.ControllerName;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.WaypointManager;
@@ -113,12 +114,14 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    manipXbox.y().whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
+    controllers
+        .getTrigger(ControllerName.MANIP, Button.Y)
+        .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
 
-    manipXbox.x().onTrue(intake.enableIntakeCommand());
-    manipXbox.b().onTrue(intake.disableIntakeCommand());
-    manipXbox.leftBumper().whileTrue(flywheel.spinUpCommand());
-    manipXbox.leftBumper().onFalse(flywheel.spinDownCommand());
+    controllers.getTrigger(ControllerName.MANIP, Button.X).onTrue(intake.enableIntakeCommand());
+    controllers.getTrigger(ControllerName.MANIP, Button.B).onTrue(intake.disableIntakeCommand());
+    controllers.getTrigger(ControllerName.MANIP, Button.LB).whileTrue(flywheel.spinUpCommand());
+    controllers.getTrigger(ControllerName.MANIP, Button.LB).onFalse(flywheel.spinDownCommand());
 
     manipXbox
         .leftTrigger()
@@ -127,7 +130,7 @@ public class RobotContainer {
                 drivebase, waypointManager, hood, flywheel, driveAngularVelocity));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
-    manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
+    controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
 
     manipXbox
@@ -138,8 +141,8 @@ public class RobotContainer {
                 () -> controllers.setRumble(ControllerName.MANIP, 1.0),
                 () -> controllers.setRumble(ControllerName.MANIP, 0.0)));
 
-    driverXbox
-        .x()
+    controllers
+        .getTrigger(ControllerName.DRIVE, Button.X)
         .onTrue(
             drivebase
                 .runOnce(drivebase::zeroGyroWithAlliance)
