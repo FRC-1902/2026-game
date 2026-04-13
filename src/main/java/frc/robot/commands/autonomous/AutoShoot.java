@@ -6,11 +6,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.hood.AlignHoodCommand;
 import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
-import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import java.util.function.DoubleSupplier;
+import frc.robot.systems.shooting.ShotSolutionProvider;
 import swervelib.SwerveInputStream;
 
 /**
@@ -21,27 +20,22 @@ public class AutoShoot extends SequentialCommandGroup {
 
   public AutoShoot(
       SwerveSubsystem drivebase,
-      WaypointManager waypointManager,
+      ShotSolutionProvider shotProvider,
       HoodSubsystem hood,
       FlywheelSubsystem flywheel,
       IndexerSubsystem indexer,
       SwerveInputStream driveStream) {
 
-    DoubleSupplier distanceToHubSupplier =
-        () ->
-            waypointManager.getDistanceToWaypoint(
-                drivebase.getPose(), WaypointManager.HUB_WAYPOINT, true);
-
     addCommands(
         Commands.runOnce(
             () -> {
-              double distance = distanceToHubSupplier.getAsDouble();
+              double distance = shotProvider.effectiveDistance.getAsDouble();
               SmartDashboard.putNumber("Auto/Distance To Hub", distance);
             }),
         flywheel.spinUpCommand(),
         Commands.parallel(
-                new AlignToHub(drivebase, driveStream),
-                new AlignHoodCommand(hood, drivebase, waypointManager),
+                new AlignToHub(drivebase, driveStream, shotProvider),
+                new AlignHoodCommand(hood, shotProvider),
                 Commands.waitUntil(flywheel::isAtTargetSpeed))
             .withTimeout(2.0),
         indexer.spinRollerShooterCommand().withTimeout(1.0),

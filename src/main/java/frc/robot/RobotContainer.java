@@ -21,15 +21,14 @@ import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.ControllerSubsystem.Button;
 import frc.robot.subsystems.ControllerSubsystem.ControllerName;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
-import frc.robot.subsystems.WaypointManager;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import frc.robot.systems.field.AllianceFlipUtil;
+import frc.robot.systems.shooting.ShotSolutionProvider;
 import java.io.File;
-import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
 
 /**
@@ -42,8 +41,8 @@ public class RobotContainer {
 
   public final IntakeSubsystem intake;
   public final FlywheelSubsystem flywheel;
+  public final ShotSolutionProvider shotProvider;
   private final HoodSubsystem hood;
-  private final WaypointManager waypointManager = new WaypointManager();
   public final IndexerSubsystem indexer;
   private final ControllerSubsystem controllers = ControllerSubsystem.getInstance();
 
@@ -79,11 +78,8 @@ public class RobotContainer {
     intake = new IntakeSubsystem();
     indexer = new IndexerSubsystem();
     hood = new HoodSubsystem();
-    DoubleSupplier distanceToHubSupplier =
-        () ->
-            waypointManager.getDistanceToWaypoint(
-                drivebase.getPose(), WaypointManager.HUB_WAYPOINT, true);
-    flywheel = new FlywheelSubsystem(distanceToHubSupplier);
+    shotProvider = new ShotSolutionProvider(drivebase);
+    flywheel = new FlywheelSubsystem(shotProvider.effectiveDistance);
 
     registerPathPlannerNamedCommands();
     drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
@@ -96,7 +92,7 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption(
         "Shoot Preload",
-        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, driveAngularVelocity));
+        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -126,8 +122,7 @@ public class RobotContainer {
     manipXbox
         .leftTrigger()
         .whileTrue(
-            new PrepForShotCommand(
-                drivebase, waypointManager, hood, flywheel, driveAngularVelocity));
+            new PrepForShotCommand(drivebase, shotProvider, hood, flywheel, driveAngularVelocity));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
@@ -165,7 +160,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
     NamedCommands.registerCommand(
         "shoot",
-        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, driveAngularVelocity));
+        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity));
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
   }
 
