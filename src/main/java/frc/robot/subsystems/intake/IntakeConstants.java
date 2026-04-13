@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class IntakeConstants {
 
   public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(160);
-  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(68);
+  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(69);
 
   // CAN IDs
 

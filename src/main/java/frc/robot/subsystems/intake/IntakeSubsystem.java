@@ -20,6 +20,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax pivotMotor;
   private final SparkAbsoluteEncoder pivotEncoder;
   private final PIDController pid;
+  private boolean rollersOn = false;
 
   private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
@@ -108,12 +109,13 @@ public class IntakeSubsystem extends SubsystemBase {
     return this.startEnd(() -> startRollers(), () -> stopRollers());
   }
 
-  public Command toggleRollersOnCommand() {
-    return this.run(() -> startRollers());
-  }
-
-  public Command toggleRollersOffCommand() {
-    return this.run(() -> stopRollers());
+  public Command toggleRollersCommand() {
+    rollersOn = !rollersOn;
+    if (rollersOn) {
+      return runOnce(() -> startRollers());
+    } else {
+      return runOnce(() -> stopRollers());
+    }
   }
 
   @Override

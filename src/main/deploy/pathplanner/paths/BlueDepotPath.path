@@ -36,7 +36,7 @@
         "y": 6.885190568850682
       },
       "prevControl": {
-        "x": 0.032630450356257557,
+        "x": 0.03263045035625689,
         "y": 7.0114817611524165
       },
       "nextControl": {
@@ -54,6 +54,22 @@
       "prevControl": {
         "x": 1.862585875054199,
         "y": 6.920138011807561
+      },
+      "nextControl": {
+        "x": 2.357676477795862,
+        "y": 6.850243125893803
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.043492907801418,
+        "y": 5.892420212765958
+      },
+      "prevControl": {
+        "x": 2.7970740545007677,
+        "y": 6.218556846634845
       },
       "nextControl": null,
       "isLocked": false,
@@ -75,38 +91,71 @@
     }
   ],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.624,
+        "y": 4.035
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 3.415094339622647,
+      "maxWaypointRelativePos": 4.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
     {
-      "name": "Enable Rollers",
-      "waypointRelativePos": 1.0,
+      "name": "Enable Intake",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Enable Rollers"
+          "name": "enable intake"
+        }
+      }
+    },
+    {
+      "name": "Enable Rollers",
+      "waypointRelativePos": 1.004273504273512,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable rollers"
         }
       }
     },
     {
       "name": "Disable Rollers",
-      "waypointRelativePos": 1.9,
+      "waypointRelativePos": 1.893162393162394,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Disable Rollers"
+          "name": "disable rollers"
         }
       }
     },
     {
       "name": "Shoot",
-      "waypointRelativePos": 3.0,
+      "waypointRelativePos": 3.8537735849056576,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Shoot"
+          "name": "shoot"
+        }
+      }
+    },
+    {
+      "name": "Index",
+      "waypointRelativePos": 4.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "index"
         }
       }
     }
@@ -121,7 +170,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -55.81091792667291
   },
   "reversed": false,
   "folder": null,

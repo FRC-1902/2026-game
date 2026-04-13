@@ -27,8 +27,8 @@ public class AutoShoot extends SequentialCommandGroup {
 
     DoubleSupplier distanceToHubSupplier =
         () ->
-            waypointManager.getDistanceToWaypoint(
-                drivebase.getPose(), "HUB", flipForAllianceSupplier.getAsBoolean());
+            waypointManager.getDistanceToHub(
+                drivebase.getPose(), flipForAllianceSupplier.getAsBoolean());
 
     addCommands(
         Commands.runOnce(
@@ -37,19 +37,8 @@ public class AutoShoot extends SequentialCommandGroup {
               SmartDashboard.putNumber("Auto/Distance To Hub", distance);
             }),
         flywheel.spinUpCommand(),
-        Commands.run(
-                () -> {
-                  double distance = distanceToHubSupplier.getAsDouble();
-                  if (distance >= 0) {
-                    hood.setAngleForDistance(distance);
-                    SmartDashboard.putNumber("Auto/Shoot Distance To Hub", distance);
-                  }
-                },
-                hood)
-            .until(() -> hood.atSetpoint() && flywheel.isAtTargetSpeed())
-            .withTimeout(2.5),
-        Commands.waitUntil(flywheel::isAtTargetSpeed).withTimeout(1.5),
-        indexer.spinRollerShooterCommand().withTimeout(1.2).onlyIf(flywheel::isAtTargetSpeed),
+        Commands.waitUntil(flywheel::isAtTargetSpeed),
+        indexer.spinRollerShooterCommand(),
         flywheel.spinDownCommand());
   }
 }

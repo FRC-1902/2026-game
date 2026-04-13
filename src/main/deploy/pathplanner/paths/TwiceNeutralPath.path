@@ -81,15 +81,15 @@
     {
       "anchor": {
         "x": 2.740313613305452,
-        "y": 5.736641157450433
+        "y": 4.895363475177305
       },
       "prevControl": {
         "x": 2.7309781305361427,
-        "y": 5.986466794168252
+        "y": 5.1451891118951245
       },
       "nextControl": {
         "x": 2.7496490960747617,
-        "y": 5.4868155207326135
+        "y": 4.645537838459486
       },
       "isLocked": false,
       "linkedName": null
@@ -246,8 +246,30 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.624,
+        "y": 4.035
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 4.7759433962264195,
+      "maxWaypointRelativePos": 5.0,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
+    {
+      "name": "Enable Intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable intake"
+        }
+      }
+    },
     {
       "name": "Enable Rollers",
       "waypointRelativePos": 0.65,
@@ -255,7 +277,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "Enable Rollers"
+          "name": "enable rollers"
         }
       }
     },
@@ -266,18 +288,29 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "Disable Rollers"
+          "name": "disable rollers"
         }
       }
     },
     {
       "name": "Shoot",
+      "waypointRelativePos": 4.8,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "shoot"
+        }
+      }
+    },
+    {
+      "name": "Index",
       "waypointRelativePos": 5.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Shoot"
+          "name": "index"
         }
       }
     }

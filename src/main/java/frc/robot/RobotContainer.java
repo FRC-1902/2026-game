@@ -37,11 +37,11 @@ import swervelib.SwerveInputStream;
  */
 public class RobotContainer {
 
-  private final IntakeSubsystem intake;
-  private final FlywheelSubsystem flywheel;
+  public final IntakeSubsystem intake;
+  public final FlywheelSubsystem flywheel;
   private final HoodSubsystem hood;
   private final WaypointManager waypointManager = new WaypointManager();
-  private final IndexerSubsystem indexer;
+  public final IndexerSubsystem indexer;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -77,11 +77,11 @@ public class RobotContainer {
     indexer = new IndexerSubsystem();
     hood = new HoodSubsystem();
     DoubleSupplier distanceToHubSupplier =
-        () -> waypointManager.getDistanceToWaypoint(drivebase.getPose(), "HUB", flipForAlliance());
+        () -> waypointManager.getDistanceToHub(drivebase.getPose(), flipForAlliance());
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
     registerPathPlannerNamedCommands();
-    drivebase.configurePathPlanner(this::flipForAlliance);
+    drivebase.configurePathPlanner(this::dontFlipForAlliance);
 
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -109,12 +109,12 @@ public class RobotContainer {
   private void configureBindings() {
     Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
-    manipXbox
-        .leftBumper()
-        .whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
+    manipXbox.y().whileTrue(indexer.outtakeCommand().alongWith(flywheel.spinFlywheelBackwards()));
 
     manipXbox.x().onTrue(intake.enableIntakeCommand());
     manipXbox.b().onTrue(intake.disableIntakeCommand());
+    manipXbox.leftBumper().whileTrue(flywheel.spinUpCommand());
+    manipXbox.leftBumper().onFalse(flywheel.spinDownCommand());
 
     manipXbox
         .leftTrigger()
@@ -129,8 +129,17 @@ public class RobotContainer {
                 this::flipForAlliance));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
-    manipXbox.y().whileTrue(intake.startRollersCommand());
+    manipXbox.rightBumper().whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
+
+    manipXbox.leftTrigger().whileTrue(vibrateIfInRange());
+
+    driverXbox
+        .x()
+        .onTrue(
+            drivebase
+                .runOnce(drivebase::zeroGyroWithAlliance)
+                .alongWith(vibrateController(1, 1, driverXbox)));
   }
 
   /*
@@ -146,9 +155,9 @@ public class RobotContainer {
   private void registerPathPlannerNamedCommands() {
     NamedCommands.registerCommand("enable rollers", Commands.runOnce(intake::startRollers, intake));
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
-    NamedCommands.registerCommand(
-        "shoot",
-        new AutoShoot(drivebase, waypointManager, hood, flywheel, indexer, this::flipForAlliance));
+    NamedCommands.registerCommand("shoot", flywheel.spinUpCommand());
+    NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
+    NamedCommands.registerCommand("index", indexer.autoIndexCommand());
   }
 
   public void setMotorBrake(boolean brake) {
@@ -168,19 +177,33 @@ public class RobotContainer {
     return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
-  public Command vibrateController(double intensity, double seconds) {
+  public boolean dontFlipForAlliance() {
+    return false;
+  }
+
+  public Command vibrateIfInRange() {
+    if (flywheel.isInRange()) {
+      return vibrateControllerIndefinitely(1, manipXbox);
+    } else {
+      return Commands.none();
+    }
+  }
+
+  public Command vibrateController(
+      double intensity, double seconds, CommandXboxController controller) {
     return Commands.startEnd(
             () ->
-                manipXbox.setRumble(
+                controller.setRumble(
                     edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-            () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
+            () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0))
         .withTimeout(seconds);
   }
 
-  public Command vibrateControllerIndefinitely(double intensity) {
+  public Command vibrateControllerIndefinitely(double intensity, CommandXboxController controller) {
     return Commands.startEnd(
         () ->
-            manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
-        () -> manipXbox.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
+            controller.setRumble(
+                edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, intensity),
+        () -> controller.setRumble(edu.wpi.first.wpilibj.GenericHID.RumbleType.kBothRumble, 0));
   }
 }

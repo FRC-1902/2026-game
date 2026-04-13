@@ -13,11 +13,10 @@ import java.util.function.BooleanSupplier;
 public class AlignToHub extends Command {
   private final SwerveSubsystem swerve;
   private final WaypointManager waypointManager;
-  private final String waypointName;
   private final BooleanSupplier flipForAllianceSupplier;
 
   // TODO: this pid will need to be tuned
-  private final PIDController rotController = new PIDController(0.05, 0, 0);
+  private final PIDController rotController = new PIDController(0.08, 0, 0);
   private final Translation2d translation = new Translation2d(0, 0);
 
   public AlignToHub(
@@ -35,7 +34,6 @@ public class AlignToHub extends Command {
       BooleanSupplier flipForAllianceSupplier) {
     this.swerve = swerve;
     this.waypointManager = waypointManager;
-    this.waypointName = waypointName;
     this.flipForAllianceSupplier = flipForAllianceSupplier;
 
     // Declare subsystem dependencies
@@ -43,28 +41,30 @@ public class AlignToHub extends Command {
 
     rotController.enableContinuousInput(0, 360);
 
-    // Set tolerance: Stop attempting to correct if within 2 degrees
-    rotController.setTolerance(2.0);
+    // Set tolerance: Stop attempting to correct if within X degrees
+    rotController.setTolerance(0.0);
   }
 
   @Override
   public void execute() {
     Pose2d currentPose = swerve.getPose();
 
-    Rotation2d targetAngle =
-        waypointManager.getAngleToWaypoint(
-            currentPose, waypointName, flipForAllianceSupplier.getAsBoolean());
+    Rotation2d targetDelta =
+        waypointManager.getAngleToHub(currentPose, flipForAllianceSupplier.getAsBoolean()); // Delta
+
+    Rotation2d desiredAbsoluteAngle = currentPose.getRotation().plus(targetDelta);
 
     // Check if the waypoint exists
     double rotationOutput = 0;
-    if (targetAngle != null) {
+    if (targetDelta != null) {
       rotationOutput =
-          rotController.calculate(currentPose.getRotation().getDegrees(), targetAngle.getDegrees());
+          rotController.calculate(
+              currentPose.getRotation().getDegrees(), desiredAbsoluteAngle.getDegrees());
     }
 
     swerve.drive(translation, rotationOutput, true);
 
-    SmartDashboard.putNumber("Waypoints/Align To Hub Target Angle", targetAngle.getDegrees());
+    SmartDashboard.putNumber("Waypoints/Align To Hub Target Angle", targetDelta.getDegrees());
     SmartDashboard.putNumber(
         "Waypoints/Align To Hub Current Angle", currentPose.getRotation().getDegrees());
     SmartDashboard.putNumber("Waypoints/Align To Hub Output", rotationOutput);

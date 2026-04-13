@@ -52,8 +52,7 @@ public class AlignHoodCommand extends Command {
 
   private void updateHoodAngle() {
     double distance =
-        waypointManager.getDistanceToWaypoint(
-            swerve.getPose(), "HUB", flipForAllianceSupplier.getAsBoolean());
+        waypointManager.getDistanceToHub(swerve.getPose(), flipForAllianceSupplier.getAsBoolean());
 
     if (distance < 0) {
       return;
