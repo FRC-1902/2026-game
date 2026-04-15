@@ -142,24 +142,13 @@
       }
     },
     {
-      "name": "Shoot",
+      "name": "shoot",
       "waypointRelativePos": 3.7971698113207606,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "shoot"
-        }
-      }
-    },
-    {
-      "name": "Index",
-      "waypointRelativePos": 4.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "index"
         }
       }
     }

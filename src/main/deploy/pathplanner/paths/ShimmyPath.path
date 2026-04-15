@@ -20,7 +20,7 @@
         "y": 1.7552635629646853
       },
       "prevControl": {
-        "x": 1.3517897111214372,
+        "x": 1.351789711121437,
         "y": 2.6582774260377953
       },
       "nextControl": null,
@@ -58,7 +58,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
+      "name": "shoot",
       "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": {
