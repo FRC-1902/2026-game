@@ -31,7 +31,6 @@ import frc.robot.systems.field.AllianceFlipUtil;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveInputStream;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -85,7 +84,7 @@ public class RobotContainer {
                 drivebase.getPose(), WaypointManager.HUB_WAYPOINT, true);
     flywheel = new FlywheelSubsystem(distanceToHubSupplier);
 
-    registerPathPlannerNamedCommands();
+    // registerPathPlannerNamedCommands();
     drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
 
     configureBindings();

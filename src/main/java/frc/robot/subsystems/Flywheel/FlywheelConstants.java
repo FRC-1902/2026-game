@@ -25,9 +25,9 @@ public class FlywheelConstants {
   public static final double DESIRED_LOW_FLYWHEEL_RPM = 0.0;
   public static final double RPM_TOLERANCE = 200.0;
 
-  public static final double FLYWHEEL_KS = 0.284;
-  public static final double FLYWHEEL_KV = 0.12516;
-  public static final double FLYWHEEL_KA = 0.01736;
+  public static final double FLYWHEEL_KS = 0.23898;
+  public static final double FLYWHEEL_KV = 0.12354;
+  public static final double FLYWHEEL_KA = 0.015198;
 
   public static final NavigableMap<Double, Double> DISTANCE_TO_RPM_MAP = new TreeMap<>();
 
