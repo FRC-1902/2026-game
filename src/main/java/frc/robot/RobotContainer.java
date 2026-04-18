@@ -91,7 +91,7 @@ public class RobotContainer {
     shotProvider = new ShotSolutionProvider(drivebase);
     flywheel = new FlywheelSubsystem(shotProvider.effectiveDistance);
 
-    registerPathPlannerNamedCommands();
+    // registerPathPlannerNamedCommands();
     drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
 
     configureBindings();

@@ -28,8 +28,8 @@ public class AlignToHub extends Command {
     swerveInputStream
         .aim(() -> new Pose2d(shotProvider.virtualTarget.get(), Rotation2d.kZero))
         .aimWhile(true)
-        .scaleTranslation(0.7)
-        .aimLookahead(Units.Milliseconds.of(100));
+        .scaleTranslation(0.3)
+        .aimLookahead(Units.Milliseconds.of(20));
   }
 
   @Override

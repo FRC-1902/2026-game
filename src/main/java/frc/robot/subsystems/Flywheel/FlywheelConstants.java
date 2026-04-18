@@ -41,11 +41,11 @@ public class FlywheelConstants {
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(126.8100505), 5300.0);
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(149.8100505), 5400.0);
 
-    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(53.8100505), 0.18);
-    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(62.0600505), 0.21);
-    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(83.3100505), 0.26);
-    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(109.8100505), 0.33);
-    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(114.8100505), 0.35);
+    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(48.9350505), 0.5066666667);
+    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(70.3100505), 0.8766666667);
+    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(91.3100505), 1.1066666667);
+    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(114.6850505), 1.253333333);
+    DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(151.8100505), 1.223333333);
   }
 
   public static final double LOWEST_RPM = 4000.0;
