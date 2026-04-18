@@ -79,6 +79,13 @@ public class SwerveSubsystem extends SubsystemBase {
     // periodically when they are not moving.
     // swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal
     // encoder and push the offsets onto it. Throws warning if not possible
+
+    swerveDrive.setHeadingCorrection(false);
+    swerveDrive.setCosineCompensator(false);
+    
+    swerveDrive.setAngularVelocityCompensation(true, false, 0.025);
+    swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
+    swerveDrive.setChassisDiscretization(true, 0.02);
   }
 
   /**
@@ -386,7 +393,8 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public ChassisSpeeds getTargetSpeeds(
       double xInput, double yInput, double headingX, double headingY) {
-    Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
+  Translation2d scaledInputs =
+    new Translation2d(scaleInputsOne(xInput), scaleInputsOne(yInput));
     return swerveDrive.swerveController.getTargetSpeeds(
         scaledInputs.getX(),
         scaledInputs.getY(),
@@ -406,7 +414,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * @return {@link ChassisSpeeds} which can be sent to the Swerve Drive.
    */
   public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d angle) {
-    Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
+    Translation2d scaledInputs = new Translation2d(scaleInputsOne(xInput), scaleInputsOne(yInput));
 
     return swerveDrive.swerveController.getTargetSpeeds(
         scaledInputs.getX(),
@@ -414,6 +422,10 @@ public class SwerveSubsystem extends SubsystemBase {
         angle.getRadians(),
         getHeading().getRadians(),
         Constants.MAX_SPEED);
+  }
+
+  public static double scaleInputsOne(double input) {
+    return 0.8 * input + 0.2 * Math.pow(input, 3);
   }
 
   /**
