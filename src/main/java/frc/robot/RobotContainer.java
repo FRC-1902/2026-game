@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -65,12 +67,20 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity =
       SwerveInputStream.of(
               drivebase.getSwerveDrive(),
-              () -> driverXbox.getLeftY() * -1,
-              () -> driverXbox.getLeftX() * -1)
-          .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8)
+              () -> shapeTranslationAxis(driverXbox.getLeftY() * -1),
+              () -> shapeTranslationAxis(driverXbox.getLeftX() * -1))
+          .withControllerRotationAxis(
+              () ->
+                  -MathUtil.applyDeadband(
+                          driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND)
+                      * 0.40)
+          .scaleTranslation(1.0)
           .allianceRelativeControl(true);
+
+  private static double shapeTranslationAxis(double input) {
+    double deadbanded = MathUtil.applyDeadband(input, OperatorConstants.LEFT_Y_DEADBAND);
+    return 0.8 * deadbanded + 0.2 * Math.pow(deadbanded, 3);
+  }
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
