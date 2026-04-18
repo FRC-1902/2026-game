@@ -10,7 +10,10 @@ public final class ShootingCalculator {
   private static final double TOF_TOLERANCE_SECONDS = 0.005;
 
   public record ShotSolution(
-      Translation2d virtualTarget, double effectiveDistance, double timeOfFlight, boolean converged) {}
+      Translation2d virtualTarget,
+      double effectiveDistance,
+      double timeOfFlight,
+      boolean converged) {}
 
   private ShootingCalculator() {}
 

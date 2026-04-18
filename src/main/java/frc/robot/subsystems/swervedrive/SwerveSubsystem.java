@@ -71,11 +71,11 @@ public class SwerveSubsystem extends SubsystemBase {
         false); // !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for
     // simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(
-    true, false,
-    0.025); // Correct for skew that gets worse as angular velocity increases with gentle
-  // compensation for smoother drivability.
-  swerveDrive.setChassisDiscretization(
-    true, 0.02); // Discretize chassis outputs at 20 ms to reduce jitter.
+        true, false,
+        0.025); // Correct for skew that gets worse as angular velocity increases with gentle
+    // compensation for smoother drivability.
+    swerveDrive.setChassisDiscretization(
+        true, 0.02); // Discretize chassis outputs at 20 ms to reduce jitter.
     swerveDrive.setModuleEncoderAutoSynchronize(
         false, 1); // Enable if you want to resynchronize your absolute encoders and motor encoders
     // periodically when they are not moving.
@@ -84,7 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     swerveDrive.setHeadingCorrection(false);
     swerveDrive.setCosineCompensator(false);
-    
+
     swerveDrive.setAngularVelocityCompensation(true, false, 0.025);
     swerveDrive.setModuleEncoderAutoSynchronize(false, 1);
     swerveDrive.setChassisDiscretization(true, 0.02);
@@ -396,8 +396,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public ChassisSpeeds getTargetSpeeds(
       double xInput, double yInput, double headingX, double headingY) {
-  Translation2d scaledInputs =
-    new Translation2d(scaleInputsOne(xInput), scaleInputsOne(yInput));
+    Translation2d scaledInputs = new Translation2d(scaleInputsOne(xInput), scaleInputsOne(yInput));
     return swerveDrive.swerveController.getTargetSpeeds(
         scaledInputs.getX(),
         scaledInputs.getY(),
