@@ -120,11 +120,11 @@ public class HoodSubsystem extends SubsystemBase {
 
   public Command upOneDegreeCommand() {
     return Commands.runOnce(() -> setAngle(upOneDegree()));
-  } 
+  }
 
   public Command downOneDegreeCommand() {
     return Commands.runOnce(() -> setAngle(downOneDegree()));
-  } 
+  }
 
   @Override
   public void periodic() {
