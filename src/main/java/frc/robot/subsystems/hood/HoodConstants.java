@@ -27,8 +27,8 @@ public class HoodConstants {
   public static final double HOOD_KCOS = 0.0;
 
   // Soft limits (in degrees)
-  public static final double HOOD_MIN_ANGLE = 14.5;
-  public static final double HOOD_MAX_ANGLE = 33;
+  public static final double HOOD_MIN_ANGLE = 11.4;
+  public static final double HOOD_MAX_ANGLE = 25.3;
 
   // Tolerance for reaching target angle (in degrees)
   public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(2.0);
