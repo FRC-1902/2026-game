@@ -27,8 +27,8 @@ public class HoodConstants {
   public static final double HOOD_KCOS = 0.0;
 
   // Soft limits (in degrees)
-  public static final double HOOD_MIN_ANGLE = 33.4;
-  public static final double HOOD_MAX_ANGLE = 50;
+  public static final double HOOD_MIN_ANGLE = 14.5;
+  public static final double HOOD_MAX_ANGLE = 33;
 
   // Tolerance for reaching target angle (in degrees)
   public static final Rotation2d HOOD_ANGLE_TOLERANCE = Rotation2d.fromDegrees(2.0);
@@ -46,5 +46,7 @@ public class HoodConstants {
     DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(83.3100505), HOOD_MIN_ANGLE);
     DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(109.8100505), HOOD_MIN_ANGLE);
     DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(114.8100505), HOOD_MIN_ANGLE);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(126.8100505), HOOD_MIN_ANGLE + 3);
+    DISTANCE_TO_ANGLE_MAP.put(Units.inchesToMeters(149.8100505), HOOD_MIN_ANGLE + 8);
   }
 }
