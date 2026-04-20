@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.BooleanSupplier;
 
 public class IndexerSubsystem extends SubsystemBase {
 
@@ -44,10 +45,15 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command spinRollerShooterCommand() { // Runs the shooter indexer
+    return spinRollerShooterCommand(() -> true);
+  }
+
+  public Command spinRollerShooterCommand(BooleanSupplier runShooterIndexer) {
     return Commands.startEnd(
         () -> {
-          shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
           rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+          shooterIndexerMotor.set(
+              runShooterIndexer.getAsBoolean() ? IndexerConstants.SHOOTER_INDEXER_SPEED : 0);
         },
         () -> {
           shooterIndexerMotor.set(0);

@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +21,9 @@ public class IntakeSubsystem extends SubsystemBase {
   private final SparkMax pivotMotor;
   private final SparkAbsoluteEncoder pivotEncoder;
   private final PIDController pid;
+  private final Timer indexingOscillationTimer = new Timer();
   private boolean rollersOn = false;
+  private boolean indexingPivotMovingUp = true;
 
   private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
@@ -105,6 +108,38 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public Command startRollersCommand() {
     return this.startEnd(() -> startRollers(), () -> stopRollers());
+  }
+
+  public Command indexAssistCommand() {
+    return this.runOnce(this::beginIndexAssist)
+        .andThen(this.runEnd(this::updateIndexAssist, this::endIndexAssist));
+  }
+
+  private void beginIndexAssist() {
+    startRollers();
+    indexingPivotMovingUp = true;
+    indexingOscillationTimer.restart();
+    setAngle(IntakeConstants.INDEXING_OSCILLATION_UP_ANGLE);
+  }
+
+  private void updateIndexAssist() {
+    if (indexingPivotMovingUp
+        && indexingOscillationTimer.hasElapsed(IntakeConstants.INDEXING_OSCILLATION_RISE_TIME_SECONDS)) {
+      setAngle(IntakeConstants.DISABLED_INTAKE_ANGLE);
+      indexingPivotMovingUp = false;
+      indexingOscillationTimer.restart();
+    } else if (!indexingPivotMovingUp
+        && indexingOscillationTimer.hasElapsed(IntakeConstants.INDEXING_OSCILLATION_DROP_TIME_SECONDS)) {
+      setAngle(IntakeConstants.INDEXING_OSCILLATION_UP_ANGLE);
+      indexingPivotMovingUp = true;
+      indexingOscillationTimer.restart();
+    }
+  }
+
+  private void endIndexAssist() {
+    indexingOscillationTimer.stop();
+    setAngle(IntakeConstants.DISABLED_INTAKE_ANGLE);
+    stopRollers();
   }
 
   public Command toggleRollersCommand() {

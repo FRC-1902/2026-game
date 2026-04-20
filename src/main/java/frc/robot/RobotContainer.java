@@ -135,7 +135,12 @@ public class RobotContainer {
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
-    manipXbox.rightTrigger().whileTrue(indexer.spinRollerShooterCommand());
+  manipXbox
+    .rightTrigger()
+    .whileTrue(
+      indexer
+        .spinRollerShooterCommand(() -> shotProvider.get().converged())
+        .alongWith(intake.indexAssistCommand()));
 
     manipXbox
         .leftTrigger()
