@@ -10,6 +10,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class HoodSubsystem extends SubsystemBase {
@@ -109,11 +111,19 @@ public class HoodSubsystem extends SubsystemBase {
   }
 
   public Rotation2d upOneDegree() {
-    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(7));
+    return getAbsoluteAngle().plus(Rotation2d.fromDegrees(3));
   }
 
   public Rotation2d downOneDegree() {
-    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(7));
+    return getAbsoluteAngle().minus(Rotation2d.fromDegrees(3));
+  }
+
+  public Command upOneDegreeCommand() {
+    return Commands.runOnce(() -> setAngle(upOneDegree()));
+  }
+
+  public Command downOneDegreeCommand() {
+    return Commands.runOnce(() -> setAngle(downOneDegree()));
   }
 
   @Override

@@ -37,6 +37,8 @@ public class FlywheelConstants {
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(83.3100505), 4500.0);
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(109.8100505), 5000.0);
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(114.8100505), 5250.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(126.8100505), 5300.0);
+    DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(149.8100505), 5400.0);
   }
 
   public static final double LOWEST_RPM = 4000.0;

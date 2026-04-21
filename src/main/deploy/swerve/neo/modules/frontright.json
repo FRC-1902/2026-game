@@ -10,8 +10,8 @@
     "canbus": null
   },
   "encoder": {
-    "type": "canandmag",
-    "id": 12,
+    "type": "attached",
+    "id": 15,
     "canbus": null
   },
   "inverted": {
