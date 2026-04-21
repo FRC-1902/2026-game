@@ -293,7 +293,7 @@
       }
     },
     {
-      "name": "Shoot",
+      "name": "shoot",
       "waypointRelativePos": 4.341883588794925,
       "endWaypointRelativePos": 5.537295190274842,
       "command": {
