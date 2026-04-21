@@ -260,18 +260,7 @@
   ],
   "eventMarkers": [
     {
-      "name": "Enable Intake",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "enable intake"
-        }
-      }
-    },
-    {
-      "name": "Enable Rollers",
+      "name": "enable rollers",
       "waypointRelativePos": 0.65,
       "endWaypointRelativePos": null,
       "command": {
@@ -282,7 +271,7 @@
       }
     },
     {
-      "name": "Disable Rollers",
+      "name": "disable rollers",
       "waypointRelativePos": 2.3203785676532753,
       "endWaypointRelativePos": null,
       "command": {
