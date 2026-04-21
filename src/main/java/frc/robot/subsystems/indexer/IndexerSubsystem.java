@@ -49,16 +49,13 @@ public class IndexerSubsystem extends SubsystemBase {
   }
 
   public Command spinRollerShooterCommand(BooleanSupplier runShooterIndexer) {
-    return Commands.startEnd(
+    return Commands.runEnd(
         () -> {
           rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
           shooterIndexerMotor.set(
               runShooterIndexer.getAsBoolean() ? IndexerConstants.SHOOTER_INDEXER_SPEED : 0);
         },
-        () -> {
-          shooterIndexerMotor.set(0);
-          rollerIndexerMotor.set(0);
-        },
+        this::stopRollers,
         this);
   }
 

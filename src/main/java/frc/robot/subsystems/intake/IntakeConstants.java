@@ -34,8 +34,8 @@ public class IntakeConstants {
   // Motors
 
   public static final double ROLLERMOTOR_SPEED = 0.75;
-  public static final double INDEXING_OSCILLATION_RISE_TIME_SECONDS = 0.65;
-  public static final double INDEXING_OSCILLATION_DROP_TIME_SECONDS = 0.20;
+  public static final double INDEXING_OSCILLATION_RISE_TIME_SECONDS = 3.0;
+  public static final double INDEXING_OSCILLATION_DROP_TIME_SECONDS = 3.0;
 
   public static final int ROLLERMOTOR_CURRENTLIMIT = 40;
   public static final int PIVOTMOTOR_CURRENTLIMIT = 40;

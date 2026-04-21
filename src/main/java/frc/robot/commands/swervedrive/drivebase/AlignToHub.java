@@ -29,7 +29,7 @@ public class AlignToHub extends Command {
         .aim(() -> new Pose2d(shotProvider.virtualTarget.get(), Rotation2d.kZero))
         .aimWhile(true)
         .scaleTranslation(0.3)
-        .aimLookahead(Units.Milliseconds.of(20));
+        .aimLookahead(Units.Milliseconds.of(500));
   }
 
   @Override

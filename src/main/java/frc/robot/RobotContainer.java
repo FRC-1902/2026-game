@@ -101,7 +101,8 @@ public class RobotContainer {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption(
         "Shoot Preload",
-        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity));
+        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity)
+            .withTimeout(3.0));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -125,6 +126,9 @@ public class RobotContainer {
 
     controllers.getTrigger(ControllerName.MANIP, Button.X).onTrue(intake.enableIntakeCommand());
     controllers.getTrigger(ControllerName.MANIP, Button.B).onTrue(intake.disableIntakeCommand());
+    controllers
+        .getTrigger(ControllerName.MANIP, Button.A)
+        .onTrue(intake.toggleIndexOscillationCommand());
     controllers.getTrigger(ControllerName.MANIP, Button.LB).whileTrue(flywheel.spinUpCommand());
     controllers.getTrigger(ControllerName.MANIP, Button.LB).onFalse(flywheel.spinDownCommand());
 
@@ -135,12 +139,10 @@ public class RobotContainer {
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
-  manipXbox
-    .rightTrigger()
-    .whileTrue(
-      indexer
-        .spinRollerShooterCommand(() -> shotProvider.get().converged())
-        .alongWith(intake.indexAssistCommand()));
+    manipXbox
+        .rightTrigger()
+        .whileTrue(
+            new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity));
 
     manipXbox
         .leftTrigger()
@@ -174,7 +176,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
     NamedCommands.registerCommand(
         "shoot",
-        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity));
+        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity)
+            .withTimeout(3.0));
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
   }
 

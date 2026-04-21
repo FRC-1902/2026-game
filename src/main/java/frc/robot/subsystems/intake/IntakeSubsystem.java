@@ -24,6 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final Timer indexingOscillationTimer = new Timer();
   private boolean rollersOn = false;
   private boolean indexingPivotMovingUp = true;
+  private boolean indexingOscillating = false;
 
   private Rotation2d targetAngle = IntakeConstants.DISABLED_INTAKE_ANGLE;
 
@@ -115,6 +116,18 @@ public class IntakeSubsystem extends SubsystemBase {
         .andThen(this.runEnd(this::updateIndexAssist, this::endIndexAssist));
   }
 
+  public Command toggleIndexOscillationCommand() {
+    return this.runOnce(
+        () -> {
+          indexingOscillating = !indexingOscillating;
+          if (indexingOscillating) {
+            beginIndexAssist();
+          } else {
+            endIndexAssist();
+          }
+        });
+  }
+
   private void beginIndexAssist() {
     startRollers();
     indexingPivotMovingUp = true;
@@ -124,12 +137,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private void updateIndexAssist() {
     if (indexingPivotMovingUp
-        && indexingOscillationTimer.hasElapsed(IntakeConstants.INDEXING_OSCILLATION_RISE_TIME_SECONDS)) {
+        && indexingOscillationTimer.hasElapsed(
+            IntakeConstants.INDEXING_OSCILLATION_RISE_TIME_SECONDS)) {
       setAngle(IntakeConstants.DISABLED_INTAKE_ANGLE);
       indexingPivotMovingUp = false;
       indexingOscillationTimer.restart();
     } else if (!indexingPivotMovingUp
-        && indexingOscillationTimer.hasElapsed(IntakeConstants.INDEXING_OSCILLATION_DROP_TIME_SECONDS)) {
+        && indexingOscillationTimer.hasElapsed(
+            IntakeConstants.INDEXING_OSCILLATION_DROP_TIME_SECONDS)) {
       setAngle(IntakeConstants.INDEXING_OSCILLATION_UP_ANGLE);
       indexingPivotMovingUp = true;
       indexingOscillationTimer.restart();
@@ -166,5 +181,9 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Current Pivot Angle", measurement.getDegrees());
     SmartDashboard.putNumber("Intake/Target Pivot Angle", setpoint);
     SmartDashboard.putNumber("Intake/Output Percent", output);
+
+    if (indexingOscillating) {
+      updateIndexAssist();
+    }
   }
 }
