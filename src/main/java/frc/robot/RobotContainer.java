@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.PrepForShotCommand;
 import frc.robot.commands.autonomous.AutoShoot;
+import frc.robot.commands.autonomous.AutoShootToggleOffCommand;
+import frc.robot.commands.autonomous.AutoShootToggleOnCommand;
 import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.ControllerSubsystem.Button;
 import frc.robot.subsystems.ControllerSubsystem.ControllerName;
@@ -55,6 +57,7 @@ public class RobotContainer {
       new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/neo"));
 
   private final Vision vision = new Vision();
+  private final Command autoShootCommand;
   // Establish a Sendable Chooser that will be able to be sent to the SmartDashboard, allowing
   // selection of desired auto
   private final SendableChooser<Command> autoChooser;
@@ -89,6 +92,8 @@ public class RobotContainer {
     hood = new HoodSubsystem();
     shotProvider = new ShotSolutionProvider(drivebase);
     flywheel = new FlywheelSubsystem(shotProvider.effectiveDistance);
+  autoShootCommand =
+    new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity);
 
     // registerPathPlannerNamedCommands();
     drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
@@ -139,10 +144,8 @@ public class RobotContainer {
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
-    manipXbox
-        .rightTrigger()
-        .whileTrue(
-            new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity));
+  manipXbox.rightTrigger().onTrue(new AutoShootToggleOnCommand(autoShootCommand));
+  manipXbox.rightTrigger().onFalse(new AutoShootToggleOffCommand(autoShootCommand));
 
     manipXbox
         .leftTrigger()
@@ -178,7 +181,10 @@ public class RobotContainer {
         "shoot",
         new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity)
             .withTimeout(3.0));
+    NamedCommands.registerCommand("autoshoot on", new AutoShootToggleOnCommand(autoShootCommand));
+    NamedCommands.registerCommand("autoshoot off", new AutoShootToggleOffCommand(autoShootCommand));
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
+    NamedCommands.registerCommand("wait for shoot", Commands.waitSeconds(5).andThen(new AutoShootToggleOffCommand(autoShootCommand)));
   }
 
   public void setMotorBrake(boolean brake) {
