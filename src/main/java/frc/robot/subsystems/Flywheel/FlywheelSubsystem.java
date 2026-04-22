@@ -89,7 +89,7 @@ public class FlywheelSubsystem extends SubsystemBase {
   }
 
   public boolean isInRange() {
-    if (distanceToHub.getAsDouble() <= 2.921) {
+    if (distanceToHub.getAsDouble() <= 3.805) {
       return true;
     } else {
       return false;
