@@ -104,10 +104,6 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption(
-        "Shoot Preload",
-        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity)
-            .withTimeout(3.0));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -150,7 +146,7 @@ public class RobotContainer {
 
     controllers
         .getTrigger(ControllerName.MANIP, Button.LS)
-        .and(new Trigger(flywheel::isInRange && shotProvider.get().converged()))
+        .and(new Trigger(() -> flywheel::isInRange && shotProvider.get().converged()))
         .whileTrue(
             Commands.startEnd(
                 () -> controllers.setRumble(ControllerName.MANIP, 1.0),
