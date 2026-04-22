@@ -1,0 +1,120 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.605428571428571,
+        "y": 4.051196428571429
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.92296674552637,
+        "y": 4.067577096510487
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.9168214285714282,
+        "y": 5.201142857142856
+      },
+      "prevControl": {
+        "x": 1.722089052463862,
+        "y": 5.20835125781287
+      },
+      "nextControl": {
+        "x": 0.20266667197680155,
+        "y": 5.1947500586828275
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.5928928571428569,
+        "y": 7.031339285714285
+      },
+      "prevControl": {
+        "x": 0.42302995091351664,
+        "y": 6.160523475285267
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.6713426853707414,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.6,
+        "y": 4.051
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 1.8904761904761906,
+      "maxWaypointRelativePos": 2.0,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "enable intake",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable intake"
+        }
+      }
+    },
+    {
+      "name": "enable rollers",
+      "waypointRelativePos": 1.1238095238095236,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable rollers"
+        }
+      }
+    },
+    {
+      "name": "disable rollers",
+      "waypointRelativePos": 1.8714285714285679,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "disable rollers"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -42.13759477522476
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
