@@ -95,7 +95,7 @@ public class RobotContainer {
   autoShootCommand =
     new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity);
 
-    // registerPathPlannerNamedCommands();
+    registerPathPlannerNamedCommands();
     drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
 
     configureBindings();
