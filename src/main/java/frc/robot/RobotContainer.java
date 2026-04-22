@@ -92,8 +92,8 @@ public class RobotContainer {
     hood = new HoodSubsystem();
     shotProvider = new ShotSolutionProvider(drivebase);
     flywheel = new FlywheelSubsystem(shotProvider.effectiveDistance);
-  autoShootCommand =
-    new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity);
+    autoShootCommand =
+        new AutoShoot(drivebase, shotProvider, hood, flywheel, indexer, driveAngularVelocity);
 
     registerPathPlannerNamedCommands();
     drivebase.configurePathPlanner(AllianceFlipUtil::shouldFlip);
@@ -137,18 +137,19 @@ public class RobotContainer {
     controllers.getTrigger(ControllerName.MANIP, Button.LB).whileTrue(flywheel.spinUpCommand());
     controllers.getTrigger(ControllerName.MANIP, Button.LB).onFalse(flywheel.spinDownCommand());
 
-    manipXbox
-        .leftTrigger()
+    controllers
+        .getTrigger(ControllerName.MANIP, Button.LS)
         .whileTrue(
             new PrepForShotCommand(drivebase, shotProvider, hood, flywheel, driveAngularVelocity));
-    manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
+    controllers.getTrigger(ControllerName.MANIP, Button.LS).onFalse(flywheel.spinDownCommand());
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
-  manipXbox.rightTrigger().onTrue(new AutoShootToggleOnCommand(autoShootCommand));
-  manipXbox.rightTrigger().onFalse(new AutoShootToggleOffCommand(autoShootCommand));
+    controllers
+        .getTrigger(ControllerName.MANIP, Button.RS)
+        .whileTrue(indexer.spinRollerShooterCommand(() -> shotProvider.get().converged()));
 
-    manipXbox
-        .leftTrigger()
+    controllers
+        .getTrigger(ControllerName.MANIP, Button.LS)
         .and(new Trigger(flywheel::isInRange))
         .whileTrue(
             Commands.startEnd(
