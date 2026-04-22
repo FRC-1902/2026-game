@@ -146,7 +146,7 @@ public class RobotContainer {
 
     controllers
         .getTrigger(ControllerName.MANIP, Button.LS)
-        .and(new Trigger(() -> flywheel::isInRange && shotProvider.get().converged()))
+        .and(new Trigger(() -> flywheel.isInRange() && shotProvider.get().converged()))
         .whileTrue(
             Commands.startEnd(
                 () -> controllers.setRumble(ControllerName.MANIP, 1.0),
