@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DepotPath (Middle)"
+            "pathName": "NeutralEndFirst"
           }
         },
         {
@@ -26,6 +26,12 @@
           "type": "named",
           "data": {
             "name": "autoshoot off"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NeutralEndLast"
           }
         }
       ]

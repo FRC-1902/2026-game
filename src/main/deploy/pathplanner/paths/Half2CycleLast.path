@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 6.718804551967162,
-        "y": 6.9427963328686495
+        "x": 6.930209640257125,
+        "y": 7.300656753407683
       },
       "prevControl": {
-        "x": 6.639464243584252,
-        "y": 7.373626168238359
+        "x": 6.610320556182791,
+        "y": 7.59995627807999
       },
       "nextControl": {
-        "x": 6.76408241898444,
-        "y": 6.696930689155735
+        "x": 7.210512410935563,
+        "y": 7.038395581629492
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.170778442534076,
-        "y": 2.181851862608427
+        "x": 7.398187490319083,
+        "y": 4.475979127942999
       },
       "prevControl": {
-        "x": 8.235232777648697,
-        "y": 2.3168030223822806
+        "x": 8.46264182543371,
+        "y": 4.610930287716853
       },
       "nextControl": {
-        "x": 5.6922524780923,
-        "y": 1.9944048420317404
+        "x": 5.919661525877307,
+        "y": 4.288532107366312
       },
       "isLocked": false,
       "linkedName": null
@@ -99,25 +99,15 @@
   "eventMarkers": [
     {
       "name": "enable rollers",
-      "waypointRelativePos": 0.8252510570824526,
+      "waypointRelativePos": 1.1267177589851995,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "enable rollers"
-        }
-      }
+      "command": null
     },
     {
       "name": "disable rollers",
-      "waypointRelativePos": 3.1383456659619395,
+      "waypointRelativePos": 2.819932610993648,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "disable rollers"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {

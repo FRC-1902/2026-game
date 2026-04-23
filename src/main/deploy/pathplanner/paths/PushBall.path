@@ -91,15 +91,25 @@
   "eventMarkers": [
     {
       "name": "enable rollers",
-      "waypointRelativePos": 3.188755285412265,
+      "waypointRelativePos": 2.4241213002114175,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable rollers"
+        }
+      }
     },
     {
       "name": "disable rollers",
       "waypointRelativePos": 4.0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "disable rollers"
+        }
+      }
     }
   ],
   "globalConstraints": {

@@ -104,7 +104,30 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "enable rollers",
+      "waypointRelativePos": 1.113537262156447,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "enable rollers"
+        }
+      }
+    },
+    {
+      "name": "disable rollers",
+      "waypointRelativePos": 2.969080338266374,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "disable rollers"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
