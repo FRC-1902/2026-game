@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "depot-path (MIDDLE)"
+            "pathName": "2CycleFirst"
           }
         },
         {
@@ -19,13 +19,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 2.6
           }
         },
         {
           "type": "named",
           "data": {
             "name": "autoshoot off"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2CycleLast"
           }
         }
       ]
