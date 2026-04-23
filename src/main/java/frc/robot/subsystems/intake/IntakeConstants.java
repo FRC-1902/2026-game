@@ -4,9 +4,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(160);
-  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(69);
-  public static final Rotation2d INDEXING_OSCILLATION_UP_ANGLE = Rotation2d.fromDegrees(130);
+  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(156);
+  public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(64.2);
+  public static final Rotation2d INDEXING_OSCILLATION_UP_ANGLE = Rotation2d.fromDegrees(120);
 
   // CAN IDs
 

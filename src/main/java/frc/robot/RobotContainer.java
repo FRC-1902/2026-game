@@ -133,19 +133,16 @@ public class RobotContainer {
     controllers.getTrigger(ControllerName.MANIP, Button.LB).whileTrue(flywheel.spinUpCommand());
     controllers.getTrigger(ControllerName.MANIP, Button.LB).onFalse(flywheel.spinDownCommand());
 
-    controllers
-        .getTrigger(ControllerName.MANIP, Button.LS)
+    manipXbox.leftTrigger()
         .whileTrue(
             new PrepForShotCommand(drivebase, shotProvider, hood, flywheel, driveAngularVelocity));
-    controllers.getTrigger(ControllerName.MANIP, Button.LS).onFalse(flywheel.spinDownCommand());
+    manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
-    controllers
-        .getTrigger(ControllerName.MANIP, Button.RS)
+    manipXbox.rightTrigger()
         .whileTrue(indexer.spinRollerShooterCommand(() -> shotProvider.get().converged()));
 
-    controllers
-        .getTrigger(ControllerName.MANIP, Button.LS)
+    manipXbox.leftTrigger()
         .and(new Trigger(() -> flywheel.isInRange() && shotProvider.get().converged()))
         .whileTrue(
             Commands.startEnd(

@@ -23,6 +23,7 @@ public class AutoShoot extends ParallelCommandGroup {
     addCommands(
         new AlignHoodCommand(hood, shotProvider),
         Commands.startEnd(() -> flywheel.setState(true), () -> flywheel.setState(false), flywheel),
+        Commands.waitUntil(() -> flywheel.isAtTargetSpeed()),
         indexer.spinRollerShooterCommand());
   }
 }
