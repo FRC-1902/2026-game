@@ -156,6 +156,8 @@ public class RobotContainer {
                 .runOnce(drivebase::zeroGyroWithAlliance)
                 .alongWith(
                     Commands.runOnce(() -> controllers.vibrate(ControllerName.DRIVE, 1000, 1.0))));
+    manipXbox.povUp().onTrue(hood.incrementUpCommand());
+    manipXbox.povDown().onTrue(hood.incrementDownCommand());
   }
 
   /*
