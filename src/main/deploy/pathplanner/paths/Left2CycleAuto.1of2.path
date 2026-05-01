@@ -48,6 +48,7 @@
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.1of2.path
         "x": 7.524244444444443,
         "y": 4.9823111111111125
       },
@@ -58,12 +59,25 @@
       "nextControl": {
         "x": 6.727402923924043,
         "y": 4.3303498670489695
+=======
+        "x": 7.632303767812887,
+        "y": 7.005750900325279
+      },
+      "prevControl": {
+        "x": 7.127696064531863,
+        "y": 7.0963215137346936
+      },
+      "nextControl": {
+        "x": 7.878371569561358,
+        "y": 6.961584884626836
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/1cycle.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.1of2.path
         "x": 6.133511111111112,
         "y": 6.564522222222222
       },
@@ -74,6 +88,18 @@
       "nextControl": {
         "x": 6.405345523038638,
         "y": 6.828742287824013
+=======
+        "x": 7.632303767812887,
+        "y": 4.774026341775093
+      },
+      "prevControl": {
+        "x": 7.816286520753344,
+        "y": 4.943290474480315
+      },
+      "nextControl": {
+        "x": 7.308837291350692,
+        "y": 4.47643718342987
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/1cycle.path
       },
       "isLocked": false,
       "linkedName": null
@@ -96,6 +122,7 @@
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.1of2.path
         "x": 3.4629000000000003,
         "y": 7.411055555555556
       },
@@ -106,6 +133,18 @@
       "nextControl": {
         "x": 2.7852388212601156,
         "y": 7.41364359013577
+=======
+        "x": 6.095329344795539,
+        "y": 7.198859684789343
+      },
+      "prevControl": {
+        "x": 6.339376109841529,
+        "y": 7.144627070334679
+      },
+      "nextControl": {
+        "x": 5.851282579749551,
+        "y": 7.253092299244006
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/1cycle.path
       },
       "isLocked": false,
       "linkedName": null

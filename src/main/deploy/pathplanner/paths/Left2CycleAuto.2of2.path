@@ -32,6 +32,7 @@
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.2of2.path
         "x": 5.5,
         "y": 7.370744444444444
       },
@@ -42,12 +43,25 @@
       "nextControl": {
         "x": 7.011976998203847,
         "y": 7.388902218820729
+=======
+        "x": 5.845378911090458,
+        "y": 7.471436406056382
+      },
+      "prevControl": {
+        "x": 5.595482047193377,
+        "y": 7.464256056872399
+      },
+      "nextControl": {
+        "x": 6.09527577498754,
+        "y": 7.478616755240364
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/PassMidSteal.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.2of2.path
         "x": 6.314911111111112,
         "y": 4.821066666666667
       },
@@ -58,12 +72,25 @@
       "nextControl": {
         "x": 5.020157899130604,
         "y": 4.6516558491813695
+=======
+        "x": 7.478971402571251,
+        "y": 6.338084388553284
+      },
+      "prevControl": {
+        "x": 7.160413931192435,
+        "y": 6.937721981736939
+      },
+      "nextControl": {
+        "x": 7.698928606565543,
+        "y": 5.924047298681673
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/PassMidSteal.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.2of2.path
         "x": 5.952111111111111,
         "y": 7.370744444444444
       },
@@ -74,12 +101,25 @@
       "nextControl": {
         "x": 5.7168977588683285,
         "y": 7.455447920918037
+=======
+        "x": 7.31608760261772,
+        "y": 4.462776922630112
+      },
+      "prevControl": {
+        "x": 7.562345219406649,
+        "y": 4.505872005568167
+      },
+      "nextControl": {
+        "x": 5.763448515599301,
+        "y": 4.1910650824019315
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/PassMidSteal.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.2of2.path
         "x": 3.442744444444445,
         "y": 7.370744444444444
       },
@@ -102,6 +142,14 @@
       "prevControl": {
         "x": 2.82512087165939,
         "y": 6.4793740981363985
+=======
+        "x": 6.4990366519516725,
+        "y": 7.327888730385164
+      },
+      "prevControl": {
+        "x": 6.682308317996139,
+        "y": 7.497922540038672
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/PassMidSteal.path
       },
       "nextControl": null,
       "isLocked": false,
@@ -134,8 +182,13 @@
       "rotationDegrees": 0.0
     },
     {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.2of2.path
       "waypointRelativePos": 5,
       "rotationDegrees": 0.0
+=======
+      "waypointRelativePos": 4.5,
+      "rotationDegrees": 146.36369812258536
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/PassMidSteal.path
     }
   ],
   "constraintZones": [],
@@ -153,8 +206,13 @@
       }
     },
     {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Left2CycleAuto.2of2.path
       "name": "toggle rollers",
       "waypointRelativePos": 3.8244429439567624,
+=======
+      "name": "disable rollers",
+      "waypointRelativePos": 4.35,
+>>>>>>> 7f82b5838c6551446920d273c4f5e45021214839:src/main/deploy/pathplanner/paths/PassMidSteal.path
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
