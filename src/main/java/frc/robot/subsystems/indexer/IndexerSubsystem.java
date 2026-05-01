@@ -19,6 +19,7 @@ public class IndexerSubsystem extends SubsystemBase {
   private final SparkMax rollerIndexerMotor;
   private final RelativeEncoder shooterIndexerEncoder;
   private final RelativeEncoder rollerIndexerEncoder;
+  private boolean toggleIndex = false;
 
   public IndexerSubsystem() {
     shooterIndexerMotor =
@@ -57,6 +58,17 @@ public class IndexerSubsystem extends SubsystemBase {
         },
         this::stopRollers,
         this);
+  }
+
+  public void toggleIndex() {
+    toggleIndex = !toggleIndex;
+    if (toggleIndex) {
+      rollerIndexerMotor.set(IndexerConstants.ROLLER_INDEXER_SPEED);
+      shooterIndexerMotor.set(IndexerConstants.SHOOTER_INDEXER_SPEED);
+    } else {
+      rollerIndexerMotor.set(0);
+      shooterIndexerMotor.set(0);
+    }
   }
 
   public void stopRollers() {

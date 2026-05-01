@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "enable intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Half2CycleFirst"
+            "pathName": "MidDepotPath"
           }
         },
         {
@@ -19,19 +25,31 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle index"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle index"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "autoshoot off"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Half2CycleLast"
           }
         }
       ]

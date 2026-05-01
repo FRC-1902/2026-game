@@ -7,12 +7,14 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
@@ -33,6 +35,7 @@ import frc.robot.systems.field.AllianceFlipUtil;
 import frc.robot.systems.shooting.ShotSolutionProvider;
 import java.io.File;
 import swervelib.SwerveInputStream;
+import frc.robot.subsystems.hood.HoodConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -137,6 +140,7 @@ public class RobotContainer {
         .whileTrue(
             new PrepForShotCommand(drivebase, shotProvider, hood, flywheel, driveAngularVelocity));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
+    manipXbox.leftTrigger().onFalse(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
     manipXbox.rightTrigger()
@@ -171,11 +175,11 @@ public class RobotContainer {
   }
 
   private void registerPathPlannerNamedCommands() {
-    NamedCommands.registerCommand("enable rollers", Commands.runOnce(intake::startRollers, intake));
-    NamedCommands.registerCommand("disable rollers", Commands.runOnce(intake::stopRollers, intake));
     NamedCommands.registerCommand("autoshoot on", new AutoShootToggleOnCommand(autoShootCommand));
     NamedCommands.registerCommand("autoshoot off", new AutoShootToggleOffCommand(autoShootCommand));
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
+    NamedCommands.registerCommand("toggle index", Commands.runOnce(indexer::toggleIndex, indexer));
+    NamedCommands.registerCommand("toggle rollers", intake.toggleRollersCommand());
   }
 
   public void setMotorBrake(boolean brake) {

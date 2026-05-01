@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
     pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
 
-    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.6));
+    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.62));
 
     pivotMotor.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

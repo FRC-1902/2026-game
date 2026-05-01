@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "enable intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "2CycleFirst"
+            "pathName": "1 cycle (left)"
           }
         },
         {
@@ -19,7 +25,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.5
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle index"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
           }
         },
         {
@@ -29,9 +47,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "2CycleLast"
+            "name": "toggle index"
           }
         }
       ]

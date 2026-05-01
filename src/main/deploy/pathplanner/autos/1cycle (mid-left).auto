@@ -5,15 +5,33 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "enable intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "NeutralEndFirst"
+            "pathName": "1cycle (mid-left)"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "autoshoot on"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle index"
           }
         },
         {
@@ -29,9 +47,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "NeutralEndLast"
+            "name": "toggle index"
           }
         }
       ]
