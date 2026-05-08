@@ -18,5 +18,13 @@ This year, the [Spotless](https://docs.wpilib.org/en/stable/docs/software/advanc
 ## Acknowledgements
 
 This code was written by:
+- [Shaan Yu](https://github.com/DinosaurPotato534)
+- [Langdon Atchison](https://github.com/LangyDooney)
+
+This code was reviewed by:
+- [Tyler Waddell](https://github.com/brothersw)
+- [Samuel Styles](https://github.com/PureRandomGit)
+- [Lucas Santini](https://github.com/thegreatsantini)
+- [Dominic Canora](https://github.com/dc74089)
 
 We would also like to thank our sponsors, team members, parents and mentors for their help and support.
