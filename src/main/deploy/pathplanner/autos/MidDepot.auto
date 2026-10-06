@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MidDepotPath"
+            "pathName": "MidDepotPath (ladder)"
           }
         },
         {
@@ -37,6 +37,18 @@
         {
           "type": "wait",
           "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle oscillate"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
             "waitTime": 5.0
           }
         },
@@ -50,6 +62,12 @@
           "type": "named",
           "data": {
             "name": "autoshoot off"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle oscillate"
           }
         }
       ]

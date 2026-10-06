@@ -44,11 +44,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     // configure motors
     SparkMaxConfig pivotConfig = new SparkMaxConfig();
-    pivotConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    pivotConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
     pivotConfig.smartCurrentLimit(IntakeConstants.PIVOTMOTOR_CURRENTLIMIT);
     pivotConfig.voltageCompensation(IntakeConstants.PIVOTMOTOR_VOLTAGECOMPENSATION);
 
-    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.62));
+    pivotConfig.apply(pivotConfig.absoluteEncoder.zeroOffset(0.8));
 
     pivotMotor.configure(
         pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -174,7 +174,7 @@ public class IntakeSubsystem extends SubsystemBase {
     double pidoutput = pid.calculate(measurement.getDegrees(), setpoint);
     double ff = calculateGravityFeedforward(measurement);
     double output = pidoutput + ff;
-    output = Math.max(-0.2, Math.min(0.4, output));
+    output = Math.max(-0.2, Math.min(0.2, output));
     pivotMotor.set(output);
 
     // add all values to network table

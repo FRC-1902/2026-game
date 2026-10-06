@@ -78,7 +78,7 @@ public class RobotContainer {
               () ->
                   -MathUtil.applyDeadband(
                           driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND)
-                      * 0.40)
+                      * 0.6366)
           .scaleTranslation(1.0)
           .allianceRelativeControl(true);
 
@@ -180,6 +180,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("enable intake", intake.enableIntakeCommand());
     NamedCommands.registerCommand("toggle index", Commands.runOnce(indexer::toggleIndex, indexer));
     NamedCommands.registerCommand("toggle rollers", intake.toggleRollersCommand());
+    NamedCommands.registerCommand("toggle oscillate", intake.toggleIndexOscillationCommand());
   }
 
   public void setMotorBrake(boolean brake) {
