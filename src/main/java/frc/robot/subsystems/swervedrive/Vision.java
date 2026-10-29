@@ -199,7 +199,7 @@ public class Vision {
         }
         // Ambiguity check: require best target ambiguity below threshold
         PhotonTrackedTarget bestTarget = result.getBestTarget();
-        if (bestTarget != null && bestTarget.getPoseAmbiguity() > 0.2) { // 0.2 threshold
+        if (bestTarget != null && bestTarget.getPoseAmbiguity() > 0.5) { // 0.5 threshold
           continue;
         }
 

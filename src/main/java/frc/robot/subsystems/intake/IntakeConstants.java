@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
 
-  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(172.5);
+  public static final Rotation2d DISABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(173);
   public static final Rotation2d ENABLED_INTAKE_ANGLE = Rotation2d.fromDegrees(82);
   public static final Rotation2d INDEXING_OSCILLATION_UP_ANGLE = Rotation2d.fromDegrees(120);
 

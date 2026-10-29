@@ -27,7 +27,7 @@ public class HoodConstants {
   public static final double HOOD_KCOS = 0.0;
 
   // Soft limits (in degrees)
-  public static final double HOOD_MIN_ANGLE = 10.7;
+  public static final double HOOD_MIN_ANGLE = 13.37;
   public static final double HOOD_MAX_ANGLE = 29.5;
 
   // Tolerance for reaching target angle (in degrees)

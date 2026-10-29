@@ -90,6 +90,10 @@ public class IntakeSubsystem extends SubsystemBase {
     rollerMotor.set(IntakeConstants.ROLLERMOTOR_SPEED);
   }
 
+  public void reverseRollers() {
+    rollerMotor.set(IntakeConstants.ROLLERMOTOR_SPEED * -1);
+  }
+
   public void stopRollers() {
     rollerMotor.set(0);
   }

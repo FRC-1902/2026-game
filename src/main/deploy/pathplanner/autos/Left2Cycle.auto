@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "2cycle left pt1"
           }
         },
         {
@@ -37,7 +37,25 @@
         {
           "type": "wait",
           "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle oscillate"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
             "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoshoot off"
           }
         },
         {
@@ -49,13 +67,19 @@
         {
           "type": "named",
           "data": {
-            "name": "autoshoot off"
+            "name": "toggle oscillate"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": null
+            "pathName": "2cycle left pt2"
           }
         },
         {
@@ -79,7 +103,25 @@
         {
           "type": "wait",
           "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "toggle oscillate"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
             "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoshoot off"
           }
         },
         {
@@ -91,7 +133,13 @@
         {
           "type": "named",
           "data": {
-            "name": "autoshoot off"
+            "name": "toggle oscillate"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "enable intake"
           }
         }
       ]

@@ -141,7 +141,8 @@ public class FlywheelSubsystem extends SubsystemBase {
   public void periodic() {
     double targetRpm;
     if (this.on) {
-      targetRpm = getRpmForDistance(distanceToHub.getAsDouble());
+      // targetRpm = getRpmForDistance(distanceToHub.getAsDouble());
+      targetRpm = getRpmForDistance(53.8100505);
     } else {
       targetRpm = 0;
     }
