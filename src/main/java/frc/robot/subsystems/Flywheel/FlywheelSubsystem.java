@@ -142,7 +142,7 @@ public class FlywheelSubsystem extends SubsystemBase {
     double targetRpm;
     if (this.on) {
       // targetRpm = getRpmForDistance(distanceToHub.getAsDouble());
-      targetRpm = getRpmForDistance(53.8100505);
+      targetRpm = 3500;
     } else {
       targetRpm = 0;
     }

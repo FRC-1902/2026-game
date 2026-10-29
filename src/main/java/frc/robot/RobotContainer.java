@@ -80,7 +80,8 @@ public class RobotContainer {
                   -MathUtil.applyDeadband(
                           driverXbox.getRightX(), OperatorConstants.RIGHT_X_DEADBAND)
                       * 0.6366)
-          .scaleTranslation(1.0)
+          .scaleTranslation(0.5)
+          .scaleRotation(0.5)
           .allianceRelativeControl(true);
 
   private static double shapeTranslationAxis(double input) {
