@@ -27,6 +27,7 @@ import frc.robot.subsystems.ControllerSubsystem;
 import frc.robot.subsystems.ControllerSubsystem.Button;
 import frc.robot.subsystems.ControllerSubsystem.ControllerName;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.indexer.IndexerSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -36,7 +37,6 @@ import frc.robot.systems.field.AllianceFlipUtil;
 import frc.robot.systems.shooting.ShotSolutionProvider;
 import java.io.File;
 import swervelib.SwerveInputStream;
-import frc.robot.subsystems.hood.HoodConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -108,7 +108,12 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
-    autoChooser.addOption("shoot preloads actually really like actually", new AutoShootToggleOnCommand(autoShootCommand).andThen(indexer.autoIndexCommand()).andThen(new WaitCommand(5)).andThen(new AutoShootToggleOffCommand(autoShootCommand)));
+    autoChooser.addOption(
+        "shoot preloads actually really like actually",
+        new AutoShootToggleOnCommand(autoShootCommand)
+            .andThen(indexer.autoIndexCommand())
+            .andThen(new WaitCommand(5))
+            .andThen(new AutoShootToggleOffCommand(autoShootCommand)));
 
     // Put the autoChooser on the SmartDashboard
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -138,17 +143,24 @@ public class RobotContainer {
     controllers.getTrigger(ControllerName.MANIP, Button.LB).whileTrue(flywheel.spinUpCommand());
     controllers.getTrigger(ControllerName.MANIP, Button.LB).onFalse(flywheel.spinDownCommand());
 
-    manipXbox.leftTrigger()
+    manipXbox
+        .leftTrigger()
         .whileTrue(
             new PrepForShotCommand(drivebase, shotProvider, hood, flywheel, driveAngularVelocity));
     manipXbox.leftTrigger().onFalse(flywheel.spinDownCommand());
-    manipXbox.leftTrigger().onFalse(new InstantCommand(() -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
+    manipXbox
+        .leftTrigger()
+        .onFalse(
+            new InstantCommand(
+                () -> hood.setAngle(Rotation2d.fromDegrees(HoodConstants.HOOD_MIN_ANGLE))));
 
     controllers.getTrigger(ControllerName.MANIP, Button.RB).whileTrue(intake.startRollersCommand());
-    manipXbox.rightTrigger()
+    manipXbox
+        .rightTrigger()
         .whileTrue(indexer.spinRollerShooterCommand(() -> shotProvider.get().converged()));
 
-    manipXbox.leftTrigger()
+    manipXbox
+        .leftTrigger()
         .and(new Trigger(() -> flywheel.isInRange() && shotProvider.get().converged()))
         .whileTrue(
             Commands.startEnd(

@@ -20,9 +20,8 @@ public class PrepForShotCommand extends ParallelCommandGroup {
       SwerveInputStream driveStream) {
 
     addCommands(
-        flywheel.spinUpCommand()
-        new AlignToHub(drivebase, driveStream, shotProvider)
-        new AlignHoodCommand(hood, shotProvider)
-        );
+        flywheel.spinUpCommand(),
+        new AlignToHub(drivebase, driveStream, shotProvider),
+        new AlignHoodCommand(hood, shotProvider));
   }
 }

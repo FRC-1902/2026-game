@@ -30,6 +30,7 @@ public final class Constants {
       new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED = Units.feetToMeters(16.6); // ft/s
+
   // public static final double MAX_ACCELERATION = Units.feetToMeters(12.0); // ft/s^2
   // public static final Rotation2d MAX_ROTATION_SPEED = Rotation2d.fromRadians(30);
 

@@ -41,7 +41,6 @@ public class FlywheelConstants {
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(126.8100505), 5300.0);
     DISTANCE_TO_RPM_MAP.put(Units.inchesToMeters(149.8100505), 5400.0);
 
-
     DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(48.9350505), 0.5066666667);
     DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(70.3100505), 0.8766666667);
     DISTANCE_TO_TOF_MAP.put(Units.inchesToMeters(91.3100505), 1.1066666667);
