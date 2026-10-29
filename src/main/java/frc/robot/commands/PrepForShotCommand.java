@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-// import frc.robot.commands.hood.AlignHoodCommand;
-// import frc.robot.commands.swervedrive.drivebase.AlignToHub;
+import frc.robot.commands.hood.AlignHoodCommand;
+import frc.robot.commands.swervedrive.drivebase.AlignToHub;
 import frc.robot.subsystems.Flywheel.FlywheelSubsystem;
 import frc.robot.subsystems.hood.HoodSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -21,8 +21,8 @@ public class PrepForShotCommand extends ParallelCommandGroup {
 
     addCommands(
         flywheel.spinUpCommand()
-        // new AlignToHub(drivebase, driveStream, shotProvider)
-        // new AlignHoodCommand(hood, shotProvider)
+        new AlignToHub(drivebase, driveStream, shotProvider)
+        new AlignHoodCommand(hood, shotProvider)
         );
   }
 }
